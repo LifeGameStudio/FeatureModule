@@ -12,36 +12,38 @@
         public Dictionary<string, QuestLog>                Quests         = new();
         public Dictionary<string, Dictionary<string, int>> TrackingCached = new();
 
-        public Type                         ControllerType => typeof(QuestManager);
+        public Type ControllerType => typeof(QuestManager);
 
         public void Init() { }
     }
 
+    [Serializable]
     public class QuestLog
     {
-        public              string            ProviderId        { get; set; }
-        public              string            QuestId           { get; set; }
-        public              QuestProviderType QuestProviderType { get; set; }
-        public              QuestStatus       QuestStatus       { get; set; }
-        public              string            QuestType         { get; set; }
-        public              List<TaskLog>     TaskProgress      { get; set; } = new();
-        [JsonIgnore] public QuestRecord       QuestRecord       { get; set; }
+        public              string            ProviderId;
+        public              string            QuestId;
+        public              QuestProviderType QuestProviderType;
+        public              QuestStatus       QuestStatus;
+        public              string            QuestType;
+        public              List<TaskLog>     TaskProgress = new();
+        [JsonIgnore] public QuestRecord       QuestRecord;
     }
 
+    [Serializable]
     public class TaskLog
     {
-        public List<RequirementProgress> Progress   { get; set; } = new();
-        public QuestStatus               TaskStatus { get; set; }
+        public List<RequirementProgress> Progress = new();
+        public QuestStatus               TaskStatus;
 
-        [JsonIgnore] public TaskRecord TaskRecord { get; set; }
+        [JsonIgnore] public TaskRecord TaskRecord;
     }
 
     public class RequirementProgress
     {
-        public string RequirementType { get; set; }
-        public string RequirementId   { get; set; }
-        public int    CurrentValue    { get; set; }
-        public int    RequiredValue   { get; set; }
+        public string RequirementType;
+        public string RequirementId;
+        public int    CurrentValue;
+        public int    RequiredValue;
     }
 
     public enum QuestProviderType
