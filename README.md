@@ -209,7 +209,7 @@ System Design
             <tr><th>Column Name</th><th>Description</th></tr>
             <tr><td>Id</td><td>Unique identifier for the main quest</td></tr>
             <tr><td>QuestType</td><td>Defines the type of quest</td></tr>
-            <tr><td>QuestRewardId</td><td>ID of the reward granted upon completion</td></tr>
+            <tr><td>QuestRewardId</td><td>Reference ID of the reward granted upon completion</td></tr>
             <tr><td>QuestRewardType</td><td>Type of reward (e.g., currency, item)</td></tr>
             <tr><td>QuestRewardValue</td><td>Quantity or value of the reward</td></tr>
             <tr><td>QuestIcon</td><td>Icon representing the quest visually</td></tr>
@@ -223,7 +223,7 @@ System Design
             <tr><td>RequirementType</td><td>Specifies the requirement type (e.g., level, item)</td></tr>
             <tr><td>RequirementId</td><td>ID of the requirement item or condition</td></tr>
             <tr><td>RequirementValue</td><td>Quantity or value required for completion</td></tr>
-            <tr><td>TaskRewardId</td><td>ID of the task reward</td></tr>
+            <tr><td>TaskRewardId</td><td>Reference ID of the task reward</td></tr>
             <tr><td>TaskRewardType</td><td>Type of reward for completing the task</td></tr>
             <tr><td>TaskRewardValue</td><td>Quantity or value of the task reward</td></tr>
         </table>
@@ -232,7 +232,7 @@ System Design
             <tr><th>Column Name</th><th>Description</th></tr>
             <tr><td>Id</td><td>Unique identifier for the side quest</td></tr>
             <tr><td>QuestType</td><td>Defines the type of side quest</td></tr>
-            <tr><td>QuestRewardId</td><td>ID of the reward granted upon completion</td></tr>
+            <tr><td>QuestRewardId</td><td>Reference ID of the reward granted upon completion</td></tr>
             <tr><td>QuestRewardType</td><td>Type of reward for the side quest</td></tr>
             <tr><td>QuestRewardValue</td><td>Quantity or value of the side quest reward</td></tr>
             <tr><td>QuestIcon</td><td>Icon representing the side quest visually</td></tr>
@@ -246,7 +246,7 @@ System Design
             <tr><td>RequirementType</td><td>Specifies the requirement type (e.g., level, item)</td></tr>
             <tr><td>RequirementId</td><td>ID of the requirement item or condition</td></tr>
             <tr><td>RequirementValue</td><td>Quantity or value required for completion</td></tr>
-            <tr><td>TaskRewardId</td><td>ID of the task reward</td></tr>
+            <tr><td>TaskRewardId</td><td>Reference ID of the task reward</td></tr>
             <tr><td>TaskRewardType</td><td>Type of reward for completing the task</td></tr>
             <tr><td>TaskRewardValue</td><td>Quantity or value of the task reward</td></tr>
         </table>
