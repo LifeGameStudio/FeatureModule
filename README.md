@@ -190,3 +190,88 @@ public class GameProjectInstaller : MonoInstaller
 <strong>Move</strong> the sample configuration files into your project folder for customization.
 <strong>Modify the configuration files</strong> to align with your game's shop structure, prices, and rewards.
 By following this setup, the Shop System will be ready to integrate into your game along with other modules like the Mission system.
+
+<h2>Quest System Setup</h2>
+
+<h3>Introduction</h3>
+<p>This documentation provides an overview of the Quest System, including details on the MainQuest, SideQuest, and QuestContext CSV files, their structures, and the key properties used in defining quests in your game.</p>
+
+![image](https://github.com/user-attachments/assets/d77a248c-c024-48b9-9e88-f1c226721406)
+System Design
+
+<h3>Installation and Setup</h3>
+<ol>
+    <li><strong>Install the Module:</strong> Follow your game’s module installation steps to integrate the Quest System.</li>
+    <li><strong>Modify the Blueprint Data:</strong>
+        <p>To configure quests, import and modify the following CSV files located in the sample folder to match your specific needs:</p>
+        <h4>MainQuest.csv Structure</h4>
+        <table border="1">
+            <tr><th>Column Name</th><th>Description</th></tr>
+            <tr><td>Id</td><td>Unique identifier for the main quest</td></tr>
+            <tr><td>QuestType</td><td>Defines the type of quest</td></tr>
+            <tr><td>QuestRewardId</td><td>ID of the reward granted upon completion</td></tr>
+            <tr><td>QuestRewardType</td><td>Type of reward (e.g., currency, item)</td></tr>
+            <tr><td>QuestRewardValue</td><td>Quantity or value of the reward</td></tr>
+            <tr><td>QuestIcon</td><td>Icon representing the quest visually</td></tr>
+            <tr><td>QuestDescription</td><td>Brief description of the quest</td></tr>
+            <tr><td>TaskId</td><td>Identifier for the task associated with the quest</td></tr>
+            <tr><td>TrackingType</td><td>Specifies tracking method for quest progress</td></tr>
+            <tr><td>TaskState</td><td>Current state of the task (e.g., in progress, completed)</td></tr>
+            <tr><td>QuestContextIds</td><td>Associated context IDs for quest conditions</td></tr>
+            <tr><td>Description</td><td>Detailed quest instructions or objectives</td></tr>
+            <tr><td>TaskName</td><td>Name of the quest task</td></tr>
+            <tr><td>RequirementType</td><td>Specifies the requirement type (e.g., level, item)</td></tr>
+            <tr><td>RequirementId</td><td>ID of the requirement item or condition</td></tr>
+            <tr><td>RequirementValue</td><td>Quantity or value required for completion</td></tr>
+            <tr><td>TaskRewardId</td><td>ID of the task reward</td></tr>
+            <tr><td>TaskRewardType</td><td>Type of reward for completing the task</td></tr>
+            <tr><td>TaskRewardValue</td><td>Quantity or value of the task reward</td></tr>
+        </table>
+        <h4>SideQuest.csv Structure</h4>
+        <table border="1">
+            <tr><th>Column Name</th><th>Description</th></tr>
+            <tr><td>Id</td><td>Unique identifier for the side quest</td></tr>
+            <tr><td>QuestType</td><td>Defines the type of side quest</td></tr>
+            <tr><td>QuestRewardId</td><td>ID of the reward granted upon completion</td></tr>
+            <tr><td>QuestRewardType</td><td>Type of reward for the side quest</td></tr>
+            <tr><td>QuestRewardValue</td><td>Quantity or value of the side quest reward</td></tr>
+            <tr><td>QuestIcon</td><td>Icon representing the side quest visually</td></tr>
+            <tr><td>QuestDescription</td><td>Description of the side quest objectives</td></tr>
+            <tr><td>TaskId</td><td>Identifier for the task related to the side quest</td></tr>
+            <tr><td>TrackingType</td><td>Specifies tracking method for side quest progress</td></tr>
+            <tr><td>TaskState</td><td>Current state of the task (e.g., in progress, completed)</td></tr>
+            <tr><td>QuestContextIds</td><td>Associated context IDs for quest conditions</td></tr>
+            <tr><td>Description</td><td>Detailed side quest instructions or objectives</td></tr>
+            <tr><td>TaskName</td><td>Name of the side quest task</td></tr>
+            <tr><td>RequirementType</td><td>Specifies the requirement type (e.g., level, item)</td></tr>
+            <tr><td>RequirementId</td><td>ID of the requirement item or condition</td></tr>
+            <tr><td>RequirementValue</td><td>Quantity or value required for completion</td></tr>
+            <tr><td>TaskRewardId</td><td>ID of the task reward</td></tr>
+            <tr><td>TaskRewardType</td><td>Type of reward for completing the task</td></tr>
+            <tr><td>TaskRewardValue</td><td>Quantity or value of the task reward</td></tr>
+        </table>
+        <h4>QuestContext.csv Structure</h4>
+        <table border="1">
+            <tr><th>Column Name</th><th>Description</th></tr>
+            <tr><td>Id</td><td>Unique identifier for the quest context</td></tr>
+            <tr><td>QuestContextType</td><td>Type of context (e.g., location, NPC)</td></tr>
+            <tr><td>Data</td><td>Additional data specific to the quest context type</td></tr>
+        </table>
+    </li>
+    <li><strong>Inject the QuestProviderService:</strong> To manage quests, inject the QuestProviderService. This service provides two main functions:
+        <ul>
+            <li><strong>GiveQuestToUser:</strong> Initializes and assigns a quest to the user.</li>
+            <li><strong>StartQuest:</strong> Sets the quest’s status to in-progress.</li>
+        </ul>
+    </li>
+    <li><strong>Track Quest Progress:</strong> Use the <code>TrackingQuestSignal</code> to update quest progress and manage quest completion status based on in-game events.</li>
+</ol>
+
+``` Csharp
+        public class TrackingQuestSignal
+        {
+            public string RequirementType  { get; }
+            public string RequirementId    { get; }
+            public int    RequirementValue { get; }
+        }
+```
