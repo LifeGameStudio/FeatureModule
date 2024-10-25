@@ -322,7 +322,7 @@
 
             var mainQuestCompleted = this.data.Quests.FirstOrDefault(x => x.Value.QuestProviderType == QuestProviderType.Main && x.Value.QuestStatus == QuestStatus.Completed).Value;
 
-            return mainQuestCompleted ?? null;
+            return mainQuestCompleted ;
         }
 
         public void SetQuestStatus(string questInfoProviderId, string questInfoQuestId, QuestStatus status)
@@ -337,14 +337,21 @@
             this.data.Quests.Remove(quest.QuestId);
         }
 
-        public void ShowPopupClaimReward(QuestLog questLog, bool isCurrentTaskOnly = false)
+        public void ShowPopupClaimReward(QuestLog questLog,bool isMainOnly=false, bool isCurrentTaskOnly = false)
         {
             var listAsset = new List<IRewardRecord>();
 
-            if (isCurrentTaskOnly) listAsset = this.GetCurrentTaskReward(questLog.ProviderId, questLog.QuestId);
+            if (isCurrentTaskOnly)
+            {
+                listAsset = this.GetCurrentTaskReward(questLog.ProviderId, questLog.QuestId);
+            }
+            else if (isMainOnly)
+            {
+                listAsset.AddRange(this.GetQuestReward(questLog.ProviderId, questLog.QuestId));
+            }
             else
             {
-                listAsset = this.GetTaskReward(questLog.ProviderId, questLog.QuestId);
+                listAsset.AddRange(this.GetTaskReward(questLog.ProviderId, questLog.QuestId));
                 listAsset.AddRange(this.GetQuestReward(questLog.ProviderId, questLog.QuestId));
             }
 
@@ -352,6 +359,14 @@
             {
                 RewardResult = listAsset
             }).Forget();
+        }
+        
+        public void ResetQuest(string questId, string providerId)
+        {
+            var quest = this.GetQuest(questId, providerId);
+            quest.TaskProgress.ForEach(x => x.Progress.ForEach(y => y.CurrentValue = 0));
+            quest.TaskProgress.ForEach(x => x.TaskStatus = QuestStatus.NotStarted);
+            quest.QuestStatus = QuestStatus.NotStarted;
         }
     }
 }
