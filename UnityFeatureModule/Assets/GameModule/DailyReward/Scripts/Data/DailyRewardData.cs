@@ -1,4 +1,4 @@
-﻿namespace GameModule.DailyReward.Data
+﻿namespace GameModule.DailyReward.Scripts.Data
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
     using FeatureTemplate.Scripts.Services;
     using GameFoundation.Scripts.Interfaces;
-    using GameModule.DailyReward.Blueprints;
+    using GameModule.DailyReward.Scripts.Blueprints;
     using Newtonsoft.Json;
     using Sirenix.Utilities;
     using Zenject;

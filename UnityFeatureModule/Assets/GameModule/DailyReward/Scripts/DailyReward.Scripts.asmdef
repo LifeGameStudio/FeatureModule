@@ -1,5 +1,5 @@
 {
-    "name": "DailyReward",
+    "name": "DailyReward.Scripts",
     "rootNamespace": "",
     "references": [
         "GameFoundation.BlueprintFlow",

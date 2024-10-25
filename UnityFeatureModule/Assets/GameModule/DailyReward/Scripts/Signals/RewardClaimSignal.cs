@@ -1,8 +1,7 @@
-﻿namespace GameModule.DailyReward.Signals
+﻿namespace GameModule.DailyReward.Scripts.Signals
 {
     using System.Collections.Generic;
     using FeatureTemplate.Scripts.RewardHandle;
-    using GameModule.DailyReward.Blueprints;
 
     public class RewardClaimSignal
     {

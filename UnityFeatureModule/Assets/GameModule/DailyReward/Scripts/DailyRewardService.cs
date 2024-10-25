@@ -5,9 +5,9 @@
     using System.Linq;
     using FeatureTemplate.Scripts.RewardHandle;
     using FeatureTemplate.Scripts.Services;
-    using GameModule.DailyReward.Blueprints;
-    using GameModule.DailyReward.Data;
-    using GameModule.DailyReward.Signals;
+    using GameModule.DailyReward.Scripts.Blueprints;
+    using GameModule.DailyReward.Scripts.Data;
+    using GameModule.DailyReward.Scripts.Signals;
     using UnityEngine;
     using Zenject;
 

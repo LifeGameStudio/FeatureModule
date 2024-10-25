@@ -1,4 +1,4 @@
-﻿namespace GameModule.DailyReward.MVP
+﻿namespace GameModule.DailyReward.Scripts.MVP
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -7,10 +7,10 @@
     using FeatureTemplate.Scripts.Services;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameModule.DailyReward.Blueprints;
     using GameModule.DailyReward.Scripts;
+    using GameModule.DailyReward.Scripts.Blueprints;
     using GameModule.DailyReward.Scripts.RewardSlotItem;
-    using GameModule.DailyReward.Signals;
+    using GameModule.DailyReward.Scripts.Signals;
     using UnityEngine;
     using Zenject;
     using Color = UnityEngine.Color;

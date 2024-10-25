@@ -5,8 +5,8 @@ namespace GameModule.DailyReward.Scripts
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
-    using GameModule.DailyReward.Blueprints;
-    using GameModule.DailyReward.Signals;
+    using GameModule.DailyReward.Scripts.Blueprints;
+    using GameModule.DailyReward.Scripts.Signals;
     using Zenject;
 
     // Input T as popup screen

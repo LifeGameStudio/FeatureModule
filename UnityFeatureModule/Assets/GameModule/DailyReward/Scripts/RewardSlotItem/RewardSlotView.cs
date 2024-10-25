@@ -3,7 +3,7 @@
     using FeatureTemplate.Scripts.MVP;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
-    using GameModule.DailyReward.Blueprints;
+    using GameModule.DailyReward.Scripts.Blueprints;
     using UnityEngine.UI;
     using Zenject;
 
