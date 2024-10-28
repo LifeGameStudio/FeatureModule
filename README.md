@@ -202,7 +202,7 @@ System Design
 <h3>Installation and Setup</h3>
     <strong>Install the Module:</strong>
         
-    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition
+    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/QuestModule
 <ol>
     <li><strong>Modify the Blueprint Data:</strong>
         <p>To configure quests, import and modify the following CSV files located in the sample folder to match your specific needs:</p>
