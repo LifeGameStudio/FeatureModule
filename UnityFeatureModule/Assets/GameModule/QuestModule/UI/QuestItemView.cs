@@ -61,16 +61,7 @@ public class QuestItemPresenter : BaseUIItemPresenter<QuestItemView, QuestItemMo
             return;
         }
 
-        var taskDescription = taskLog.TaskRecord.Description;
-
-        if (taskDescription.TryGetValue(taskLog.TaskStatus, out var description))
-        {
-            this.View.txtDescription.text = description;
-        }
-        else
-        {
-            this.View.txtDescription.text = taskDescription.FirstOrDefault().Value;
-        }
+        this.View.txtDescription.text = taskLog.TaskRecord.Description;
 
         var progressFinished = taskLog.Progress.Count(x => x.CurrentValue >= x.RequiredValue);
 

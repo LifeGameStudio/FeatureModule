@@ -100,7 +100,7 @@ public class QuestManagerItemPresenter : BaseUIItemPresenter<QuestManagerItemVie
             return;
         }
 
-        this.View.txtSideQuestDes.text = task.TaskRecord.Description[task.TaskStatus];
+        this.View.txtSideQuestDes.text = task.TaskRecord.Description;
     }
 
     public void Dispose() { this.signalBus.TryUnsubscribe<RefreshQuestViewSignal>(this.OnPrepareQuestData); }

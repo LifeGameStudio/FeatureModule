@@ -48,7 +48,7 @@
 
             if (param.QuestLog.QuestRecord.Tasks.Count > 0)
             {
-                this.View.txtDes.text = param.QuestLog.QuestRecord.Tasks.Last().Description[QuestStatus.InProgress];
+                this.View.txtDes.text = param.QuestLog.QuestRecord.Tasks.Last().Description;
             }
         }
     }

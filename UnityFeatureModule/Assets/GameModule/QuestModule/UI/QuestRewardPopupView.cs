@@ -58,7 +58,7 @@ namespace GameModule.QuestModule.UI
 
                 if(taskLog==null)return;
 
-                this.View.txtCurrentMainQuest.text = taskLog.TaskRecord.Description.TryGetValue(taskLog.TaskStatus, out var description) ? description : taskLog.TaskRecord.Description.First().Value;
+                this.View.txtCurrentMainQuest.text = taskLog.TaskRecord.Description;
                
                 var totalTaskComplete = currentMainQuest.TaskProgress.Count(x => x.TaskStatus == QuestStatus.Completed);
                 this.View.txtCurrenProgressMainQuest.text = $"{totalTaskComplete} / {currentMainQuest.TaskProgress.Count}";

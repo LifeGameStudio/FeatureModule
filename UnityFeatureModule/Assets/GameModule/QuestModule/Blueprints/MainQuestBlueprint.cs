@@ -28,7 +28,7 @@
     {
         public string                                 TaskId;
         public BlueprintByRow<QuestStatus, TaskSate>  TaskSates;
-        public Dictionary<QuestStatus, string>        Description;
+        public string                                 Description;
         public string                                 TaskName;
         public BlueprintByRow<QuestRequirementRecord> RequirementRecords;
         public BlueprintByRow<RewardRecord>           RewardRecords;

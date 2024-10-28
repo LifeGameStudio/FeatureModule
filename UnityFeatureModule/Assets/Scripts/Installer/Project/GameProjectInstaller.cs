@@ -5,7 +5,6 @@ namespace Game.Scripts.Installer.Project
     using Game.Scripts.Services;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameModule.DailyReward.Scripts;
     using GameModule.QuestModule;
     using UnityEngine.EventSystems;
     using Zenject;
