@@ -6,7 +6,7 @@
     {
         public override void InstallBindings()
         {
-            this.Container.Bind<TimeMarkService>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<TimeMarkService>().AsCached().NonLazy();
         }
     }
 }

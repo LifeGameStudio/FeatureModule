@@ -3,9 +3,12 @@ namespace Game.Scripts.Installer.Project
     using FeatureTemplate.Scripts.Installers;
     using FeatureTemplate.Scripts.Toast;
     using Game.Scripts.Services;
+    using Game.Scripts.UnitTest;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameModule.QuestModule;
+    using GameModule.TimeMarker.Scripts;
+    using GameModule.UnitTest;
     using UnityEngine.EventSystems;
     using Zenject;
 
@@ -23,6 +26,8 @@ namespace Game.Scripts.Installer.Project
             this.Container.Bind<EventSystem>().FromComponentInNewPrefabResource("EventSystem").AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<GameDataState>().AsCached().NonLazy();
             QuestInstaller.Install(this.Container);
+            TimeMarkInstaller.Install(this.Container);
+            UnitTestInstaller<TimeMarkTest>.Install(this.Container);
         }
     }
 }

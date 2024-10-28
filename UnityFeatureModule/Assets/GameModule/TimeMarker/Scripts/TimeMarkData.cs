@@ -18,8 +18,8 @@
     
     public class TimeMarkDataController : IFeatureControllerData
     {
-        private readonly ILocalData localData;
-        public TimeMarkDataController(ILocalData localData)
+        private readonly TimeMarkData localData;
+        public TimeMarkDataController(TimeMarkData localData)
         {
             this.localData = localData;
         }
