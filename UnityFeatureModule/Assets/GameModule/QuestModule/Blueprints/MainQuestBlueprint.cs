@@ -15,7 +15,7 @@
     {
         public string Id;
 
-        //public string                            QuestName;
+        public string                            QuestDescription;
         public string                            QuestIcon;
         public string                            QuestType;
         public BlueprintByRow<QuestRewardRecord> QuestRewardRecords;
