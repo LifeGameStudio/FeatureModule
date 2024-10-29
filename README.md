@@ -200,8 +200,10 @@ By following this setup, the Shop System will be ready to integrate into your ga
 System Design
 
 <h3>Installation and Setup</h3>
+    <strong>Install the Module:</strong>
+        
+    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/QuestModule
 <ol>
-    <li><strong>Install the Module:</strong> Follow your game’s module installation steps to integrate the Quest System.</li>
     <li><strong>Modify the Blueprint Data:</strong>
         <p>To configure quests, import and modify the following CSV files located in the sample folder to match your specific needs:</p>
         <h4>MainQuest.csv Structure</h4>

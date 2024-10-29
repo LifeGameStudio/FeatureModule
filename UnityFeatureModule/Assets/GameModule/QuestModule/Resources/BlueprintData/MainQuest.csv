@@ -14,3 +14,4 @@ quest_12,Main,gem,Currency,10,"","",12,Total,"","","","",complete_dugeon,"",3,ge
 quest_13,Main,gem,Currency,10,"","",13,InQuest,"","","","",assign_job_for_worker,"",1,gem,Currency,10
 quest_14,Main,gem,Currency,10,"","",14,InQuest,"","","","",upgrade_item,"",1,gem,Currency,10
 quest_15,Main,gem,Currency,10,"","",15,InQuest,"","","","",kill_enemy,"",1,gem,Currency,10
+quest_16,Main,gem,add_currency,10,,,16,InQuest,,,,,ads_count,,100,,,

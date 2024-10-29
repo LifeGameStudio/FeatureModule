@@ -1,0 +1,5 @@
+Id,RewardId,RewardType,RewardValue,Icon,Title,CostId,CostType,CostValue,ConditionId,ConditionType,ConditionParam,Note
+0,Skin_Default,add_item,1,,Default,0,Coin,0
+1,Skin_A,add_item,1,,A,1,Ads,3,1,Level,10,Unlock at level 10
+2,gem,add_currency,100,,EmptyP,2,IAP,com.abc.pack1,2,Level,10,Unlock at level 10
+3,remove_ads,remove_ads,1,,Remove ads,3,IAP,com.abc.pack1

@@ -19,9 +19,9 @@
         "GameFoundation.BlueprintFlow",
         "3rdCore.Analytic",
         "Unity.TextMeshPro",
-        "GameModule",
-        "DailyReward",
-        "Quest.Scripts"
+        "Quest.Scripts",
+        "TimeMarker.Scripts",
+        "UnitTest.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
