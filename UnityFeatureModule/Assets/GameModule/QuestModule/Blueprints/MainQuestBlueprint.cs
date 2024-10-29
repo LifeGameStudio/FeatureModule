@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
+    using FeatureTemplate.Scripts.RewardHandle;
 
     [BlueprintReader("MainQuest")]
     public class MainQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
@@ -57,20 +58,26 @@
 
     [CsvHeaderKey("TaskRewardId")]
     [Serializable]
-    public class RewardRecord
+    public class RewardRecord : IRewardRecord
     {
         public string TaskRewardId;
         public string TaskRewardType;
         public int    TaskRewardValue;
+        public string RewardId    { get => this.TaskRewardId;    set => this.TaskRewardId = value; }
+        public string RewardType  { get => this.TaskRewardType;  set => this.TaskRewardType = value; }
+        public int    RewardValue { get => this.TaskRewardValue; set => this.TaskRewardValue = value; }
     }
 
     [CsvHeaderKey("QuestRewardId")]
     [Serializable]
-    public class QuestRewardRecord
+    public class QuestRewardRecord : IRewardRecord
     {
         public string QuestRewardId;
         public string QuestRewardType;
         public int    QuestRewardValue;
+        public string RewardId    { get => this.QuestRewardId;    set => this.QuestRewardId = value; }
+        public string RewardType  { get => this.QuestRewardType;  set => this.QuestRewardType = value; }
+        public int    RewardValue { get => this.QuestRewardValue; set => this.QuestRewardValue = value; }
     }
 
     public enum TrackingType
