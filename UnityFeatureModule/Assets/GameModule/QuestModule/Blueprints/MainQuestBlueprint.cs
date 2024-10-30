@@ -14,10 +14,10 @@
     public class QuestRecord
     {
         public string Id;
-
-        public string                            QuestDescription;
-        public string                            QuestIcon;
         public string                            QuestType;
+        public string                            QuestIcon;
+        public string                            QuestDescription;
+        public int                               CountTaskOption;
         public BlueprintByRow<QuestRewardRecord> QuestRewardRecords;
         public BlueprintByRow<TaskRecord>        Tasks;
     }
@@ -27,6 +27,8 @@
     public class TaskRecord
     {
         public string                                 TaskId;
+        public bool                                   TaskOption;
+        public int                                    CoutRequirementOption;
         public BlueprintByRow<QuestStatus, TaskSate>  TaskSates;
         public string                                 Description;
         public string                                 TaskName;
@@ -37,6 +39,7 @@
     public class QuestRequirementRecord : RequirementsRecord
     {
         public string TrackingType;
+        public bool   RequirementOption;
     }
 
     [CsvHeaderKey("RequirementType")]
@@ -83,7 +86,6 @@
     {
         NotStarted,
         InProgress,
-        MeetNpc,
         Completed,
         Failed,
         Rewarded

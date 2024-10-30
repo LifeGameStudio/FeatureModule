@@ -1,17 +1,1 @@
-Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,TaskId,TrackingType,TaskState,QuestContextIds,Description,TaskName,RequirementType,RequirementId,RequirementValue,TaskRewardId,TaskRewardType,TaskRewardValue
-quest_1,Main,gem,Currency,10,"",Collect Item X,1,InQuest,"","",InProgress:Collect resource  X,"",collect_item,Item X,1,gem,Currency,10
-quest_2,Main,gem,Currency,10,"",Build Building X,2,InQuest,"","",InProgress:Xay 1 Building X,"",build_building,"",1,gem,Currency,10
-quest_3,Main,gem,Currency,10,"",Safe the worker on dugeon,3,InQuest,"","",InProgress:Safe worker on dugeon,"",safe_worker,dugeon x,1,gem,Currency,10
-quest_4,Main,gem,Currency,10,"","",4,InQuest,"","","","",equip_worker_on_mining,"",1,gem,Currency,10
-quest_5,Main,gem,Currency,10,"","",5,InQuest,"","","","",mark_resource_for_worker,"",1,gem,Currency,10
-quest_6,Main,gem,Currency,10,"","",6,InQuest,"","","","",build_tower,"",1,gem,Currency,10
-quest_7,Main,gem,Currency,10,"","",7,InQuest,"","","","",upgrade_town_center,"",1,gem,Currency,10
-quest_8,Main,gem,Currency,10,"","",8,InQuest,"","","","",kill_enemy,"",1,gem,Currency,10
-quest_9,Main,gem,Currency,10,"","",9,InQuest,"","","","",complete_side_quest,"",1,gem,Currency,10
-quest_10,Main,gem,Currency,10,"","",10,InQuest,"","","","",own_item,"",1,gem,Currency,10
-quest_11,Main,gem,Currency,10,"","",11,Total,"","","","",build_building,"",3,gem,Currency,10
-quest_12,Main,gem,Currency,10,"","",12,Total,"","","","",complete_dugeon,"",3,gem,Currency,10
-quest_13,Main,gem,Currency,10,"","",13,InQuest,"","","","",assign_job_for_worker,"",1,gem,Currency,10
-quest_14,Main,gem,Currency,10,"","",14,InQuest,"","","","",upgrade_item,"",1,gem,Currency,10
-quest_15,Main,gem,Currency,10,"","",15,InQuest,"","","","",kill_enemy,"",1,gem,Currency,10
-quest_16,Main,gem,add_currency,10,,,16,InQuest,,,,,ads_count,,100,,,
+Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,CountTaskOption,TaskId,TaskState,QuestContextIds,TaskName,TaskOption,CoutRequirementOption,Description,RequirementType,TrackingType,RequirementId,RequirementValue,RequirementOption,TaskRewardId,TaskRewardType,TaskRewardValue

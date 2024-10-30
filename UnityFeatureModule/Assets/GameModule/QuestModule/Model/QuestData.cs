@@ -25,6 +25,7 @@
         public              QuestProviderType QuestProviderType;
         public              QuestStatus       QuestStatus;
         public              string            QuestType;
+        public              int               CountTaskOption;
         public              List<TaskLog>     TaskProgress = new();
         [JsonIgnore] public QuestRecord       QuestRecord;
     }
@@ -32,6 +33,7 @@
     [Serializable]
     public class TaskLog
     {
+        public              int        CountRequirementOption;
         public List<RequirementProgress> Progress = new();
         public QuestStatus               TaskStatus;
 
@@ -44,6 +46,7 @@
         public string RequirementId;
         public int    CurrentValue;
         public int    RequiredValue;
+        public bool   IsOptional;
     }
 
     public enum QuestProviderType

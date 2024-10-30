@@ -1,3 +1,1 @@
-Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,TaskId,TrackingType,TaskState,QuestContextIds,Description,TaskName,RequirementType,RequirementId,RequirementValue,TaskRewardId,TaskRewardType,TaskRewardValue
-side_quest_1,Side,gem,Currency,10,"",Equip item,1,InQuest,"","","InProgress:Equiped 1 Item trong inventory,Completed:Meet NPC to claim reward",equip_inventory_item,equip_inventory_item,"",1,gem,Currency,10
-miner_1,Side,miner_1,Miner,500,"",Miner challenge,2,InQuest,"",Q001,InProgress: Eliminate Enemies,kill_enemy,kill_enemy,"",1
+Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,CountTaskOption,TaskId,TaskState,QuestContextIds,TaskName,TaskOption,CoutRequirementOption,Description,RequirementType,TrackingType,RequirementId,RequirementValue,RequirementOption,TaskRewardId,TaskRewardType,TaskRewardValue

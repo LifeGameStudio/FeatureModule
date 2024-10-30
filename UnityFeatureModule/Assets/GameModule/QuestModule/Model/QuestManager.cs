@@ -16,11 +16,13 @@
 
     public class QuestManager : IFeatureControllerData
     {
-        private readonly FeatureRewardHandler                        featureRewardHandler;
-        private readonly FeatureDataState                            featureDataState;
-        private readonly QuestJournal                                data;
-        private readonly SignalBus                                   signalBus;
-        private readonly ScreenManager                               screenManager;
+        private readonly FeatureRewardHandler featureRewardHandler;
+        private readonly FeatureDataState     featureDataState;
+        private readonly QuestJournal         data;
+        private readonly SignalBus            signalBus;
+        private readonly ScreenManager        screenManager;
+        public           QuestJournal         QuestJournal => this.data;
+
         public           Dictionary<string, Dictionary<string, int>> TrackingCached => this.data.TrackingCached;
 
         public QuestManager(FeatureRewardHandler featureRewardHandler, FeatureDataState featureDataState, QuestJournal data, SignalBus signalBus, ScreenManager screenManager)
@@ -31,7 +33,6 @@
             this.signalBus            = signalBus;
             this.screenManager        = screenManager;
         }
-
 
         public async void LoadRecord(IQuestProvider questProvider)
         {
@@ -92,7 +93,8 @@
                             RequirementId   = requirementRecord.RequirementId,
                             RequirementType = requirementRecord.RequirementType,
                             CurrentValue    = 0,
-                            RequiredValue   = requirementRecord.RequirementValue
+                            RequiredValue   = requirementRecord.RequirementValue,
+                            IsOptional      = requirementRecord.RequirementOption
                         });
                     }
 
@@ -100,7 +102,7 @@
                     {
                         TaskRecord = taskRecord,
                         TaskStatus = QuestStatus.NotStarted,
-                        Progress   = requirementProgress
+                        Progress   = requirementProgress,
                     });
                 }
 
@@ -145,7 +147,6 @@
             questInfo.QuestStatus = questStatus;
         }
 
-        public QuestJournal QuestJournal => this.data;
 
         public void UpdateTaskStatus(string questInfoProviderId, string questInfoQuestId, string taskRecordTaskId, QuestStatus questStatus)
         {
@@ -322,7 +323,7 @@
 
             var mainQuestCompleted = this.data.Quests.FirstOrDefault(x => x.Value.QuestProviderType == QuestProviderType.Main && x.Value.QuestStatus == QuestStatus.Completed).Value;
 
-            return mainQuestCompleted ;
+            return mainQuestCompleted;
         }
 
         public void SetQuestStatus(string questInfoProviderId, string questInfoQuestId, QuestStatus status)
@@ -331,13 +332,13 @@
             questInfo.QuestStatus = status;
         }
 
-        public void RemoveChallengeQuest(string modelProviderId, string modelQuestId)
+        public void RemoveQuest(string modelProviderId, string modelQuestId)
         {
             var quest = this.GetQuest(modelQuestId, modelProviderId);
             this.data.Quests.Remove(quest.QuestId);
         }
 
-        public void ShowPopupClaimReward(QuestLog questLog,bool isMainOnly=false, bool isCurrentTaskOnly = false)
+        public void ShowPopupClaimReward(QuestLog questLog, bool isMainOnly = false, bool isCurrentTaskOnly = false)
         {
             var listAsset = new List<IRewardRecord>();
 
@@ -360,13 +361,57 @@
                 RewardResult = listAsset
             }).Forget();
         }
-        
+
         public void ResetQuest(string questId, string providerId)
         {
             var quest = this.GetQuest(questId, providerId);
             quest.TaskProgress.ForEach(x => x.Progress.ForEach(y => y.CurrentValue = 0));
             quest.TaskProgress.ForEach(x => x.TaskStatus = QuestStatus.NotStarted);
             quest.QuestStatus = QuestStatus.NotStarted;
+        }
+
+        public void UpdateCountRequirementOption(string questInfoProviderId, string questInfoQuestId, string taskRecordTaskId)
+        {
+            var taskLog = this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
+            taskLog.CountRequirementOption++;
+        }
+
+        public void CheckTaskCompleted(string questInfoProviderId, string questInfoQuestId, string taskRecordTaskId)
+        {
+            var questInfo = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var taskLog   = questInfo.TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
+
+            var allRequirementPremiseCompleted = taskLog.Progress.All(x => x.CurrentValue >= x.RequiredValue && !x.IsOptional);
+
+            if (taskLog.CountRequirementOption < taskLog.TaskRecord.CoutRequirementOption || !allRequirementPremiseCompleted) return;
+            this.UpdateTaskStatus(questInfoProviderId, questInfoQuestId, taskLog.TaskRecord.TaskId, QuestStatus.Completed);
+            this.CountingTaskOption(questInfoProviderId, questInfoQuestId, taskRecordTaskId);
+        }
+
+        public void CountingTaskOption(string questInfoProviderId, string questInfoQuestId, string taskId)
+        {
+            var quest   = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var taskLog = this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
+
+            if (taskLog.TaskRecord.TaskOption)
+            {
+                quest.CountTaskOption++;
+            }
+        }
+
+        public bool CheckAllTaskCompleted(string questInfoProviderId, string questInfoQuestId)
+        {
+            var questInfo              = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var allPremiseTaskComplete = questInfo.TaskProgress.All(task => task.TaskStatus == QuestStatus.Completed && !task.TaskRecord.TaskOption);
+
+            var checkCountTaskOption = questInfo.CountTaskOption >= questInfo.QuestRecord.CountTaskOption;
+
+            return allPremiseTaskComplete && checkCountTaskOption;
+        }
+        
+        public TaskLog GetTaskLogOfQuest(string questInfoProviderId, string questInfoQuestId, string taskId)
+        {
+            return this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
         }
     }
 }

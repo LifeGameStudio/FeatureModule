@@ -1,9 +1,1 @@
-Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,TaskId,TrackingType,TaskState,QuestContextIds,Description,TaskName,RequirementType,RequirementId,RequirementValue,TaskRewardId,TaskRewardType,TaskRewardValue
-Achievement 1,Item,"","","","","",1,Total,"","",InProgress:Equip 1 item trong inventory,Equip Item,equip_inventory_item,"",1,gem,Currency,10
-"","","","","","","",2,Total,"","",InProgress:Equip 2 item trong inventory,Equip Item,equip_inventory_item,"",2,gem,Currency,10
-Achievement 3,Building,"","","","","",1,Total,"","",InProgress:Build 1 Mining House,Build Building,build_building,Mining,1,gem,Currency,10
-"","","","","","","",2,Total,"","",InProgress:Build 2 Mining House,Build Building,build_building,Mining,2,gem,Currency,10
-Achievement 5,Worker,"","","","","",1,Total,"","",InProgress:Save 1 worker,Total Worker,save_worker,"",1,gem,Currency,10
-"","","","","","","",2,Total,"","",InProgress:Save 2 workers,Total Worker,save_worker,"",2,gem,Currency,10
-Achievement 7,Worker,"","","","","",1,Total,"","",InProgress:Have 3 worker with Mining Skill,Mining Worker,own_worker,Mining,3,gem,Currency,10
-Achievement 8,Worker,"","","","","",1,Total,"","",InProgress:Have 5 worker with TradingSkill,Trading Worker,own_worker,Trading,5,gem,Currency,10
+Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,CountTaskOption,TaskId,TaskState,QuestContextIds,TaskName,TaskOption,CoutRequirementOption,Description,RequirementType,TrackingType,RequirementId,RequirementValue,RequirementOption,TaskRewardId,TaskRewardType,TaskRewardValue

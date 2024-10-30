@@ -117,7 +117,8 @@
                                 RequirementType = requirementType,
                                 RequirementId   = "",
                                 CurrentValue    = addedValue,
-                                RequiredValue   = r.RequirementValue
+                                RequiredValue   = r.RequirementValue,
+                                IsOptional = r.RequirementOption
                             };
 
                             listRequirementProgress.Add(requirementProgress);
@@ -137,7 +138,8 @@
                                     RequirementType = requirementType,
                                     RequirementId   = r.RequirementId,
                                     CurrentValue    = addedValue,
-                                    RequiredValue   = r.RequirementValue
+                                    RequiredValue   = r.RequirementValue,
+                                    IsOptional = r.RequirementOption
                                 });
 
                                 taskLog.Progress.Add(requirementProgress);
@@ -195,8 +197,14 @@
 
                         if (!isCompleted) continue;
 
-                        this.questManager.UpdateTaskStatus(questInfo.ProviderId, questInfo.QuestId,
-                            taskLog.TaskRecord.TaskId, QuestStatus.Completed);
+                        if (r.RequirementOption)
+                        {
+                            this.questManager.UpdateCountRequirementOption(questInfo.ProviderId, questInfo.QuestId,
+                                taskLog.TaskRecord.TaskId);
+                        }
+
+                        this.questManager.CheckTaskCompleted(questInfo.ProviderId, questInfo.QuestId,
+                            taskLog.TaskRecord.TaskId);
                     }
                 }
 
@@ -210,7 +218,7 @@
                 }
 
                 // Check if all tasks are completed
-                var allTasksCompleted = questInfo.TaskProgress.All(task => task.TaskStatus == QuestStatus.Completed);
+                var allTasksCompleted = this.questManager.CheckAllTaskCompleted(questInfo.ProviderId, questInfo.QuestId);
 
                 if (allTasksCompleted)
                 {
