@@ -95,7 +95,7 @@
             return timeSpan;
         }
 
-        public void Tick()
+        public void Tick() // TODO: implement realtime marker, ignore time scale
         {
             // Increment each ReactiveProperty<float> in timeSpanDictionary by delta time
             float deltaSeconds = Time.deltaTime;

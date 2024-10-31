@@ -9,9 +9,9 @@
 
     public class FeatureTransactionService
     {
-        private readonly List<ICost>                      costs;
-        private readonly List<ICondition>                 conditions;
-        private readonly FeatureRewardHandler             featureRewardHandler;
+        private readonly List<ICost>          costs;
+        private readonly List<ICondition>     conditions;
+        private readonly FeatureRewardHandler featureRewardHandler;
 
         public FeatureTransactionService(List<ICost> costs, List<ICondition> conditions, FeatureRewardHandler featureRewardHandler)
         {
@@ -54,17 +54,17 @@
         public async UniTask<bool> DoPurchase(ITransactionRecord transactionRecord)
         {
             // if any item can not afford, return false
-            if ((from item in this.costs let matchingCost = transactionRecord.GetCosts().
-                        FirstOrDefault(cost => cost.CostType.Equals(item.Id)) 
-                    where matchingCost != null 
-                    where !item.CanAfford(matchingCost) 
+            if ((from item in this.costs
+                    let matchingCost = transactionRecord.GetCosts().FirstOrDefault(cost => cost.CostType.Equals(item.Id))
+                    where matchingCost != null
+                    where !item.CanAfford(matchingCost)
                     select item).Any())
             {
                 return false;
             }
-            
+
             List<UniTask<bool>> purchaseTask = new();
-            
+
             // Check all if any cost cannot purchase
             foreach (var item in this.costs)
             {
@@ -77,12 +77,15 @@
                 // If a matching cost is found, try purchase it
                 purchaseTask.Add(item.Purchase(matchingCost));
             }
-            
-            await UniTask.WhenAll(purchaseTask);
-            
-            this.featureRewardHandler.AddRewards(transactionRecord.GetDeliverables(), null);
 
-            return true;
+            var x = await UniTask.WhenAll(purchaseTask);
+
+            var result = x.All(item => item);
+
+            if (result)
+                this.featureRewardHandler.AddRewards(transactionRecord.GetDeliverables(), null);
+
+            return result;
         }
     }
 }
