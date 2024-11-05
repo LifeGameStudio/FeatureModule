@@ -24,21 +24,21 @@
             this.timeMarkDataController.AddTimeMark(key, time);
         }
         
-        public bool GetTimeMark(string key, out DateTime time)
+        public bool GetOrCreateTimeMark(string key, out DateTime time)
         {
-            return this.timeMarkDataController.GetTimeMark(key, out time);
+            return this.timeMarkDataController.GetOrCreateTimeMark(key, out time);
         }
         
         public void RemoveTimeMark(string key)
         {
             this.timeMarkDataController.RemoveTimeMark(key);
-            timeSpanDictionary.Remove(key); // Remove from dictionary if the key is deleted
+            this.timeSpanDictionary.Remove(key); // Remove from dictionary if the key is deleted
         }
         
         public void UpdateTimeMark(string key, DateTime time)
         {
             this.timeMarkDataController.UpdateTimeMark(key, time);
-            if (timeSpanDictionary.TryGetValue(key, out var timeSpan))
+            if (this.timeSpanDictionary.TryGetValue(key, out var timeSpan))
             {
                 // Recalculate the initial time span if it exists in the dictionary
                 timeSpan.Value = (float)(DateTime.Now - time).TotalSeconds;
@@ -47,7 +47,7 @@
 
         public bool IsNewDay(string timeMarkKey)
         {
-            if (this.timeMarkDataController.GetTimeMark(timeMarkKey, out var dateTime))
+            if (this.timeMarkDataController.GetOrCreateTimeMark(timeMarkKey, out var dateTime))
             {
                 return dateTime.Date < DateTime.Now.Date;
             }
@@ -56,7 +56,7 @@
         
         public int GetDayDifference(string timeMarkKey)
         {
-            if (this.timeMarkDataController.GetTimeMark(timeMarkKey, out var dateTime))
+            if (this.timeMarkDataController.GetOrCreateTimeMark(timeMarkKey, out var dateTime))
             {
                 return (DateTime.Now.Date - dateTime.Date).Days;
             }
@@ -79,7 +79,7 @@
                 timeSpanDictionary[key] = timeSpan;
 
                 // Check if the time mark exists in the data controller
-                if (this.timeMarkDataController.GetTimeMark(key, out var savedTime))
+                if (this.timeMarkDataController.GetOrCreateTimeMark(key, out var savedTime))
                 {
                     // Initialize the timeSpan value based on the saved time
                     timeSpan.Value = (float)(DateTime.Now - savedTime).TotalSeconds;

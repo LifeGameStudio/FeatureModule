@@ -40,7 +40,7 @@
         /// <returns>
         /// True if the time mark was found and retrieved; false if a new time mark was created and stored.
         /// </returns>
-        public bool GetTimeMark(string key, out DateTime time)
+        public bool GetOrCreateTimeMark(string key, out DateTime time)
         {
             var data = (TimeMarkData)this.localData;
 
