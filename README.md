@@ -277,3 +277,25 @@ System Design
             public int    RequirementValue { get; }
         }
 ```
+
+<h2>TimeMarker Module</h2>
+
+<h3>Introduction</h3>
+<p>The TimeMarker module allows other classes to manage and interact with time markers through the <code>TimeMarkService</code> class. This service can handle operations such as adding, updating, and removing time marks, as well as checking for date-based differences. The TimeMarker also supports real-time tracking of time spans with <code>ReactiveProperty&lt;float&gt;</code> to provide live updates.</p>
+
+<h3>Installation</h3>
+<ol>
+    <li><strong>Install the Module:</strong> Follow your standard steps to add the TimeMarker module to your project.</li>
+    <li><strong>Register the TimeMarkService:</strong> Add the following code to your <code>GameProjectInstaller</code> or equivalent MonoInstaller to bind <code>TimeMarkService</code> to the Zenject container:</li>
+</ol>
+
+```csharp
+public class GameProjectInstaller : MonoInstaller
+{
+    public override void InstallBindings() 
+    {
+        TimeMarkInstaller.Install(this.Container);
+    }
+}
+```
+<h3>Function Documentation</h3> <h4><code>AddTimeMark</code></h4> <p>Adds a new time mark with the specified key and <code>DateTime</code>.</p> <ul> <li><strong>Input:</strong> <ul> <li><code>string key</code>: Unique identifier for the time mark.</li> <li><code>DateTime time</code>: The time to be stored for the key.</li> </ul> </li> <li><strong>Output:</strong> None</li> </ul> <h4><code>GetOrCreateTimeMark</code></h4> <p>Retrieves an existing time mark or creates a new one if it doesn't exist.</p> <ul> <li><strong>Input:</strong> <ul> <li><code>string key</code>: Unique identifier for the time mark.</li> <li><code>out DateTime time</code>: Outputs the retrieved or created time.</li> </ul> </li> <li><strong>Output:</strong> <code>bool</code> indicating if the time mark was retrieved (<code>true</code>) or created (<code>false</code>).</li> </ul> <h4><code>RemoveTimeMark</code></h4> <p>Removes a time mark from both the data controller and the cached dictionary.</p> <ul> <li><strong>Input:</strong> <code>string key</code>: Unique identifier for the time mark to remove.</li> <li><strong>Output:</strong> None</li> </ul> <h4><code>UpdateTimeMark</code></h4> <p>Updates an existing time mark to a new <code>DateTime</code> and recalculates any cached time span values.</p> <ul> <li><strong>Input:</strong> <ul> <li><code>string key</code>: Unique identifier for the time mark.</li> <li><code>DateTime time</code>: New time to update for the key.</li> </ul> </li> <li><strong>Output:</strong> None</li> </ul> <h4><code>IsNewDay</code></h4> <p>Checks if the stored date for a time mark is a day before the current date.</p> <ul> <li><strong>Input:</strong> <code>string timeMarkKey</code>: Unique identifier for the time mark.</li> <li><strong>Output:</strong> <code>bool</code> indicating if the date is before today (<code>true</code>) or not (<code>false</code>).</li> </ul> <h4><code>GetDayDifference</code></h4> <p>Calculates the difference in days between the stored date for a time mark and the current date.</p> <ul> <li><strong>Input:</strong> <code>string timeMarkKey</code>: Unique identifier for the time mark.</li> <li><strong>Output:</strong> <code>int</code> representing the number of days difference.</li> </ul> <h4><code>ResetTimeMark</code></h4> <p>Removes a time mark from both the data controller and the cached dictionary, resetting it.</p> <ul> <li><strong>Input:</strong> <code>string timeMarkKey</code>: Unique identifier for the time mark to reset.</li> <li><strong>Output:</strong> None</li> </ul> <h4><code>GetOrCreateTimeSpan</code></h4> <p>Retrieves a <code>ReactiveProperty&lt;float&gt;</code> representing the time span in seconds for the specified key. Creates and initializes the property if it doesn’t exist.</p> <ul> <li><strong>Input:</strong> <code>string key</code>: Unique identifier for the time span.</li> <li><strong>Output:</strong> <code>UniTask&lt;ReactiveProperty&lt;float&gt;&gt;</code> representing the time span in seconds since the stored time for the key.</li> </ul>
