@@ -7,6 +7,8 @@
     <li><a href="#condition-system">Condition System</a></li>
     <li><a href="#mission-system">Mission System</a></li>
     <li><a href="#shop-system">Shop System</a></li>
+    <li><a href="#Quest-System-Setup">Quest System</a></li>
+    <li><a href="#Time-Marker">Time Marker</a></li>
 </ol>
 
 <h2>Import module to your project</h2>
@@ -278,7 +280,7 @@ System Design
         }
 ```
 
-<h2>TimeMarker Module</h2>
+<h2>Time Marker</h2>
 
 <h3>Introduction</h3>
 <p>The TimeMarker module allows other classes to manage and interact with time markers through the <code>TimeMarkService</code> class. This service can handle operations such as adding, updating, and removing time marks, as well as checking for date-based differences. The TimeMarker also supports real-time tracking of time spans with <code>ReactiveProperty&lt;float&gt;</code> to provide live updates.</p>
