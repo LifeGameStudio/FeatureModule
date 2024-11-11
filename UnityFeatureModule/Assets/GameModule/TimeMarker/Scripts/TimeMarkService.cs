@@ -102,6 +102,7 @@
             foreach (var timeSpan in timeSpanDictionary.Values)
             {
                 timeSpan.Value += deltaSeconds;
+                timeSpan.ForceNotify();
             }
         }
     }
