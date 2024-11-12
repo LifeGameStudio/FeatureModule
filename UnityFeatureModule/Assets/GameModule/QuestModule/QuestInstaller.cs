@@ -11,6 +11,7 @@
         public override void InstallBindings()
         {
             this.Container.DeclareSignal<TrackingQuestSignal>();
+            this.Container.DeclareSignal<QuestDoneSignal>();
             this.Container.DeclareSignal<RefreshQuestViewSignal>();
             this.Container.DeclareSignal<ShowQuestInfoPopupSignal>();
             this.Container.BindInterfacesAndSelfTo<TrackingQuestServices>().AsCached().NonLazy();

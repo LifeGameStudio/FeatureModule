@@ -118,7 +118,7 @@
                                 RequirementId   = "",
                                 CurrentValue    = addedValue,
                                 RequiredValue   = r.RequirementValue,
-                                IsOptional = r.RequirementOption
+                                IsOptional      = r.RequirementOption
                             };
 
                             listRequirementProgress.Add(requirementProgress);
@@ -139,7 +139,7 @@
                                     RequirementId   = r.RequirementId,
                                     CurrentValue    = addedValue,
                                     RequiredValue   = r.RequirementValue,
-                                    IsOptional = r.RequirementOption
+                                    IsOptional      = r.RequirementOption
                                 });
 
                                 taskLog.Progress.Add(requirementProgress);
@@ -224,6 +224,7 @@
                 {
                     // Set the quest status to Completed
                     this.questManager.SetQuestStatus(questInfo.ProviderId, questInfo.QuestId, QuestStatus.Completed);
+                    this.signalBus.Fire(new QuestDoneSignal(questInfo.QuestId, questInfo.ProviderId, questInfo.QuestProviderType));
                     Debug.Log("Done Quest " + questInfo.QuestId);
                 }
             }
