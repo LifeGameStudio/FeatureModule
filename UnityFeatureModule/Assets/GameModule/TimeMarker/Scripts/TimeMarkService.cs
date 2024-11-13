@@ -51,7 +51,7 @@
             {
                 return dateTime.Date < DateTime.Now.Date;
             }
-            return false;
+            return true;
         }
         
         public int GetDayDifference(string timeMarkKey)
