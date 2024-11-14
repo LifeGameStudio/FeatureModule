@@ -81,6 +81,8 @@
         {
             this.CheckToAddTrackingCached(requirementId, requirementType, addedValue);
 
+            var listQuestCompleted = new List<QuestLog>();
+
             foreach (var (id, questInfo) in this.questManager.QuestJournal.Quests)
             {
                 if (questInfo.QuestStatus != QuestStatus.InProgress) continue;
@@ -220,13 +222,17 @@
                 // Check if all tasks are completed
                 var allTasksCompleted = this.questManager.CheckAllTaskCompleted(questInfo.ProviderId, questInfo.QuestId);
 
-                if (allTasksCompleted)
-                {
-                    // Set the quest status to Completed
-                    this.questManager.SetQuestStatus(questInfo.ProviderId, questInfo.QuestId, QuestStatus.Completed);
-                    this.signalBus.Fire(new QuestDoneSignal(questInfo.QuestId, questInfo.ProviderId, questInfo.QuestProviderType));
-                    Debug.Log("Done Quest " + questInfo.QuestId);
-                }
+                if (!allTasksCompleted) continue;
+                // Set the quest status to Completed
+                this.questManager.SetQuestStatus(questInfo.ProviderId, questInfo.QuestId, QuestStatus.Completed);
+                listQuestCompleted.Add(questInfo);
+
+                Debug.Log("Done Quest " + questInfo.QuestId);
+            }
+
+            foreach (var questInfo in listQuestCompleted)
+            {
+                this.signalBus.Fire(new QuestDoneSignal(questInfo.QuestId, questInfo.ProviderId, questInfo.QuestProviderType));
             }
         }
 
