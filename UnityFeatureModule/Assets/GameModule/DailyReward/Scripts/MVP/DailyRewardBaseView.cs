@@ -23,7 +23,7 @@
         [Inject] protected readonly DailyRewardDataController     DailyRewardDataController;
         protected                   FeatureButtonModel            ClaimFeatureButtonModel;
 
-        public DailyRewardBasePresenter(SignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, screenManager,
+        public DailyRewardBasePresenter(ISignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, screenManager,
             sceneDirector)
         {
         }

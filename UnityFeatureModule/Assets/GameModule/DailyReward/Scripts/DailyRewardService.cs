@@ -17,12 +17,12 @@
         private readonly FeatureRewardHandler          featureRewardHandler;
         private readonly DailyRewardMiscParamBlueprint dailyRewardMiscParamBlueprint;
         private readonly FeatureDailyRewardBlueprint   featureDailyRewardBlueprint;
-        private readonly SignalBus                     signalBus;
+        private readonly ISignalBus                     signalBus;
 
         // Constructor to initialize
         public DailyRewardService(DailyRewardDataController dailyRewardDataController, FeatureRewardHandler featureRewardHandler,
             DailyRewardMiscParamBlueprint dailyRewardMiscParamBlueprint,
-            FeatureDailyRewardBlueprint featureDailyRewardBlueprint, SignalBus signalBus)
+            FeatureDailyRewardBlueprint featureDailyRewardBlueprint, ISignalBus signalBus)
         {
             this.dailyRewardDataController     = dailyRewardDataController;
             this.featureRewardHandler          = featureRewardHandler;

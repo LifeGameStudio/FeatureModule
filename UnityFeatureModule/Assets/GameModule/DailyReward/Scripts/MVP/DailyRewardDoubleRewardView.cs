@@ -25,7 +25,7 @@
         private          FeatureButtonModel          claimX2FeatureButtonModel;
         private          DailyRewardDoubleRewardView View => (DailyRewardDoubleRewardView)base.View;
 
-        public DailyRewardDoubleRewardPresenter(SignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector,
+        public DailyRewardDoubleRewardPresenter(ISignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector,
             FeatureAdsServices featureAdsServices) : base(signalBus, screenManager, sceneDirector)
         {
             this.featureAdsServices = featureAdsServices;
