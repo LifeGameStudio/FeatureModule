@@ -19,13 +19,13 @@
         private readonly FeatureRewardHandler featureRewardHandler;
         private readonly FeatureDataState     featureDataState;
         private readonly QuestJournal         data;
-        private readonly SignalBus            signalBus;
+        private readonly ISignalBus            signalBus;
         private readonly ScreenManager        screenManager;
         public           QuestJournal         QuestJournal => this.data;
 
         public Dictionary<string, Dictionary<string, int>> TrackingCached => this.data.TrackingCached;
 
-        public QuestManager(FeatureRewardHandler featureRewardHandler, FeatureDataState featureDataState, QuestJournal data, SignalBus signalBus, ScreenManager screenManager)
+        public QuestManager(FeatureRewardHandler featureRewardHandler, FeatureDataState featureDataState, QuestJournal data, ISignalBus signalBus, ScreenManager screenManager)
         {
             this.featureRewardHandler = featureRewardHandler;
             this.featureDataState     = featureDataState;
