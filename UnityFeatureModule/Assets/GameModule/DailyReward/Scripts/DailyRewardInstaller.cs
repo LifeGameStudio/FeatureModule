@@ -12,7 +12,7 @@ namespace GameModule.DailyReward.Scripts
     // Input T as popup screen
     public class DailyRewardInstaller<T> : Installer<DailyRewardInstaller<T>> where T : IScreenPresenter
     {
-        private SignalBus                     signalBus;
+        private ISignalBus                     signalBus;
         private DailyRewardMiscParamBlueprint dailyRewardMiscParamBlueprint;
         private FeatureDataState              featureDataState;
         private DailyRewardService            dailyRewardService;
@@ -22,7 +22,7 @@ namespace GameModule.DailyReward.Scripts
         {
             this.SignalDeclaration();
             this.Container.BindInterfacesAndSelfTo<DailyRewardService>().AsCached().NonLazy();
-            this.signalBus                     = this.Container.Resolve<SignalBus>();
+            this.signalBus                     = this.Container.Resolve<ISignalBus>();
             this.gameQueueActionContext        = this.Container.Resolve<GameQueueActionContext>();
             this.dailyRewardMiscParamBlueprint = this.Container.Resolve<DailyRewardMiscParamBlueprint>();
             this.featureDataState              = this.Container.Resolve<FeatureDataState>();
