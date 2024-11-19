@@ -2,7 +2,8 @@
     "name": "Condition",
     "rootNamespace": "",
     "references": [
-        "GUID:ca8126ffeb0d78e4784fb6f43f613ee4"
+        "GUID:ca8126ffeb0d78e4784fb6f43f613ee4",
+        "GUID:3d4daf6696a825240b11d99d0d2865ed"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
