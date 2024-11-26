@@ -21,7 +21,7 @@
     {
         private readonly LoadImageHelper loadImageHelper;
 
-        public RewardSlotPresenter(SignalBus signalBus, LoadImageHelper loadImageHelper, IGameAssets gameAssets) : base(signalBus, gameAssets) { this.loadImageHelper = loadImageHelper; }
+        public RewardSlotPresenter(ISignalBus signalBus, LoadImageHelper loadImageHelper, IGameAssets gameAssets) : base(signalBus, gameAssets) { this.loadImageHelper = loadImageHelper; }
 
         public override async void BindData(RewardSlotModel param)
         {

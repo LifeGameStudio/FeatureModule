@@ -29,7 +29,7 @@
 
         private FeatureButtonModel claimFeatureButtonModel;
 
-        public DailyRewardPresenter(SignalBus signalBus, FeatureDailyRewardBlueprint featureDailyRewardBlueprint,
+        public DailyRewardPresenter(ISignalBus signalBus, FeatureDailyRewardBlueprint featureDailyRewardBlueprint,
             ScreenManager screenManager, SceneDirector sceneDirector, DiContainer diContainer) : base(signalBus, screenManager, sceneDirector)
         {
             this.featureDailyRewardBlueprint = featureDailyRewardBlueprint;

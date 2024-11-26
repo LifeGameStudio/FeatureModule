@@ -14,11 +14,11 @@
     public class TrackingQuestServices : IInitializable, IDisposable
     {
         private readonly QuestManager          questManager;
-        private readonly SignalBus             signalBus;
+        private readonly ISignalBus             signalBus;
         private readonly QuestProviderServices questProviderServices;
 
         public TrackingQuestServices(QuestManager questManager,
-            SignalBus signalBus, QuestProviderServices questProviderServices)
+            ISignalBus signalBus, QuestProviderServices questProviderServices)
         {
             this.questManager          = questManager;
             this.signalBus             = signalBus;

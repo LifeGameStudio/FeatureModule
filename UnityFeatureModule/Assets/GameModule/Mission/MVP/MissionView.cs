@@ -17,7 +17,7 @@
     {
         private readonly MissionService missionService;
 
-        public MissionPresenter(SignalBus signalBus, MissionService missionService, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, screenManager, sceneDirector)
+        public MissionPresenter(ISignalBus signalBus, MissionService missionService, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, screenManager, sceneDirector)
         {
             this.missionService = missionService;
         }

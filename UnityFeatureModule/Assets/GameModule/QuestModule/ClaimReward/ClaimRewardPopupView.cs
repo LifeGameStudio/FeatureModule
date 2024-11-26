@@ -32,7 +32,7 @@ namespace GameModule.QuestModule.ClaimReward
         private readonly DiContainer                diContainer;
         private          List<ClaimRewardItemModel> claimRewardItemModels = new();
 
-        public ClaimRewardPopupPresenter(SignalBus signalBus, FeatureRewardHandler featureRewardHandler, ScreenManager screenManager, ILogService logService, DiContainer diContainer) : base(signalBus,
+        public ClaimRewardPopupPresenter(ISignalBus signalBus, FeatureRewardHandler featureRewardHandler, ScreenManager screenManager, ILogService logService, DiContainer diContainer) : base(signalBus,
             logService)
         {
             this.featureRewardHandler = featureRewardHandler;

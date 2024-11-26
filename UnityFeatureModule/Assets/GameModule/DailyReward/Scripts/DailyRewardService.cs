@@ -17,12 +17,12 @@
         private readonly FeatureRewardHandler          featureRewardHandler;
         private readonly DailyRewardMiscParamBlueprint dailyRewardMiscParamBlueprint;
         private readonly FeatureDailyRewardBlueprint   featureDailyRewardBlueprint;
-        private readonly SignalBus                     signalBus;
+        private readonly ISignalBus                    signalBus;
 
         // Constructor to initialize
         public DailyRewardService(DailyRewardDataController dailyRewardDataController, FeatureRewardHandler featureRewardHandler,
             DailyRewardMiscParamBlueprint dailyRewardMiscParamBlueprint,
-            FeatureDailyRewardBlueprint featureDailyRewardBlueprint, SignalBus signalBus)
+            FeatureDailyRewardBlueprint featureDailyRewardBlueprint, ISignalBus signalBus)
         {
             this.dailyRewardDataController     = dailyRewardDataController;
             this.featureRewardHandler          = featureRewardHandler;
@@ -44,12 +44,19 @@
         }
 
         // Claim reward if eligible
-        public void ClaimReward(int day, GameObject source) // Huy 3/10/2024: Hi vong sau nay khong phai sua base @@
+        public void ClaimReward(int day, GameObject source, List<IRewardRecord> overrideReward = null) // Huy 3/10/2024: Hi vong sau nay khong phai sua base @@
         {
             // Trigger the onRewardClaim event, passing the currentDay as argument
-            var currentRewards = this.featureDailyRewardBlueprint.GetRewards(day.ToString());
+            var currentRewards = this.featureDailyRewardBlueprint.GetRewards(day.ToString()).Cast<IRewardRecord>();
 
-            var list = currentRewards.Select(rewardBlueprintData => new RewardRecord()
+            if (overrideReward != null)
+            {
+                currentRewards = overrideReward;
+            }
+
+            var rewardRecords = currentRewards.ToList();
+
+            var list = rewardRecords.Select(rewardBlueprintData => new RewardRecord()
                 { RewardType = rewardBlueprintData.RewardType, RewardValue = rewardBlueprintData.RewardValue, RewardId = rewardBlueprintData.RewardId }).Cast<IRewardRecord>().ToList();
 
             this.featureRewardHandler.AddRewards(list, source);
@@ -61,7 +68,7 @@
 
             this.signalBus.Fire(new RewardClaimSignal()
             {
-                Reward = currentRewards.Cast<IRewardRecord>().ToList(),
+                Reward = rewardRecords,
                 Day    = day
             });
         }

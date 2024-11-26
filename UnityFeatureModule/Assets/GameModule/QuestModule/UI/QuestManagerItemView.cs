@@ -26,9 +26,9 @@ public class QuestManagerItemPresenter : BaseUIItemPresenter<QuestManagerItemVie
     private readonly ScreenManager screenManager;
     private readonly QuestManager  questManager;
     private readonly DiContainer   diContainer;
-    private readonly SignalBus     signalBus;
+    private readonly ISignalBus     signalBus;
 
-    public QuestManagerItemPresenter(IGameAssets gameAssets, ScreenManager screenManager, QuestManager questManager, DiContainer diContainer, SignalBus signalBus) : base(gameAssets)
+    public QuestManagerItemPresenter(IGameAssets gameAssets, ScreenManager screenManager, QuestManager questManager, DiContainer diContainer, ISignalBus signalBus) : base(gameAssets)
     {
         this.screenManager = screenManager;
         this.questManager  = questManager;

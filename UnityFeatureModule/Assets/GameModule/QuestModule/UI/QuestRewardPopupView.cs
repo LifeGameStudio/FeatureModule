@@ -28,7 +28,7 @@ namespace GameModule.QuestModule.UI
         private readonly DiContainer                diContainer;
         private          List<QuestRewardItemModel> questRewardItemModels = new();
 
-        public QuestRewardPopupPresenter(SignalBus signalBus, QuestManager questManager, DiContainer diContainer) : base(signalBus)
+        public QuestRewardPopupPresenter(ISignalBus signalBus, QuestManager questManager, DiContainer diContainer) : base(signalBus)
         {
             this.questManager = questManager;
             this.diContainer  = diContainer;
