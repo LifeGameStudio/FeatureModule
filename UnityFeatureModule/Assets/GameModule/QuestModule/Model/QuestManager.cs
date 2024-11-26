@@ -469,6 +469,11 @@
 
             var allRequirementPremiseCompleted = taskLog.Progress.All(x => x.CurrentValue >= x.RequiredValue && !x.IsOptional);
 
+            if (!allRequirementPremiseCompleted && taskLog.Progress.All(x => x.IsOptional))
+            {
+                allRequirementPremiseCompleted = true;
+            }
+
             if (taskLog.CountRequirementOption < taskLog.TaskRecord.CoutRequirementOption || !allRequirementPremiseCompleted) return;
             this.UpdateTaskStatus(questInfoProviderId, questInfoQuestId, taskLog.TaskRecord.TaskId, QuestStatus.Completed);
             this.CountingTaskOption(questInfoProviderId, questInfoQuestId, taskRecordTaskId);
@@ -490,7 +495,7 @@
             var questInfo              = this.GetQuest(questInfoQuestId, questInfoProviderId);
             var allPremiseTaskComplete = questInfo.TaskProgress.All(task => task.TaskStatus == QuestStatus.Completed && !task.TaskRecord.TaskOption);
 
-            if (!allPremiseTaskComplete && questInfo.QuestRecord.CountTaskOption == 0)
+            if (!allPremiseTaskComplete && questInfo.TaskProgress.All(x => x.TaskRecord.TaskOption))
             {
                 allPremiseTaskComplete = true;
             }
