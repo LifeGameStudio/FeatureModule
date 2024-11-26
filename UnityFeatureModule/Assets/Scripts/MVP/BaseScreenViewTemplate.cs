@@ -12,7 +12,7 @@ namespace Game.Scripts.MVP
 
     public abstract class BaseScreenPresenterTemplate<TView> : FeatureBaseScreenPresenterTemplate<TView> where TView : BaseScreenViewTemplate
     {
-        protected BaseScreenPresenterTemplate(SignalBus signalBus, GameQueueActionContext gameQueueActionContext, ILogService logger, ScreenManager screenManager, SceneDirector sceneDirector) : base(
+        protected BaseScreenPresenterTemplate(ISignalBus signalBus, GameQueueActionContext gameQueueActionContext, ILogService logger, ScreenManager screenManager, SceneDirector sceneDirector) : base(
             signalBus, gameQueueActionContext, logger, screenManager, sceneDirector)
         {
         }
@@ -20,7 +20,7 @@ namespace Game.Scripts.MVP
 
     public abstract class BaseScreenPresenterTemplate<TView, TModel> : FeatureBaseScreenPresenterTemplate<TView, TModel> where TView : BaseScreenViewTemplate
     {
-        protected BaseScreenPresenterTemplate(SignalBus signalBus, GameQueueActionContext gameQueueActionContext, ScreenManager screenManager, SceneDirector sceneDirector, ILogService logger) : base(
+        protected BaseScreenPresenterTemplate(ISignalBus signalBus, GameQueueActionContext gameQueueActionContext, ScreenManager screenManager, SceneDirector sceneDirector, ILogService logger) : base(
             signalBus, gameQueueActionContext, screenManager, sceneDirector, logger)
         {
         }

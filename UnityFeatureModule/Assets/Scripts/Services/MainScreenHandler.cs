@@ -11,6 +11,9 @@
 
         public MainScreenHandler(ScreenManager screenManager) { this.screenManager = screenManager; }
 
-        public void Initialize() { this.screenManager.OpenScreen<MainScreenPresenter>().Forget(); }
+        public void Initialize()
+        {
+            this.screenManager.OpenScreen<MainScreenPresenter>().Forget();
+        }
     }
 }

@@ -20,7 +20,7 @@
             this.timeMarkService.AddTimeMark("test", DateTime.Now);
 
             var timer = await this.timeMarkService.GetOrCreateTimeSpan("test");
-            timer.Subscribe(this.ReadText);
+            // timer.Subscribe(this.ReadText);
         }
 
         public async UniTask RunAsync()
@@ -35,7 +35,6 @@
 
         private void ReadText(float text)
         {
-            
             this.LogMessage(text);
         }
     }

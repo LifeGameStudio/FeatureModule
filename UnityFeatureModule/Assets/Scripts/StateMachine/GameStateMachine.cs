@@ -9,7 +9,7 @@
 
     public class GameStateMachine : FeatureStateMachine, IInitializable
     {
-        public GameStateMachine(List<IFeatureGameState> listState, ILogService logService, SignalBus signalBus) : base(listState, logService, signalBus) { }
+        public GameStateMachine(List<IFeatureGameState> listState, ILogService logService, ISignalBus signalBus) : base(listState, logService, signalBus) { }
 
         public void Initialize() { this.TransitionTo<GameHomeState>(); }
     }

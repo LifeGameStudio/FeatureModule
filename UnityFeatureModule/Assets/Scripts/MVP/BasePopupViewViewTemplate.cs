@@ -11,12 +11,12 @@
 
     public abstract class BasePopupPresenterTemplate<TView> : FeatureBasePopupPresenterTemplate<TView> where TView : BasePopupViewViewTemplate
     {
-        protected BasePopupPresenterTemplate(SignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, screenManager, sceneDirector) { }
+        protected BasePopupPresenterTemplate(ISignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, screenManager, sceneDirector) { }
     }
 
     public abstract class BasePopupPresenterTemplate<TView, TModel> : FeatureBasePopupScreenPresenterTemplate<TView, TModel> where TView : BasePopupViewViewTemplate
     {
-        protected BasePopupPresenterTemplate(SignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector, ILogService logger) : base(signalBus, screenManager, sceneDirector, logger)
+        protected BasePopupPresenterTemplate(ISignalBus signalBus, ScreenManager screenManager, SceneDirector sceneDirector, ILogService logger) : base(signalBus, screenManager, sceneDirector, logger)
         {
         }
     }

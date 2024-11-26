@@ -16,7 +16,7 @@
     [ScreenInfo(nameof(FeatureLoadingScreenView))]
     public class LoadingScreenPresenter : FeatureLoadingScreenPresenter
     {
-        public LoadingScreenPresenter(SignalBus signalBus, FeatureAdsServices featureAdsServices, BlueprintReaderManager blueprintReaderManager, FeatureUserDataManager userDataManager,
+        public LoadingScreenPresenter(ISignalBus signalBus, FeatureAdsServices featureAdsServices, BlueprintReaderManager blueprintReaderManager, FeatureUserDataManager userDataManager,
             IAnalyticServices analyticServices, ObjectPoolManager objectPoolManager, IGameAssets gameAssets, GameQueueActionContext gameQueueActionContext, ILogService logger,
             ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus, featureAdsServices, blueprintReaderManager, userDataManager, analyticServices, objectPoolManager, gameAssets,
             gameQueueActionContext, logger, screenManager, sceneDirector)

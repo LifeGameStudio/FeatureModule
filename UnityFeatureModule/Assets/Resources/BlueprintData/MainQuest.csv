@@ -1,0 +1,6 @@
+Id,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,QuestDescription,CountTaskOption,TaskId,TaskState,QuestContextIds,TaskName,TaskOption,CoutRequirementOption,Description,RequirementType,TrackingType,RequirementId,RequirementValue,RequirementOption,TaskRewardId,TaskRewardType,TaskRewardValue
+1,Main,1,add_currency,10,coin,Complete 1 main level,0,1,"",,,false,0,InProgress:Collect resource  X,play_level,InQuest,,1,false,,,
+2,Main,1,add_currency,10,coin,Use 2 hints,0,2,"",,,false,0,InProgress:Collect resource  X,play_level,InQuest,,1,false,,,
+3,Main,1,add_currency,10,coin,Use 1 add time,0,3,"",,,false,0,InProgress:Collect resource  X,play_level,InQuest,,1,false,,,
+4,Main,1,add_currency,10,coin,Skip level 1 times,0,4,"",,,false,0,InProgress:Collect resource  X,play_level,InQuest,,1,false,,,
+5,Main,1,add_currency,10,coin,Watch an ad,0,5,"",,,false,0,InProgress:Collect resource  X,play_level,InQuest,,1,false,,,

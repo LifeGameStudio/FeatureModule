@@ -12,8 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2d26553a4b14406800070e6b216809d, type: 3}
   m_Name: FeatureMigrationAndOptimize
   m_EditorClassIdentifier: 
-  ExtenalDependency: 1.2.181
-  FirebaseVersion: 12.1.0
-  GoogleMobileAds: 9.1.1
+  ExtenalDependency: 1.2.183
+  FirebaseVersion: 12.3.0
+  FirebasePackages:
+  - com.google.firebase.analytics
+  - com.google.firebase.app
+  - com.google.firebase.crashlytics
+  - com.google.firebase.messaging
+  - com.google.firebase.remote-config
+  GoogleMobileAds: 9.2.1
   UnityPurchasing: 4.12.0
   TinyPngApiKey: 
