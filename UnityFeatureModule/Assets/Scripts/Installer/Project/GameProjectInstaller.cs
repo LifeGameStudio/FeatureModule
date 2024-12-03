@@ -7,6 +7,7 @@ namespace Game.Scripts.Installer.Project
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameModule.QuestModule;
+    using GameModule.ScreenQueue.Scripts;
     using GameModule.TimeMarker.Scripts;
     using GameModule.UnitTest;
     using UnityEngine.EventSystems;
@@ -27,7 +28,7 @@ namespace Game.Scripts.Installer.Project
             this.Container.BindInterfacesAndSelfTo<GameDataState>().AsCached().NonLazy();
             QuestInstaller.Install(this.Container);
             TimeMarkInstaller.Install(this.Container);
-            UnitTestInstaller<TimeMarkTest>.Install(this.Container);
+            ScreenQueueInstaller.Install(this.Container);
         }
     }
 }

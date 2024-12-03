@@ -31,26 +31,7 @@ namespace Game.Scripts.Scene.Home
 
         public override UniTask BindData()
         {
-            this.SignalBus.Subscribe<QuestDoneSignal>(OnQuestDone);
-            
-            StartQuest("1");
-            
-            this.SignalBus.Fire<TrackingQuestSignal>(new TrackingQuestSignal("play_level", "", 1));
-
-            // this._questManager.GetAllQuestRewardAndSetStatus("", "1");
-            
             return UniTask.CompletedTask;
-        }
-
-        private void OnQuestDone(QuestDoneSignal signal)
-        {
-            StartQuest((int.Parse(signal.QuestId)+1).ToString());
-        }
-
-        private void StartQuest(string id)
-        {
-            questProviderServices.GiveQuestToUser(id, "", QuestProviderType.Main);
-            questProviderServices.StartQuest(QuestProviderType.Main, id, "");
         }
     }
 }

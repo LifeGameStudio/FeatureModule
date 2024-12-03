@@ -1,0 +1,7 @@
+{
+  "name": "com.screenqueue.module",
+  "version": "1.0.0",
+  "displayName": "GameModule.ScreenQueue",
+  "dependencies": {
+  }
+}
