@@ -288,7 +288,12 @@ System Design
 <h3>Installation</h3>
 <ol>
     <li><strong>Install the Module:</strong> Follow your standard steps to add the TimeMarker module to your project.</li>
-    <li><strong>Register the TimeMarkService:</strong> Add the following code to your <code>GameProjectInstaller</code> or equivalent MonoInstaller to bind <code>TimeMarkService</code> to the Zenject container:</li>
+    
+```csharp
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/TimeMarker&branch=H%2B
+```
+
+<li><strong>Register the TimeMarkService:</strong> Add the following code to your <code>GameProjectInstaller</code> or equivalent MonoInstaller to bind <code>TimeMarkService</code> to the Zenject container:</li>
 </ol>
 
 ```csharp
