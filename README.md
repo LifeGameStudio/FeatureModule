@@ -27,7 +27,7 @@ From the dropdown, select Add package from git URL....
 A text field will appear where you can paste the Git URL of the specific package. For example, to add a package named `[Package-to-use]` from your GitHub repository, use the following URL:
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/[Package-to-use]
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/[Package-to-use]&branch=H%2B
 ```
 
 Replace <code>[Package-to-use]</code> with the specific folder name of the package you'd like to include.
@@ -39,7 +39,7 @@ Example Usage
 To use the `Daily Reward` package, for example, you would follow the same steps and insert the following URL:
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward&branch=H%2B
 ```
 
 This will install the Daily Reward system into your project, ready for use!
@@ -53,7 +53,7 @@ This will install the Daily Reward system into your project, ready for use!
 <p><strong>1. Install the <code>DailyReward</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward&branch=H%2B
 ```
 
 <p>
@@ -131,7 +131,7 @@ The <code>TimeLoop</code> parameter represents the length of the reward cycle. Y
 <p><strong>1. Install the <code>Condition</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition&branch=H%2B
 ```
 
 <h2>Mission System</h2>
@@ -139,13 +139,13 @@ https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Ass
 <p><strong>1. Install the <code>Condition</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition&branch=H%2B
 ```
 
 <p><strong>2. Install the <code>Mission</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Mission
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Mission&branch=H%2B
 ```
 
 <p> The MissionInstaller auto-install the condition system since it need it. Similar to the Daily Reward system, you'll bind it using the <strong>Zenject</strong> framework or manually initialize it: </p>
@@ -172,7 +172,7 @@ public class GameProjectInstaller : MonoInstaller
  <p><strong>1. Install the <code>Shop</code> module to the Project Installer</strong></p>
  
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Shop
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Shop&branch=H%2B
 ```
 
 <p>Similar to the Mission System, the <code>Shop</code> system requires installation using the <strong>Zenject</strong> framework. You can integrate it into your game project using the following method:</p>
@@ -204,7 +204,7 @@ System Design
 <h3>Installation and Setup</h3>
     <strong>Install the Module:</strong>
         
-    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/QuestModule
+    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/QuestModule&branch=H%2B
 <ol>
     <li><strong>Modify the Blueprint Data:</strong>
         <p>To configure quests, import and modify the following CSV files located in the sample folder to match your specific needs:</p>
