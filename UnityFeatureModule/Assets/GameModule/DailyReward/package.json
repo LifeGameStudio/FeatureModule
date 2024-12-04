@@ -1,5 +1,5 @@
 {
-  "name": "com.dailyreward.module",
+  "name": "com.dailyreward.module.hplus",
   "version": "1.0.0",
   "displayName": "GameModule.DailyReward",
   "dependencies": {}
