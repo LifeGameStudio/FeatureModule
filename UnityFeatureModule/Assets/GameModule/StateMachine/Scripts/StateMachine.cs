@@ -57,5 +57,10 @@
             this.SetCurrentState(beginState);
             this.currentState?.Enter();
         }
+
+        public Type GetCurrentState()
+        {
+            return this.currentState.GetType();
+        }
     }
 }
