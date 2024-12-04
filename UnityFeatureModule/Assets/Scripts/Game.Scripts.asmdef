@@ -22,7 +22,8 @@
         "Quest.Scripts",
         "TimeMarker.Scripts",
         "UnitTest.Scripts",
-        "ScreenQueue.Scripts"
+        "ScreenQueue.Scripts",
+        "StateMachine.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

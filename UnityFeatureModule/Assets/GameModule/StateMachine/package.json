@@ -1,0 +1,7 @@
+{
+  "name": "com.statemachine.module",
+  "version": "1.0.0",
+  "displayName": "GameModule.StateMachine",
+  "dependencies": {
+  }
+}
