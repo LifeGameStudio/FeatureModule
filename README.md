@@ -27,7 +27,7 @@ From the dropdown, select Add package from git URL....
 A text field will appear where you can paste the Git URL of the specific package. For example, to add a package named `[Package-to-use]` from your GitHub repository, use the following URL:
 
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/[Package-to-use]
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/[Package-to-use]#H+
 ```
 
 Replace <code>[Package-to-use]</code> with the specific folder name of the package you'd like to include.
@@ -39,7 +39,7 @@ Example Usage
 To use the `Daily Reward` package, for example, you would follow the same steps and insert the following URL:
 
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/DailyReward
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward#H+
 ```
 
 This will install the Daily Reward system into your project, ready for use!
@@ -53,7 +53,7 @@ This will install the Daily Reward system into your project, ready for use!
 <p><strong>1. Install the <code>DailyReward</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/DailyReward
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward#H+
 ```
 
 <p>
@@ -131,7 +131,7 @@ The <code>TimeLoop</code> parameter represents the length of the reward cycle. Y
 <p><strong>1. Install the <code>Condition</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/Condition
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition#H+
 ```
 
 <h2>Mission System</h2>
@@ -139,13 +139,13 @@ https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Asse
 <p><strong>1. Install the <code>Condition</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/Condition
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Condition#H+
 ```
 
 <p><strong>2. Install the <code>Mission</code> to the Project Installer</strong></p>
 
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/Mission
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Mission#H+
 ```
 
 <p> The MissionInstaller auto-install the condition system since it need it. Similar to the Daily Reward system, you'll bind it using the <strong>Zenject</strong> framework or manually initialize it: </p>
@@ -172,7 +172,7 @@ public class GameProjectInstaller : MonoInstaller
  <p><strong>1. Install the <code>Shop</code> module to the Project Installer</strong></p>
  
 ```
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/Shop
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/Shop#H+
 ```
 
 <p>Similar to the Mission System, the <code>Shop</code> system requires installation using the <strong>Zenject</strong> framework. You can integrate it into your game project using the following method:</p>
@@ -204,7 +204,7 @@ Figure 4: System Design
 <h3>Installation and Setup</h3>
     <strong>Install the Module:</strong>
 
-    https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/QuestModule
+    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/QuestModule#H+
 <ol>
     <li><strong>Modify the Blueprint Data:</strong>
         <p>To configure quests, import and modify the following CSV files located in the sample folder to match your specific needs:</p>
@@ -290,7 +290,7 @@ Figure 4: System Design
     <li><strong>Install the Module:</strong> Follow your standard steps to add the TimeMarker module to your project.</li>
     
 ```csharp
-https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/TimeMarker
+https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/TimeMarker#H+
 ```
 
 <li><strong>Register the TimeMarkService:</strong> Add the following code to your <code>GameProjectInstaller</code> or equivalent MonoInstaller to bind <code>TimeMarkService</code> to the Zenject container:</li>
@@ -316,7 +316,7 @@ public class GameProjectInstaller : MonoInstaller
 
 <h3>Installation</h3> <ol> <li><strong>Install the Module:</strong><br> To add the ScreenQueueService to your project, include it in your Unity project by copying the code into the appropriate namespace and adding dependencies for <strong>Zenject</strong>, <strong>Cysharp.Threading.Tasks</strong> (UniTask), and other GameFoundation scripts. </li>
 
-    https://github.com/NotthingStudioo/FeatureModule/tree/H+/UnityFeatureModule/Assets/GameModule/ScreenQueue
+    https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/ScreenQueue#H+
 
 <li><strong>Register the ScreenQueueService:</strong><br> Add the following code to your <code>GameProjectInstaller</code> or equivalent MonoInstaller to bind <code>ScreenQueueService</code> to the Zenject container: </li> </ol> <pre>
     <code class="language-csharp">public class GameProjectInstaller : MonoInstaller 
