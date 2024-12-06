@@ -24,7 +24,7 @@
             this.timeMarkDataController.AddTimeMark(key, time);
         }
         
-        public bool GetOrCreateTimeMark(string key, out DateTime time)
+        public bool GetOrCreateTimeMark(string key, out DateTime createTime)
         {
             return this.timeMarkDataController.GetOrCreateTimeMark(key, out time);
         }
