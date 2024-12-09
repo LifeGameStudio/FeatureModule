@@ -55,7 +55,6 @@
         public void Initialize(Type beginState)
         {
             this.SetCurrentState(beginState);
-            this.currentState?.Enter();
         }
 
         public Type GetCurrentState()
