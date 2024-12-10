@@ -25,13 +25,13 @@
             });
         }
 
-        internal void SetCurrentState(Type stateType)
+        public void SetCurrentState(Type stateType)// TODO: Change back to internal void when someone fuck up or "i told you so"
         {
             if (!this.TypeToState.TryGetValue(stateType, out var newState)) return;
             
             if (this.currentState != null)
             {
-                this.LogMessage("HLQ Exit state: " + this.currentState.GetType());
+                this.LogMessage("H+ | Exit state: " + this.currentState.GetType());
                 this.currentState.Exit();
             }
 
@@ -39,7 +39,7 @@
 
             if (this.currentState != null)
             {
-                this.LogMessage("HLQ Enter state: " + this.currentState.GetType());
+                this.LogMessage("H+ | Enter state: " + this.currentState.GetType());
                 this.currentState.Enter();
             }
         }
