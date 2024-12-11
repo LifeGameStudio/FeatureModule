@@ -34,7 +34,7 @@
             
             if (this.currentState != null)
             {
-                this.logger.LogMessage("H+ | Exit state: " + this.currentState.GetType());
+                this.logger.LogWithColor("H+ | Exit state: " + this.currentState.GetType());
                 this.currentState.Exit();
             }
 
@@ -42,7 +42,7 @@
 
             if (this.currentState != null)
             {
-                this.logger.LogMessage("H+ | Enter state: " + this.currentState.GetType());
+                this.logger.LogWithColor("H+ | Enter state: " + this.currentState.GetType());
                 this.currentState.Enter();
             }
         }
