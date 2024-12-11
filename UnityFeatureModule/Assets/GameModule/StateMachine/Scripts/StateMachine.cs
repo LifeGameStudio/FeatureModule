@@ -4,16 +4,19 @@
     using System.Collections.Generic;
     using System.Linq;
     using FeatureTemplate.Scripts.Services;
+    using GameFoundation.Scripts.Utilities.LogService;
     using Sirenix.Utilities;
     using Zenject;
 
     public class StateMachine : ITickable
     {
-        private IState                   currentState;
-        protected Dictionary<Type, IState> TypeToState;
+        private readonly ILogService              logger;
+        private          IState                   currentState;
+        protected        Dictionary<Type, IState> TypeToState;
 
-        protected StateMachine(List<IState> listState)
+        protected StateMachine(List<IState> listState, ILogService logger)
         {
+            this.logger      = logger;
             this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
 
             this.TypeToState.Values.ForEach(x =>
@@ -31,7 +34,7 @@
             
             if (this.currentState != null)
             {
-                this.LogMessage("H+ | Exit state: " + this.currentState.GetType());
+                this.logger.LogMessage("H+ | Exit state: " + this.currentState.GetType());
                 this.currentState.Exit();
             }
 
@@ -39,7 +42,7 @@
 
             if (this.currentState != null)
             {
-                this.LogMessage("H+ | Enter state: " + this.currentState.GetType());
+                this.logger.LogMessage("H+ | Enter state: " + this.currentState.GetType());
                 this.currentState.Enter();
             }
         }
