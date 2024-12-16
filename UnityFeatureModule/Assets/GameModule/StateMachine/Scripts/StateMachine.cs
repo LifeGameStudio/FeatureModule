@@ -8,7 +8,7 @@
     using Sirenix.Utilities;
     using Zenject;
 
-    public class StateMachine : ITickable
+    public class StateMachine : ITickable, IInitializable
     {
         private readonly ILogService              logger;
         private          IState                   currentState;
@@ -57,12 +57,19 @@
 
         public void Initialize(Type beginState)
         {
-            this.SetCurrentState(beginState);
+            this.beginStateType = beginState;
         }
 
         public Type GetCurrentState()
         {
             return this.currentState.GetType();
+        }
+
+        private Type beginStateType;
+
+        public void Initialize()
+        {
+            this.SetCurrentState(beginStateType);
         }
     }
 }
