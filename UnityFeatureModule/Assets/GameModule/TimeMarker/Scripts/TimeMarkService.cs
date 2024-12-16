@@ -69,6 +69,12 @@
             timeSpanDictionary.Remove(timeMarkKey); // Also remove from dictionary if the key is reset
         }
 
+        public async UniTask<ReactiveProperty<float>> GetOrCreateTimer(string key)
+        {
+            return await GetOrCreateTimeSpan(key);
+        }
+
+        [Obsolete("Use the new GetOrCreateTimer method instead.", false)]
         // New function to get or create a ReactiveProperty<float> for the timespan in seconds
         public async UniTask<ReactiveProperty<float>> GetOrCreateTimeSpan(string key)
         {
