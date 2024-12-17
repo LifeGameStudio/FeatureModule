@@ -2,7 +2,10 @@
   "name": "com.timemarker.module.hplus",
   "version": "1.0.1",
   "displayName": "GameModule.timemarker",
-  "author": "Le Quang Huy <huylq2k2@gmail.com>",
+  "author": {
+    "name": "Le Quang Huy",
+    "email": "huylq2k2@gmail.com"
+  },
   "dependencies": {
   }
 }
