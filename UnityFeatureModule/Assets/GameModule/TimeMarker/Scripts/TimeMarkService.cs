@@ -12,32 +12,30 @@
         private readonly TimeMarkDataController timeMarkDataController;
 
         // Dictionary to cache the ReactiveProperty<float> for each key
-        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanDictionary = new Dictionary<string, ReactiveProperty<float>>();
+        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanDictionary    = new Dictionary<string, ReactiveProperty<float>>();
+        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanOffDictionary = new Dictionary<string, ReactiveProperty<float>>();
 
-        public TimeMarkService(TimeMarkDataController timeMarkDataController)
-        {
-            this.timeMarkDataController = timeMarkDataController;
-        }
-        
-        public void AddTimeMark(string key, DateTime time)
-        {
-            this.timeMarkDataController.AddTimeMark(key, time);
-        }
-        
-        public bool GetOrCreateTimeMark(string key, out DateTime createTime)
-        {
-            return this.timeMarkDataController.GetOrCreateTimeMark(key, out createTime);
-        }
-        
+        public TimeMarkService(TimeMarkDataController timeMarkDataController) { this.timeMarkDataController = timeMarkDataController; }
+
+        public void AddTimeMark(string key, DateTime time) { this.timeMarkDataController.AddTimeMark(key, time); }
+
+        public bool GetOrCreateTimeMark(string key, out DateTime createTime) { return this.timeMarkDataController.GetOrCreateTimeMark(key, out createTime); }
+
         public void RemoveTimeMark(string key)
         {
+            this.timeSpanOffDictionary.Remove(key, out var time);
+
             this.timeMarkDataController.RemoveTimeMark(key);
+
             this.timeSpanDictionary.Remove(key); // Remove from dictionary if the key is deleted
         }
-        
+
+        private async void AddToTimeSpanOff(string key) { timeSpanOffDictionary.Add(key, await this.GetOrCreateTimer(key)); }
+
         public void UpdateTimeMark(string key, DateTime time)
         {
             this.timeMarkDataController.UpdateTimeMark(key, time);
+
             if (this.timeSpanDictionary.TryGetValue(key, out var timeSpan))
             {
                 // Recalculate the initial time span if it exists in the dictionary
@@ -51,28 +49,28 @@
             {
                 return dateTime.Date < DateTime.Now.Date;
             }
+
             return true;
         }
-        
+
         public int GetDayDifference(string timeMarkKey)
         {
             if (this.timeMarkDataController.GetOrCreateTimeMark(timeMarkKey, out var dateTime))
             {
                 return (DateTime.Now.Date - dateTime.Date).Days;
             }
+
             return 0;
         }
-        
+
         public void ResetTimeMark(string timeMarkKey)
         {
+            this.AddToTimeSpanOff(timeMarkKey);
             this.timeMarkDataController.RemoveTimeMark(timeMarkKey);
-            timeSpanDictionary.Remove(timeMarkKey); // Also remove from dictionary if the key is reset
+            this.timeSpanDictionary.Remove(timeMarkKey); // Remove from dictionary if the key is deleted
         }
 
-        public async UniTask<ReactiveProperty<float>> GetOrCreateTimer(string key)
-        {
-            return await GetOrCreateTimeSpan(key);
-        }
+        public async UniTask<ReactiveProperty<float>> GetOrCreateTimer(string key) { return await GetOrCreateTimeSpan(key); }
 
         [Obsolete("Use the new GetOrCreateTimer method instead.", false)]
         // New function to get or create a ReactiveProperty<float> for the timespan in seconds
@@ -81,7 +79,16 @@
             if (!timeSpanDictionary.TryGetValue(key, out var timeSpan))
             {
                 // Create a new ReactiveProperty if it doesn't exist in the dictionary
-                timeSpan = new ReactiveProperty<float>();
+                if (this.timeSpanOffDictionary.TryGetValue(key, out var value))
+                {
+                    timeSpan = value;
+                    this.timeSpanOffDictionary.Remove(key);
+                }
+                else
+                {
+                    timeSpan = new ReactiveProperty<float>();
+                }
+
                 timeSpanDictionary[key] = timeSpan;
 
                 // Check if the time mark exists in the data controller
@@ -98,6 +105,7 @@
             }
 
             await UniTask.DelayFrame(1);
+
             return timeSpan;
         }
 
@@ -105,6 +113,7 @@
         {
             // Increment each ReactiveProperty<float> in timeSpanDictionary by delta time
             float deltaSeconds = Time.deltaTime;
+
             foreach (var timeSpan in timeSpanDictionary.Values)
             {
                 timeSpan.Value += deltaSeconds;
