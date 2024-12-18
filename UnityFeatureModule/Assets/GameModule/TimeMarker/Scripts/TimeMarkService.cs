@@ -63,11 +63,17 @@
             return 0;
         }
 
-        public void ResetTimeMark(string timeMarkKey)
+        public void ResetTimeMark(string timeMarkKey, bool turnOnTimerAfterReset = false)
         {
             this.AddToTimeSpanOff(timeMarkKey);
             this.timeMarkDataController.RemoveTimeMark(timeMarkKey);
+            this.timeMarkDataController.AddTimeMark(timeMarkKey, DateTime.Now);
             this.timeSpanDictionary.Remove(timeMarkKey); // Remove from dictionary if the key is deleted
+
+            if (turnOnTimerAfterReset)
+            {
+                this.GetOrCreateTimer(timeMarkKey).Forget();
+            }
         }
 
         public async UniTask<ReactiveProperty<float>> GetOrCreateTimer(string key) { return await GetOrCreateTimeSpan(key); }
