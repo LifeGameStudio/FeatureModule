@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - Notes on security updates.
 
 ## [1.0.1] - 2024-12-17
+
+### Added
+- Lock and take a snapshot of the dictionary to prevent collection modified during foreach.
+
 ### Fixed
 - Fix logic when timer reset, the timer instance changed </br>
 => When timer reset, the timer instance keeps the same. Timer instance only change when remove the instance.

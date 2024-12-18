@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using R3;
+    using Sirenix.Utilities;
     using UnityEngine;
     using Zenject;
 
@@ -115,12 +116,22 @@
             return timeSpan;
         }
 
+        private Dictionary<string, ReactiveProperty<float>> snapShot = new();
+
         public void Tick() // TODO: implement realtime marker, ignore time scale
         {
             // Increment each ReactiveProperty<float> in timeSpanDictionary by delta time
-            float deltaSeconds = Time.deltaTime;
+            var deltaSeconds = Time.deltaTime;
 
-            foreach (var timeSpan in timeSpanDictionary.Values)
+            // create a snapshot of the dictionary to avoid modify
+            this.snapShot.Clear();
+
+            lock (this.timeSpanDictionary)
+            {
+                this.timeSpanDictionary.ForEach(x => this.snapShot.Add(x.Key, x.Value));
+            }
+
+            foreach (var timeSpan in this.snapShot.Values)
             {
                 timeSpan.Value += deltaSeconds;
                 timeSpan.ForceNotify();
