@@ -10,7 +10,7 @@
         {
             // Bind StateMachine as a cached instance
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IState>();
-            this.Container.Bind<StateMachine>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<StateMachine>().AsCached().NonLazy();
             // Resolve the StateMachine instance
             var stateMachine = this.Container.Resolve<StateMachine>();
 
