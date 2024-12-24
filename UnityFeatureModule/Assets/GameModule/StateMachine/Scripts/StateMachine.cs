@@ -14,7 +14,7 @@
         private          IState                   currentState;
         protected        Dictionary<Type, IState> TypeToState;
 
-        protected StateMachine(List<IState> listState, ILogService logger)
+        public StateMachine(List<IState> listState, ILogService logger)
         {
             this.logger      = logger;
             this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
