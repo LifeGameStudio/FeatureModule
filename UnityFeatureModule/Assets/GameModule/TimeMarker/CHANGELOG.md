@@ -23,6 +23,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ### Security
 - Notes on security updates.
 
+## [1.0.2] - 2024-12-26
+
+### Added
+
+- FutureMarkService create a mark at a Time and notify whether the time is reach or not.
+- FutureMarkService provide a reactive component timer for developers to read and last until the time reaches.
+- Add license.
+
 ## [1.0.1] - 2024-12-17
 
 ### Added

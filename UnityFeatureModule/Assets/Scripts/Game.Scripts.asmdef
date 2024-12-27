@@ -23,7 +23,8 @@
         "TimeMarker.Scripts",
         "UnitTest.Scripts",
         "ScreenQueue.Scripts",
-        "StateMachine.Scripts"
+        "StateMachine.Scripts",
+        "Observer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

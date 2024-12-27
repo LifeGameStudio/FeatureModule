@@ -1,6 +1,11 @@
 {
-  "name": "com.quest.module.hplus",
-  "version": "1.0.1",
-  "displayName": "GameModule.Quest",
+  "name": "com.observer.module.hplus",
+  "version": "1.0.0",
+  "displayName": "GameModule.Observer",
+  "license": "MIT",
+  "author": {
+    "name": "Le Quang Huy",
+    "email": "huylq2k2@gmail.com"
+  },
   "dependencies": {}
 }

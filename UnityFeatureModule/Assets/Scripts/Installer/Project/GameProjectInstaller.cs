@@ -6,6 +6,7 @@ namespace Game.Scripts.Installer.Project
     using Game.Scripts.UnitTest;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameModule.Observer.Scripts;
     using GameModule.QuestModule;
     using GameModule.ScreenQueue.Scripts;
     using GameModule.TimeMarker.Scripts;
@@ -29,6 +30,10 @@ namespace Game.Scripts.Installer.Project
             QuestInstaller.Install(this.Container);
             TimeMarkInstaller.Install(this.Container);
             ScreenQueueInstaller.Install(this.Container);
+            this.Container.Unbind<ISignalBus>();
+            this.Container.Bind<ISignalBus>().To<Observer>().AsSingle().NonLazy();
+            UnitTestInstaller<ObserverTest>.Install(this.Container);
+            
         }
     }
 }
