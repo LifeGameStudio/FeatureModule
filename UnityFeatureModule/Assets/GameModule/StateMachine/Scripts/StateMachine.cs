@@ -10,15 +10,15 @@
     public class StateMachine : ITickable, IInitializable
     {
         private readonly ILogService              logger;
-        private readonly TickableManager          tickableManager;
+        private readonly DiContainer              diContainer;
         private          IState                   currentState;
         protected        Dictionary<Type, IState> TypeToState;
 
-        public StateMachine(List<IState> listState, ILogService logger, TickableManager tickableManager)
+        public StateMachine(List<IState> listState, ILogService logger, DiContainer diContainer)
         {
-            this.logger          = logger;
-            this.tickableManager = tickableManager;
-            this.TypeToState     = listState.ToDictionary(state => state.GetType(), state => state);
+            this.logger      = logger;
+            this.diContainer = diContainer;
+            this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
 
             this.TypeToState.Values.ForEach(x =>
             {
@@ -65,11 +65,12 @@
         public void Initialize()
         {
             this.SetCurrentState(beginStateType);
+            var tickableManager = this.diContainer.Resolve<TickableManager>();
 
             foreach (var item in this.TypeToState.Values)
             {
-                if (item is ITickable updateableState && this.tickableManager.Tickables.Contains(updateableState))
-                    this.tickableManager.Remove(updateableState);
+                if (item is ITickable updateableState && tickableManager.Tickables.Contains(updateableState))
+                    tickableManager.Remove(updateableState);
             }
         }
     }
