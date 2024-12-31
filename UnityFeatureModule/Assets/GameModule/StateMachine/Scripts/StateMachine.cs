@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using FeatureTemplate.Scripts.Services;
     using GameFoundation.Scripts.Utilities.LogService;
     using Sirenix.Utilities;
     using Zenject;
@@ -11,13 +10,15 @@
     public class StateMachine : ITickable, IInitializable
     {
         private readonly ILogService              logger;
+        private readonly TickableManager          tickableManager;
         private          IState                   currentState;
         protected        Dictionary<Type, IState> TypeToState;
 
-        public StateMachine(List<IState> listState, ILogService logger)
+        public StateMachine(List<IState> listState, ILogService logger, TickableManager tickableManager)
         {
-            this.logger      = logger;
-            this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
+            this.logger          = logger;
+            this.tickableManager = tickableManager;
+            this.TypeToState     = listState.ToDictionary(state => state.GetType(), state => state);
 
             this.TypeToState.Values.ForEach(x =>
             {
@@ -28,10 +29,10 @@
             });
         }
 
-        public void SetCurrentState(Type stateType)// TODO: Change back to internal void when someone fuck up or "i told you so"
+        public void SetCurrentState(Type stateType) // TODO: Change back to internal void when someone fuck up or "i told you so"
         {
             if (!this.TypeToState.TryGetValue(stateType, out var newState)) return;
-            
+
             if (this.currentState != null)
             {
                 this.logger.LogWithColor("H+ | Exit state: " + this.currentState.GetType());
@@ -55,21 +56,21 @@
             }
         }
 
-        public void Initialize(Type beginState)
-        {
-            this.beginStateType = beginState;
-        }
+        public void Initialize(Type beginState) { this.beginStateType = beginState; }
 
-        public Type GetCurrentState()
-        {
-            return this.currentState.GetType();
-        }
+        public Type GetCurrentState() { return this.currentState.GetType(); }
 
         private Type beginStateType;
 
         public void Initialize()
         {
             this.SetCurrentState(beginStateType);
+
+            foreach (var item in this.TypeToState.Values)
+            {
+                if (item is ITickable updateableState && this.tickableManager.Tickables.Contains(updateableState))
+                    this.tickableManager.Remove(updateableState);
+            }
         }
     }
 }
