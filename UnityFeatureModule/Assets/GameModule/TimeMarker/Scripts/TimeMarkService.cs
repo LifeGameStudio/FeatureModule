@@ -31,7 +31,7 @@
             this.timeSpanDictionary.Remove(key); // Remove from dictionary if the key is deleted
         }
 
-        private async void AddToTimeSpanOff(string key) { timeSpanOffDictionary.Add(key, await this.GetOrCreateTimer(key)); }
+        private async void AddToTimeSpanOff(string key) { timeSpanOffDictionary.TryAdd(key, await this.GetOrCreateTimer(key)); }
 
         public void UpdateTimeMark(string key, DateTime time)
         {
