@@ -13,25 +13,37 @@
         private readonly TimeMarkDataController timeMarkDataController;
 
         // Dictionary to cache the ReactiveProperty<float> for each key
-        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanDictionary    = new Dictionary<string, ReactiveProperty<float>>();
-        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanOffDictionary = new Dictionary<string, ReactiveProperty<float>>();
+        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanDictionary = new();
+        private readonly Dictionary<string, ReactiveProperty<float>> timeSpanOffDictionary = new();
+        private readonly Dictionary<string, bool> isPaused = new();
 
-        public TimeMarkService(TimeMarkDataController timeMarkDataController) { this.timeMarkDataController = timeMarkDataController; }
+        public TimeMarkService(TimeMarkDataController timeMarkDataController)
+        {
+            this.timeMarkDataController = timeMarkDataController;
+        }
 
-        public void AddTimeMark(string key, DateTime time) { this.timeMarkDataController.AddTimeMark(key, time); }
+        public void AddTimeMark(string key, DateTime time)
+        {
+            this.timeMarkDataController.AddTimeMark(key, time);
+        }
 
-        public bool GetOrCreateTimeMark(string key, out DateTime createTime) { return this.timeMarkDataController.GetOrCreateTimeMark(key, out createTime); }
+        public bool GetOrCreateTimeMark(string key, out DateTime createTime)
+        {
+            return this.timeMarkDataController.GetOrCreateTimeMark(key, out createTime);
+        }
 
         public void RemoveTimeMark(string key)
         {
             this.timeSpanOffDictionary.Remove(key, out var time);
-
             this.timeMarkDataController.RemoveTimeMark(key);
-
             this.timeSpanDictionary.Remove(key); // Remove from dictionary if the key is deleted
+            this.isPaused.Remove(key); // Also remove pause state
         }
 
-        private async void AddToTimeSpanOff(string key) { timeSpanOffDictionary.TryAdd(key, await this.GetOrCreateTimer(key)); }
+        private async void AddToTimeSpanOff(string key)
+        {
+            timeSpanOffDictionary.TryAdd(key, await this.GetOrCreateTimer(key));
+        }
 
         public void UpdateTimeMark(string key, DateTime time)
         {
@@ -64,12 +76,25 @@
             return 0;
         }
 
+        public void PauseTimeMark(string timeMarkKey, bool pause)
+        {
+            if (this.isPaused.ContainsKey(timeMarkKey))
+            {
+                this.isPaused[timeMarkKey] = pause; // Update existing key
+            }
+            else
+            {
+                this.isPaused.Add(timeMarkKey, pause); // Add if not exists
+            }
+        }
+
         public void ResetTimeMark(string timeMarkKey, bool turnOnTimerAfterReset = false)
         {
             this.AddToTimeSpanOff(timeMarkKey);
             this.timeMarkDataController.RemoveTimeMark(timeMarkKey);
             this.timeMarkDataController.AddTimeMark(timeMarkKey, DateTime.Now);
             this.timeSpanDictionary.Remove(timeMarkKey); // Remove from dictionary if the key is deleted
+            this.isPaused.Remove(timeMarkKey); // Also remove pause state
 
             if (turnOnTimerAfterReset)
             {
@@ -77,10 +102,12 @@
             }
         }
 
-        public async UniTask<ReactiveProperty<float>> GetOrCreateTimer(string key) { return await GetOrCreateTimeSpan(key); }
+        public async UniTask<ReactiveProperty<float>> GetOrCreateTimer(string key)
+        {
+            return await GetOrCreateTimeSpan(key);
+        }
 
         [Obsolete("Use the new GetOrCreateTimer method instead.", false)]
-        // New function to get or create a ReactiveProperty<float> for the timespan in seconds
         public async UniTask<ReactiveProperty<float>> GetOrCreateTimeSpan(string key)
         {
             if (!timeSpanDictionary.TryGetValue(key, out var timeSpan))
@@ -118,12 +145,11 @@
 
         private Dictionary<string, ReactiveProperty<float>> snapShot = new();
 
-        public void Tick() // TODO: implement realtime marker, ignore time scale
+        public void Tick() // TODO: implement real-time marker, ignore time scale
         {
-            // Increment each ReactiveProperty<float> in timeSpanDictionary by delta time
             var deltaSeconds = Time.deltaTime;
 
-            // create a snapshot of the dictionary to avoid modify
+            // Create a snapshot of the dictionary to avoid modification issues
             this.snapShot.Clear();
 
             lock (this.timeSpanDictionary)
@@ -131,10 +157,16 @@
                 this.timeSpanDictionary.ForEach(x => this.snapShot.Add(x.Key, x.Value));
             }
 
-            foreach (var timeSpan in this.snapShot.Values)
+            foreach (var kvp in this.snapShot)
             {
-                timeSpan.Value += deltaSeconds;
-                timeSpan.ForceNotify();
+                var key = kvp.Key;
+                var timeSpan = kvp.Value;
+
+                if (!this.isPaused.TryGetValue(key, out var paused) || !paused) // Only update if not paused
+                {
+                    timeSpan.Value += deltaSeconds;
+                    timeSpan.ForceNotify();
+                }
             }
         }
     }
