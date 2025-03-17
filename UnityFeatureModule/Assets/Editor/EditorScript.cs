@@ -1,4 +1,4 @@
-﻿using DA_Assets.FCU.Model;
+﻿using DA_Assets.FCU;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
