@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "1029807570932",
+    "firebase_url": "https://project-template-12f97-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "project-template-12f97",
-    "storage_bucket": "project-template-12f97.appspot.com"
+    "storage_bucket": "project-template-12f97.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +13,12 @@
           "package_name": "com.project.template"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1029807570932-fk419n1g8qe659br66lu23p2oj5fjo8o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBx5f92CQ3MJN1YkrRLQ_yIuc40np-UlBU"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1029807570932-fk419n1g8qe659br66lu23p2oj5fjo8o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1029807570932-2e5uitjm1d5nekndbcdvcolnef18thi3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.project.template"
+              }
+            }
+          ]
         }
       }
     }

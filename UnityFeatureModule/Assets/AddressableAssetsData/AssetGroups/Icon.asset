@@ -13,15 +13,8 @@ MonoBehaviour:
   m_Name: Icon
   m_EditorClassIdentifier: 
   m_GroupName: Icon
-  m_Data:
-    m_SerializedData: []
   m_GUID: 5976148efb758b543b928e0a0ed17726
-  m_SerializeEntries:
-  - m_GUID: 04a2c27a5551124479b5a848134b106b
-    m_Address: 32x32 1
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: dc31dcd78eabb9d469d4d3668498ef06, type: 2}
   m_SchemaSet:

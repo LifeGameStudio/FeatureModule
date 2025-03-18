@@ -20,8 +20,8 @@ namespace Game.Scripts.Scene.Home
     public class MainScreenPresenter : BaseScreenPresenterTemplate<MainScreenView>
     {
         [Inject] private QuestManager _questManager;
-        [Inject] private TrackingQuestServices _trackingQuestServices;
-        [Inject] private QuestProviderServices questProviderServices;
+        // [Inject] private TrackingQuestServices _trackingQuestServices;
+        // [Inject] private QuestProviderServices questProviderServices;
 
         public MainScreenPresenter(ISignalBus signalBus, GameQueueActionContext gameQueueActionContext,
             ILogService logger, ScreenManager screenManager, SceneDirector sceneDirector) : base(signalBus,
@@ -31,11 +31,11 @@ namespace Game.Scripts.Scene.Home
 
         public override UniTask BindData()
         {
-            this.SignalBus.Subscribe<QuestDoneSignal>(OnQuestDone);
+            // this.SignalBus.Subscribe<QuestDoneSignal>(OnQuestDone);
             
             StartQuest("1");
             
-            this.SignalBus.Fire<TrackingQuestSignal>(new TrackingQuestSignal("play_level", "", 1));
+            // this.SignalBus.Fire<TrackingQuestSignal>(new TrackingQuestSignal("play_level", "", 1));
 
             // this._questManager.GetAllQuestRewardAndSetStatus("", "1");
             
@@ -49,8 +49,8 @@ namespace Game.Scripts.Scene.Home
 
         private void StartQuest(string id)
         {
-            questProviderServices.GiveQuestToUser(id, "", QuestProviderType.Main);
-            questProviderServices.StartQuest(QuestProviderType.Main, id, "");
+            // questProviderServices.GiveQuestToUser(id, "", QuestProviderType.Main);
+            // questProviderServices.StartQuest(QuestProviderType.Main, id, "");
         }
     }
 }

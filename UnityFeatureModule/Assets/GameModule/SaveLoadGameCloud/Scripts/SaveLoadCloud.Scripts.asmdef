@@ -1,0 +1,24 @@
+{
+    "name": "SaveLoadCloud.Scripts",
+    "rootNamespace": "",
+    "references": [
+        "Zenject",
+        "GameFoundation.Utilities",
+        "UniTask",
+        "Zenject-Signals",
+        "Features.Scripts",
+        "GoogleSignIn",
+        "Signin.Scripts",
+        "3rd.RemoteConfig",
+        "GameFoundation.Models"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

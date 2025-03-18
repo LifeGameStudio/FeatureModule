@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;
+
+namespace Assets.SimpleGoogleSignIn.Scripts
+{
+    public class AuthorizationMiddleware : MonoBehaviour
+    {
+        public const string Endpoint = "https://hippogames.dev/api/oauth";
+
+        private static string _state;
+        private static Action<bool, string, string> _callback;
+        private static AuthorizationMiddleware _instance;
+
+        public static void Auth(string authorizationRequest, string redirectUri, string state, Action<bool, string, string> callback)
+        {
+            _state = state;
+            _callback = callback;
+
+            var request = UnityWebRequest.Post(Endpoint + "/init", new Dictionary<string, string> { { "state", _state }, { "redirectUri", redirectUri }, { "clientName", Application.productName } });
+
+            Log($"Initializing auth middleware: {request.url}");
+
+            request.SendWebRequest().completed += _ =>
+            {
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    Log($"Authorization: {authorizationRequest}");
+                    Application.OpenURL(authorizationRequest);
+
+                    if (_instance == null)
+                    {
+                        _instance = new GameObject(nameof(AuthorizationMiddleware)).AddComponent<AuthorizationMiddleware>();
+                    }
+                }
+                else
+                {
+                    _callback(false, $"{request.error}: {request.downloadHandler.text}", null);
+                }
+
+                request.Dispose();
+            };
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus) return;
+
+            var request = UnityWebRequest.Post(Endpoint + "/getcode", new Dictionary<string, string> { { "state", _state } });
+
+            Log($"Obtaining auth code: {request.url}");
+
+            request.SendWebRequest().completed += obj =>
+            {
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    var code = request.downloadHandler.text;
+
+                    Log($"code={code}");
+                    _callback(true, null, code);
+                }
+                else
+                {
+                    _callback(false, $"{request.error}: {request.downloadHandler.text}", null);
+                }
+
+                request.Dispose();
+            };
+
+            Destroy(gameObject);
+            _instance = null;
+        }
+
+        private static void Log(string message)
+        {
+            Debug.Log(message); // TODO: Remove in Release.
+        }
+    }
+}

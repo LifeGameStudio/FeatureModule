@@ -1,5 +1,6 @@
 namespace Game.Scripts.Installer.Project
 {
+    using System.Collections.Generic;
     using FeatureTemplate.Scripts.Installers;
     using FeatureTemplate.Scripts.Toast;
     using Game.Scripts.Services;
@@ -7,6 +8,8 @@ namespace Game.Scripts.Installer.Project
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameModule.QuestModule;
+    using GameModule.SaveLoadGameCloud.Scripts;
+    using GameModule.SignInModule.Scripts;
     using GameModule.TimeMarker.Scripts;
     using GameModule.UnitTest;
     using UnityEngine.EventSystems;
@@ -25,9 +28,11 @@ namespace Game.Scripts.Installer.Project
             //EventSystem
             this.Container.Bind<EventSystem>().FromComponentInNewPrefabResource("EventSystem").AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<GameDataState>().AsCached().NonLazy();
-            QuestInstaller.Install(this.Container);
-            TimeMarkInstaller.Install(this.Container);
-            UnitTestInstaller<TimeMarkTest>.Install(this.Container);
+            // QuestInstaller.Install(this.Container);
+            // TimeMarkInstaller.Install(this.Container);
+            // UnitTestInstaller<TimeMarkTest>.Install(this.Container);
+            SignInServicesInstaller.Install(this.Container);
+            SaveLoadCloudInstaller.Install(this.Container,new List<string>(){"BlueprintInfoData"});
         }
     }
 }

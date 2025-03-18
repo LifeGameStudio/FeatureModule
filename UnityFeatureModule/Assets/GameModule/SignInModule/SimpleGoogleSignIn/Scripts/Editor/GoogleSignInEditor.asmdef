@@ -1,0 +1,18 @@
+{
+    "name": "GoogleSignInEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:793aa14839d8c3b4183e49d3b4a005ea"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -21,7 +21,9 @@
         "Unity.TextMeshPro",
         "Quest.Scripts",
         "TimeMarker.Scripts",
-        "UnitTest.Scripts"
+        "UnitTest.Scripts",
+        "SaveLoadCloud.Scripts",
+        "Signin.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

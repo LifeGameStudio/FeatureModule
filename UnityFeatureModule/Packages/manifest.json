@@ -5,12 +5,12 @@
     "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
-    "com.google.external-dependency-manager": "1.2.183",
-    "com.google.firebase.analytics": "file:GoogleDependency/com.google.firebase.analytics-12.3.0.tgz",
-    "com.google.firebase.app": "file:GoogleDependency/com.google.firebase.app-12.3.0.tgz",
-    "com.google.firebase.crashlytics": "file:GoogleDependency/com.google.firebase.crashlytics-12.3.0.tgz",
-    "com.google.firebase.messaging": "file:GoogleDependency/com.google.firebase.messaging-12.3.0.tgz",
-    "com.google.firebase.remote-config": "file:GoogleDependency/com.google.firebase.remote-config-12.3.0.tgz",
+    "com.google.external-dependency-manager": "1.2.185",
+    "com.google.firebase.analytics": "file:GoogleDependency/com.google.firebase.analytics-12.7.0.tgz",
+    "com.google.firebase.app": "file:GoogleDependency/com.google.firebase.app-12.7.0.tgz",
+    "com.google.firebase.crashlytics": "file:GoogleDependency/com.google.firebase.crashlytics-12.7.0.tgz",
+    "com.google.firebase.messaging": "file:GoogleDependency/com.google.firebase.messaging-12.7.0.tgz",
+    "com.google.firebase.remote-config": "file:GoogleDependency/com.google.firebase.remote-config-12.7.0.tgz",
     "com.svermeulen.extenject": "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source",
     "com.unity.collab-proxy": "2.6.0",
     "com.unity.feature.development": "1.0.2",
@@ -51,7 +51,9 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.google.firebase.auth": "file:GoogleDependency/com.google.firebase.auth-12.7.0.tgz",
+    "com.google.firebase.database": "file:GoogleDependency/com.google.firebase.database-12.7.0.tgz"
   },
   "scopedRegistries": [
     {
