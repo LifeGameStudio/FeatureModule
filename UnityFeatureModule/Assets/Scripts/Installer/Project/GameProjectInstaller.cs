@@ -4,14 +4,10 @@ namespace Game.Scripts.Installer.Project
     using FeatureTemplate.Scripts.Installers;
     using FeatureTemplate.Scripts.Toast;
     using Game.Scripts.Services;
-    using Game.Scripts.UnitTest;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameModule.QuestModule;
     using GameModule.SaveLoadGameCloud.Scripts;
     using GameModule.SignInModule.Scripts;
-    using GameModule.TimeMarker.Scripts;
-    using GameModule.UnitTest;
     using UnityEngine.EventSystems;
     using Zenject;
 
@@ -31,8 +27,8 @@ namespace Game.Scripts.Installer.Project
             // QuestInstaller.Install(this.Container);
             // TimeMarkInstaller.Install(this.Container);
             // UnitTestInstaller<TimeMarkTest>.Install(this.Container);
-            SignInServicesInstaller.Install(this.Container);
-            SaveLoadCloudInstaller.Install(this.Container,new List<string>(){"BlueprintInfoData"});
+            LoginServicesInstaller.Install(this.Container);
+            SaveLoadCloudInstaller.Install(this.Container, new List<string>() { "BlueprintInfoData" });
         }
     }
 }

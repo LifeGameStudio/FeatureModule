@@ -1,5 +1,5 @@
 {
-    "name": "Signin.Scripts",
+    "name": "Login.Scripts",
     "rootNamespace": "",
     "references": [
         "GoogleSignIn",

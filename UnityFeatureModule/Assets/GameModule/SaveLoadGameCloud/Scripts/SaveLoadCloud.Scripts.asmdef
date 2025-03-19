@@ -8,9 +8,12 @@
         "Zenject-Signals",
         "Features.Scripts",
         "GoogleSignIn",
-        "Signin.Scripts",
         "3rd.RemoteConfig",
-        "GameFoundation.Models"
+        "GameFoundation.Models",
+        "Unity.Services.Core",
+        "Unity.Services.Authentication",
+        "Login.Scripts",
+        "Unity.Services.CloudSave"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

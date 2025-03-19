@@ -19,6 +19,10 @@
 #if FIREBASE_DATA_CLOUD
             this.Container.Bind<List<string>>().FromInstance(this.listIgnoreCloudData).WhenInjectedInto<FirebaseDataCloudServices>();
             this.Container.BindInterfacesAndSelfTo<FirebaseDataCloudServices>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
+#elif UNITY_CLOUD
+            this.Container.Bind<List<string>>().FromInstance(this.listIgnoreCloudData).WhenInjectedInto<UnityDataCloudServices>();
+            this.Container.BindInterfacesAndSelfTo<UnityDataCloudServices>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
+#else
 #endif
         }
     }

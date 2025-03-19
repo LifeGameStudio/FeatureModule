@@ -23,7 +23,8 @@
         "TimeMarker.Scripts",
         "UnitTest.Scripts",
         "SaveLoadCloud.Scripts",
-        "Signin.Scripts"
+        "Signin.Scripts",
+        "Login.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

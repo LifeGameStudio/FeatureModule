@@ -25,6 +25,6 @@
             return result;
         }
 
-        public void ClearSession() { SavedAuth.Instance.Delete(); }
+        public void ClearSession() { SavedAuth.Instance?.Delete(); }
     }
 }

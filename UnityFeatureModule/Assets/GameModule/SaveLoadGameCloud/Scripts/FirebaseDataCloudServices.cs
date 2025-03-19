@@ -2,52 +2,25 @@
 namespace GameModule.SaveLoadGameCloud.Scripts
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.Services;
     using Firebase.Auth;
     using Firebase.Database;
     using Firebase.Extensions;
-    using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
-    using GameFoundation.Scripts.Utilities.UserData;
-    using GameModule.SaveLoadGameCloud.Scripts.Interfaces;
     using GameModule.SaveLoadGameCloud.Scripts.Signal;
-    using GameModule.SignInModule.Scripts;
     using Newtonsoft.Json;
-    using ServiceImplementation.FireBaseRemoteConfig;
     using UnityEngine;
     using Zenject;
 
-    public class FirebaseDataCloudServices : MonoBehaviour, IHandleDataCloud
+    public class FirebaseDataCloudServices : BaseHandleDataCloud
     {
-        [Inject] private DiContainer                    container;
-        [Inject] private IHandleUserDataServices        handleUserDataServices;
-        [Inject] private ILoginServices                 loginServices;
-        [Inject] private ISignalBus                     signalBus;
-        [Inject] private List<string>                   ListIgnoreCloudData { get; set; }
-        private          bool                           IsFirebaseReady     { get; set; }
-        private          Dictionary<string, ILocalData> userDataCache = new();
-        private          FirebaseUser                   currentUser;
-        private const    string                         RootGameData = "gameData";
-        public static    int                            RetryCount   = 2;
-        private          int                            CurrentRetryCount { get; set; }
+        private       FirebaseUser currentUser;
+        private const string       RootGameData = "gameData";
+        public static int          RetryCount   = 2;
+        private       int          CurrentRetryCount { get; set; }
 
-        private void Start()
-        {
-            this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnRemoteConfigFetchedSucceeded);
-            this.signalBus.Subscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
-        }
-
-        private void OnUserDataLoaded()
-        {
-            this.userDataCache =
-                (Dictionary<string, ILocalData>)typeof(BaseHandleUserDataServices).GetField("userDataCache", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(this.handleUserDataServices);
-        }
-
-        private void OnRemoteConfigFetchedSucceeded() { this.IsFirebaseReady = true; }
-
-        public async void Login()
+        public override async UniTask Login()
         {
             if (!this.IsFirebaseReady)
             {
@@ -56,25 +29,14 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
             this.CurrentRetryCount = 0;
 
-            var token = await this.loginServices.SignIn();
+            var token = await this.LoginServices.SignIn();
 
             this.currentUser = await this.SignInWithGoogle(token.Item1, token.Item2);
             this.LoadDataFromDatabase(this.currentUser);
             this.LogMessage(this.currentUser?.Email);
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                this.Login();
-            }
-
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                this.SaveDataToCloud(this.currentUser);
-            }
-        }
+      
 
         private async UniTask<FirebaseUser> SignInWithGoogle(string idToken, string acessToken)
         {
@@ -140,7 +102,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
                 {
                     this.LogMessage("Error: " + task.Exception);
 
-                    this.signalBus.Fire(new UserCloudDataLoadCompletedSignal()
+                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
                     {
                         IsSuccess = false
                     });
@@ -158,14 +120,14 @@ namespace GameModule.SaveLoadGameCloud.Scripts
                     {
                         var key = item.Key.Replace("LD-", "");
 
-                        if (!this.userDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(key)) continue;
+                        if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(key)) continue;
 
                         var value = JsonConvert.DeserializeObject(item.Value.ToString(), value1.GetType());
 
-                        value.CopyTo(this.userDataCache[item.Key]);
+                        value.CopyTo(this.UserDataCache[item.Key]);
                     }
 
-                    this.signalBus.Fire(new UserCloudDataLoadCompletedSignal()
+                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
                     {
                         IsSuccess = true
                     });
@@ -173,13 +135,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             });
         }
 
-        private void OnApplicationPause(bool pauseStatus)
-        {
-            if (!pauseStatus) return;
-            this.SaveDataToCloud(this.currentUser);
-        }
-
-        private void OnApplicationQuit() { this.SaveDataToCloud(this.currentUser); }
+        protected override void SaveData() { this.SaveDataToCloud(this.currentUser); }
 
         private void SaveDataToCloud(FirebaseUser user)
         {
@@ -188,7 +144,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
             var gameData = new Dictionary<string, object>();
 
-            foreach (var kvp in this.userDataCache)
+            foreach (var kvp in this.UserDataCache)
             {
                 if (this.ListIgnoreCloudData.Contains(kvp.Value.GetType().Name)) continue;
 

@@ -846,7 +846,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Android: ADDRESSABLE;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;DOTWEEN;FIREBASE_REMOTE_CONFIG;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED;DUMMY_ANALYTIC;UNITASK_DOTWEEN;TextMeshPro;UITK_EXISTS;FCU_EXISTS;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3;JSONNET_EXISTS
+    Android: ADDRESSABLE;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;DOTWEEN;FIREBASE_REMOTE_CONFIG;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED;DUMMY_ANALYTIC;UNITASK_DOTWEEN;TextMeshPro;UITK_EXISTS;FCU_EXISTS;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3;GOOGLE_LOGIN;UNITY_CLOUD
     EmbeddedLinux: DOTWEEN;TextMeshPro
     GameCoreScarlett: DOTWEEN
     GameCoreXboxOne: DOTWEEN;TextMeshPro
@@ -959,7 +959,13 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -981,11 +987,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 752faf67-0202-4adb-b45a-b034ab44b9b0
+  cloudProjectId: 5e6ae5c2-cd47-42f3-8ef5-97605530a6f8
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: EmptyProject
-  organizationId: hoanghai145
+  projectName: Project Template
+  organizationId: nothing-studioo
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
