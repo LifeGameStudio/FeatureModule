@@ -2,18 +2,22 @@
 
 namespace GameModule.SaveLoadGameCloud.Scripts
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.Services;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameModule.SaveLoadGameCloud.Scripts.Signal;
     using Newtonsoft.Json;
     using Unity.Services.Authentication;
     using Unity.Services.CloudSave;
     using Unity.Services.Core;
+    using IUnityServices = GameModule.SaveLoadGameCloud.Scripts.Interfaces.IUnityServices;
 
-    public class UnityDataCloudServices : BaseHandleDataCloud
+    public class UnityDataCloudServices : BaseHandleDataCloud, IUnityServices
     {
+        public override bool IsSignedIn => AuthenticationService.Instance.IsSignedIn;
+
         protected override async UniTask SaveData()
         {
             if (UnityServices.Instance.State != ServicesInitializationState.Initialized || !AuthenticationService.Instance.IsSignedIn) return;
@@ -49,6 +53,19 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             AuthenticationService.Instance.SignedOut    += this.OnSignedOut;
             AuthenticationService.Instance.SignInFailed += this.OnSignInFailed;
             await AuthenticationService.Instance.SignInWithGoogleAsync(token.Item1);
+        }
+
+        public override async UniTask<Dictionary<string, string>> LoadData(bool forceOverrideToLocal = false)
+        {
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
+                {
+                    IsSuccess = false
+                });
+                return new Dictionary<string, string>();
+            }
+
             //Load Data
             var keys = new HashSet<string>();
 
@@ -58,23 +75,93 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             }
 
             var gameDatas = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
+            var result    = new Dictionary<string, string>();
 
             foreach (var item in gameDatas)
             {
                 var key = item.Key.Replace("LD-", "");
 
-                if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(key))
-                    continue;
-
                 if (item.Value?.Value == null)
                     continue;
 
                 var jsonString = JsonConvert.SerializeObject(item.Value.Value);
-                var value      = JsonConvert.DeserializeObject(jsonString, value1.GetType());
 
-                value.CopyTo(this.UserDataCache[item.Key]);
-                this.LogMessage($"Data Loaded from cloud {item.Key}");
+                result.Add(key, jsonString);
             }
+
+            if (forceOverrideToLocal)
+            {
+                foreach (var item in result)
+                {
+                    if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(item.Key))
+                        continue;
+
+                    var value = JsonConvert.DeserializeObject(item.Value, value1.GetType());
+
+                    value.CopyTo(this.UserDataCache[item.Key]);
+                    this.LogMessage($"Data Loaded from cloud {item.Key}");
+                }
+            }
+
+            this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
+            {
+                IsSuccess = true
+            });
+
+            return result;
+        }
+
+        public async UniTask LinkGoogleAccount(bool isForce, Action<AuthenticationException> authenticationException = null, Action<RequestFailedException> requestFailedException = null,
+            Action onComplete = null)
+        {
+            try
+            {
+                var token = await this.LoginServices.SignIn();
+                await AuthenticationService.Instance.LinkWithGoogleAsync(token.Item1, new LinkOptions() { ForceLink = isForce });
+                await this.SaveData();
+                onComplete?.Invoke();
+            }
+            catch (AuthenticationException e)
+            {
+                this.LogMessage($"Authentication error: {e.Message}");
+                authenticationException?.Invoke(e);
+            }
+            catch (RequestFailedException e)
+            {
+                this.LogMessage($"Request failed: {e.Message}");
+                requestFailedException?.Invoke(e);
+            }
+            catch (Exception e)
+            {
+                this.LogMessage($"Unexpected error: {e.Message}");
+            }
+        }
+
+        public bool IsGoogleLinked()
+        {
+            var playerInfo = AuthenticationService.Instance.PlayerInfo;
+
+            if (playerInfo == null)
+            {
+                this.LogMessage("PlayerInfo is null. User may not be signed in.");
+
+                return false;
+            }
+
+            var identities = playerInfo.GetGoogleId();
+
+            return !string.IsNullOrEmpty(identities);
+        }
+
+        public override UniTask Logout()
+        {
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                AuthenticationService.Instance.SignOut();
+                this.LogMessage("Signed Out");
+            }
+
+            return UniTask.CompletedTask;
         }
 
         private void OnSignedIn() { this.LogMessage($"Signed In {AuthenticationService.Instance.PlayerId}"); }

@@ -1,4 +1,5 @@
 ﻿#if FIREBASE_DATA_CLOUD
+
 namespace GameModule.SaveLoadGameCloud.Scripts
 {
     using System.Collections.Generic;
@@ -11,7 +12,6 @@ namespace GameModule.SaveLoadGameCloud.Scripts
     using GameModule.SaveLoadGameCloud.Scripts.Signal;
     using Newtonsoft.Json;
     using UnityEngine;
-    using Zenject;
 
     public class FirebaseDataCloudServices : BaseHandleDataCloud
     {
@@ -32,11 +32,65 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             var token = await this.LoginServices.SignIn();
 
             this.currentUser = await this.SignInWithGoogle(token.Item1, token.Item2);
-            this.LoadDataFromDatabase(this.currentUser);
+
             this.LogMessage(this.currentUser?.Email);
         }
 
-      
+        public override async UniTask<Dictionary<string, string>> LoadData(bool forceOverrideToLocal = false)
+        {
+            if (this.currentUser == null)
+                return new Dictionary<string, string>();
+
+            var result            = new Dictionary<string, string>();
+            var databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+
+            databaseReference.Child("users").Child(this.currentUser.UserId).Child(RootGameData).GetValueAsync().ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    this.LogMessage("Error: " + task.Exception);
+
+                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
+                    {
+                        IsSuccess = false
+                    });
+                }
+                else if (task.IsCompleted)
+                {
+                    var snapshot = task.Result;
+                    var data     = snapshot.GetValue(true);
+
+                    if (data == null) return;
+
+                    var dataDic = (Dictionary<string, object>)data;
+
+                    foreach (var item in dataDic)
+                    {
+                        var key = item.Key.Replace("LD-", "");
+                        result.Add(key, item.Value.ToString());
+                    }
+
+                    if (forceOverrideToLocal)
+                    {
+                        foreach (var item in result)
+                        {
+                            if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(item.Key)) continue;
+
+                            var value = JsonConvert.DeserializeObject(item.Value.ToString(), value1.GetType());
+
+                            value.CopyTo(this.UserDataCache[item.Key]);
+                        }
+                    }
+
+                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
+                    {
+                        IsSuccess = true
+                    });
+                }
+            });
+
+            return result;
+        }
 
         private async UniTask<FirebaseUser> SignInWithGoogle(string idToken, string acessToken)
         {
@@ -91,51 +145,12 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             return user;
         }
 
-        private void LoadDataFromDatabase(FirebaseUser user)
+        protected override UniTask SaveData()
         {
-            if (this.currentUser == null) return;
-            var databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
+            this.SaveDataToCloud(this.currentUser);
 
-            databaseReference.Child("users").Child(user.UserId).Child(RootGameData).GetValueAsync().ContinueWith(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    this.LogMessage("Error: " + task.Exception);
-
-                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
-                    {
-                        IsSuccess = false
-                    });
-                }
-                else if (task.IsCompleted)
-                {
-                    var snapshot = task.Result;
-                    var data     = snapshot.GetValue(true);
-
-                    if (data == null) return;
-
-                    var dataDic = (Dictionary<string, object>)data;
-
-                    foreach (var item in dataDic)
-                    {
-                        var key = item.Key.Replace("LD-", "");
-
-                        if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(key)) continue;
-
-                        var value = JsonConvert.DeserializeObject(item.Value.ToString(), value1.GetType());
-
-                        value.CopyTo(this.UserDataCache[item.Key]);
-                    }
-
-                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
-                    {
-                        IsSuccess = true
-                    });
-                }
-            });
+            return UniTask.CompletedTask;
         }
-
-        protected override void SaveData() { this.SaveDataToCloud(this.currentUser); }
 
         private void SaveDataToCloud(FirebaseUser user)
         {
@@ -165,4 +180,5 @@ namespace GameModule.SaveLoadGameCloud.Scripts
         }
     }
 }
+
 #endif

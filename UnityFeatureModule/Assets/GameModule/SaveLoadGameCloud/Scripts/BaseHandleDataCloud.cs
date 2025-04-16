@@ -52,7 +52,7 @@
 
         protected virtual void OnApplicationPause(bool pauseStatus)
         {
-            if(!pauseStatus)return;
+            if (!pauseStatus) return;
             this.SaveData();
         }
 
@@ -61,5 +61,11 @@
         protected abstract UniTask SaveData();
 
         public abstract UniTask Login();
+
+        public abstract UniTask<Dictionary<string, string>> LoadData(bool forceOverrideToLocal = false);
+
+        public virtual UniTask Logout() { return UniTask.CompletedTask; }
+
+        public virtual bool IsSignedIn { get; }
     }
 }

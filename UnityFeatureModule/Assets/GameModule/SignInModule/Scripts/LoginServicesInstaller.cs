@@ -1,9 +1,14 @@
 ﻿namespace GameModule.SignInModule.Scripts
 {
+    using UnityEngine.Scripting;
     using Zenject;
 
     public class LoginServicesInstaller : Installer<LoginServicesInstaller>
     {
+        [Preserve]
+        public LoginServicesInstaller() {
+        }
+
         public override void InstallBindings()
         {
 #if GOOGLE_LOGIN
