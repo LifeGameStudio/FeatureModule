@@ -2,7 +2,7 @@
   "name": "com.saveload.cloud",
   "version": "1.0.0",
   "displayName": "GameModule.saveload",
-  "gitDependencies": {
-    "com.signin.module": "https://github.com/LifeGameStudio/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/SignInModule"
+  "dependencies": {
+    
   }
 }
