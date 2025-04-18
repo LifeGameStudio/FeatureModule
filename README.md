@@ -27,7 +27,7 @@ From the dropdown, select Add package from git URL....
 A text field will appear where you can paste the Git URL of the specific package. For example, to add a package named `[Package-to-use]` from your GitHub repository, use the following URL:
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/[Package-to-use]
+https://github.com/LifeGameStudio/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/[Package-to-use]
 ```
 
 Replace <code>[Package-to-use]</code> with the specific folder name of the package you'd like to include.
@@ -39,7 +39,7 @@ Example Usage
 To use the `Daily Reward` package, for example, you would follow the same steps and insert the following URL:
 
 ```
-https://github.com/NotthingStudioo/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward
+https://github.com/LifeGameStudio/FeatureModule.git?path=UnityFeatureModule/Assets/GameModule/DailyReward
 ```
 
 This will install the Daily Reward system into your project, ready for use!
