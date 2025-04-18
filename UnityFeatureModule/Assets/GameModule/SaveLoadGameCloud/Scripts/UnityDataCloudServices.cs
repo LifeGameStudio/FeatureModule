@@ -16,7 +16,8 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
     public class UnityDataCloudServices : BaseHandleDataCloud, IUnityServices
     {
-        public override bool IsSignedIn => AuthenticationService.Instance.IsSignedIn;
+        public override bool   IsSignedIn => AuthenticationService.Instance.IsSignedIn;
+        public override string UserId     => AuthenticationService.Instance.PlayerId;
 
         protected override async UniTask SaveData()
         {
@@ -25,7 +26,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
             foreach (var kvp in this.UserDataCache)
             {
-                if (this.ListIgnoreCloudData.Contains(kvp.Value.GetType().Name)) continue;
+                if (!this.ListSaveData.Contains(kvp.Value.GetType().Name)) continue;
 
                 gameData[kvp.Key] = kvp.Value;
             }
@@ -55,7 +56,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             await AuthenticationService.Instance.SignInWithGoogleAsync(token.Item1);
         }
 
-        public override async UniTask<Dictionary<string, string>> LoadData(bool forceOverrideToLocal = false)
+        public override async UniTask<Dictionary<string, string>> LoadData()
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
@@ -63,6 +64,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
                 {
                     IsSuccess = false
                 });
+
                 return new Dictionary<string, string>();
             }
 
@@ -88,27 +90,27 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
                 result.Add(key, jsonString);
             }
-
-            if (forceOverrideToLocal)
-            {
-                foreach (var item in result)
-                {
-                    if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(item.Key))
-                        continue;
-
-                    var value = JsonConvert.DeserializeObject(item.Value, value1.GetType());
-
-                    value.CopyTo(this.UserDataCache[item.Key]);
-                    this.LogMessage($"Data Loaded from cloud {item.Key}");
-                }
-            }
-
             this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
             {
                 IsSuccess = true
             });
-
             return result;
+        }
+
+        public override UniTask SaveDataFromCloudToLocal(Dictionary<string, string> input)
+        {
+            foreach (var item in input)
+            {
+                if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListSaveData.Contains(item.Key))
+                    continue;
+
+                var value = JsonConvert.DeserializeObject(item.Value, value1.GetType());
+
+                value.CopyTo(this.UserDataCache[item.Key]);
+                this.LogMessage($"Data Loaded from cloud {item.Key}");
+            }
+
+            return UniTask.CompletedTask;
         }
 
         public async UniTask LinkGoogleAccount(bool isForce, Action<AuthenticationException> authenticationException = null, Action<RequestFailedException> requestFailedException = null,
@@ -158,6 +160,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             if (AuthenticationService.Instance.IsSignedIn)
             {
                 AuthenticationService.Instance.SignOut();
+                this.LoginServices.ClearSession();
                 this.LogMessage("Signed Out");
             }
 

@@ -36,7 +36,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             this.LogMessage(this.currentUser?.Email);
         }
 
-        public override async UniTask<Dictionary<string, string>> LoadData(bool forceOverrideToLocal = false)
+        public override async UniTask<Dictionary<string, string>> LoadData()
         {
             if (this.currentUser == null)
                 return new Dictionary<string, string>();
@@ -44,7 +44,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             var result            = new Dictionary<string, string>();
             var databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
 
-            databaseReference.Child("users").Child(this.currentUser.UserId).Child(RootGameData).GetValueAsync().ContinueWith(task =>
+            await databaseReference.Child("users").Child(this.currentUser.UserId).Child(RootGameData).GetValueAsync().ContinueWith(task =>
             {
                 if (task.IsFaulted)
                 {
@@ -69,28 +69,32 @@ namespace GameModule.SaveLoadGameCloud.Scripts
                         var key = item.Key.Replace("LD-", "");
                         result.Add(key, item.Value.ToString());
                     }
-
-                    if (forceOverrideToLocal)
-                    {
-                        foreach (var item in result)
-                        {
-                            if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || this.ListIgnoreCloudData.Contains(item.Key)) continue;
-
-                            var value = JsonConvert.DeserializeObject(item.Value.ToString(), value1.GetType());
-
-                            value.CopyTo(this.UserDataCache[item.Key]);
-                        }
-                    }
-
-                    this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
-                    {
-                        IsSuccess = true
-                    });
                 }
             });
 
             return result;
         }
+
+        public override UniTask SaveDataFromCloudToLocal(Dictionary<string, string> input)
+        {
+            foreach (var item in input)
+            {
+                if (!this.UserDataCache.TryGetValue(item.Key, out var value1) || !this.ListSaveData.Contains(item.Key)) continue;
+
+                var value = JsonConvert.DeserializeObject(item.Value, value1.GetType());
+
+                value.CopyTo(this.UserDataCache[item.Key]);
+            }
+
+            this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
+            {
+                IsSuccess = true
+            });
+
+            return UniTask.CompletedTask;
+        }
+
+        public override string UserId => this.currentUser?.UserId;
 
         private async UniTask<FirebaseUser> SignInWithGoogle(string idToken, string acessToken)
         {
@@ -161,7 +165,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
             foreach (var kvp in this.UserDataCache)
             {
-                if (this.ListIgnoreCloudData.Contains(kvp.Value.GetType().Name)) continue;
+                if (!this.ListSaveData.Contains(kvp.Value.GetType().Name)) continue;
 
                 gameData[kvp.Key] = JsonConvert.SerializeObject(kvp.Value);
             }

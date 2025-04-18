@@ -17,8 +17,8 @@
         [Inject] protected IHandleUserDataServices        HandleUserDataServices;
         [Inject] protected ILoginServices                 LoginServices;
         [Inject] protected ISignalBus                     SignalBus;
-        [Inject] protected List<string>                   ListIgnoreCloudData { get; set; }
-        protected          bool                           IsFirebaseReady     { get; set; }
+        [Inject] protected List<string>                   ListSaveData    { get; set; }
+        protected          bool                           IsFirebaseReady { get; set; }
         protected          Dictionary<string, ILocalData> UserDataCache = new();
 
         protected virtual void Awake() { }
@@ -62,10 +62,12 @@
 
         public abstract UniTask Login();
 
-        public abstract UniTask<Dictionary<string, string>> LoadData(bool forceOverrideToLocal = false);
+        public abstract UniTask<Dictionary<string, string>> LoadData();
+        public abstract UniTask                             SaveDataFromCloudToLocal(Dictionary<string, string> input);
 
         public virtual UniTask Logout() { return UniTask.CompletedTask; }
 
-        public virtual bool IsSignedIn { get; }
+        public virtual  bool   IsSignedIn { get; }
+        public abstract string UserId     { get; }
     }
 }

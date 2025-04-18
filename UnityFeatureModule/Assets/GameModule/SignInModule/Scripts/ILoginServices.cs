@@ -4,7 +4,9 @@
 
     public interface ILoginServices
     {
-        UniTask<(string,string)> SignIn();
-        void                     ClearSession();
+        UniTask<(string, string)> SignIn();
+        void                      ClearSession();
+
+        bool IsSignedIn { get; }
     }
 }
