@@ -149,7 +149,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             return user;
         }
 
-        protected override UniTask SaveData()
+        public override UniTask SaveDataFromLocalToCloud()
         {
             this.SaveDataToCloud(this.currentUser);
 

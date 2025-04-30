@@ -19,7 +19,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
         public override bool   IsSignedIn => AuthenticationService.Instance.IsSignedIn;
         public override string UserId     => AuthenticationService.Instance.PlayerId;
 
-        protected override async UniTask SaveData()
+        public override async UniTask SaveDataFromLocalToCloud()
         {
             if (UnityServices.Instance.State != ServicesInitializationState.Initialized || !AuthenticationService.Instance.IsSignedIn) return;
             var gameData = new Dictionary<string, object>();
@@ -90,10 +90,12 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
                 result.Add(key, jsonString);
             }
+
             this.SignalBus.Fire(new UserCloudDataLoadCompletedSignal()
             {
                 IsSuccess = true
             });
+
             return result;
         }
 
@@ -120,7 +122,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             {
                 var token = await this.LoginServices.SignIn();
                 await AuthenticationService.Instance.LinkWithGoogleAsync(token.Item1, new LinkOptions() { ForceLink = isForce });
-                await this.SaveData();
+                await this.SaveDataFromLocalToCloud();
                 onComplete?.Invoke();
             }
             catch (AuthenticationException e)
@@ -136,6 +138,14 @@ namespace GameModule.SaveLoadGameCloud.Scripts
             catch (Exception e)
             {
                 this.LogMessage($"Unexpected error: {e.Message}");
+            }
+        }
+
+        public async UniTask UpdatePlayerName(string name)
+        {
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                AuthenticationService.Instance.UpdatePlayerNameAsync(name);
             }
         }
 

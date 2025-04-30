@@ -8,6 +8,7 @@
         UniTask                            Login();
         UniTask<Dictionary<string,string>> LoadData();
         UniTask                            SaveDataFromCloudToLocal(Dictionary<string,string> input);
+        UniTask                            SaveDataFromLocalToCloud();
         UniTask                            Logout();
         
         bool   IsSignedIn { get; }

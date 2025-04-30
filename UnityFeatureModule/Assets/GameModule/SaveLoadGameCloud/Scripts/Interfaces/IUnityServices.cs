@@ -11,6 +11,8 @@ namespace GameModule.SaveLoadGameCloud.Scripts.Interfaces
     {
         UniTask LinkGoogleAccount(bool isForce, Action<AuthenticationException> authenticationException = null, Action<RequestFailedException> requestFailedException = null,
             Action onComplete = null);
+        
+        UniTask UpdatePlayerName(string name);
     }
 }
 #endif

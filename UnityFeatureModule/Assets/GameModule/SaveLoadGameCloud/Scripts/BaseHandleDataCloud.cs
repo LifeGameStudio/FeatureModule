@@ -46,19 +46,19 @@
 
             if (Input.GetKeyDown(KeyCode.D))
             {
-                this.SaveData();
+                this.SaveDataFromLocalToCloud();
             }
         }
 
         protected virtual void OnApplicationPause(bool pauseStatus)
         {
             if (!pauseStatus) return;
-            this.SaveData();
+            this.SaveDataFromLocalToCloud();
         }
 
-        protected virtual void OnApplicationQuit() { this.SaveData(); }
+        protected virtual void OnApplicationQuit() { this.SaveDataFromLocalToCloud(); }
 
-        protected abstract UniTask SaveData();
+        public abstract UniTask SaveDataFromLocalToCloud();
 
         public abstract UniTask Login();
 
