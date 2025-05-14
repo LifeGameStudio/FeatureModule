@@ -1,0 +1,6 @@
+{
+  "name": "com.runtime.csv.loader.module",
+  "version": "1.0.1",
+  "displayName": "GameModule.RuntimeCsvFromDrive",
+  "dependencies": {}
+}

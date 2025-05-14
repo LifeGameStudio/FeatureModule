@@ -6,6 +6,7 @@ namespace Game.Scripts.Installer.Project
     using Game.Scripts.Services;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameModule.RuntimeCsvFromDrive.Scripts;
     using GameModule.SaveLoadGameCloud.Scripts;
     using GameModule.SignInModule.Scripts;
     using UnityEngine.EventSystems;
@@ -27,8 +28,9 @@ namespace Game.Scripts.Installer.Project
             // QuestInstaller.Install(this.Container);
             // TimeMarkInstaller.Install(this.Container);
             // UnitTestInstaller<TimeMarkTest>.Install(this.Container);
-            LoginServicesInstaller.Install(this.Container);
-            SaveLoadCloudInstaller.Install(this.Container, new List<string>() { "BlueprintInfoData" });
+            // LoginServicesInstaller.Install(this.Container);
+            // SaveLoadCloudInstaller.Install(this.Container, new List<string>() { "BlueprintInfoData" });
+            RuntimeLoadCsvInstaller.Install(this.Container);
         }
     }
 }

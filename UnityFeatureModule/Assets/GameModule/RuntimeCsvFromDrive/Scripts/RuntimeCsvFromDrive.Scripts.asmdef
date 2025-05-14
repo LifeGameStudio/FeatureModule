@@ -1,0 +1,22 @@
+{
+    "name": "RuntimeCsvFromDrive.Scripts",
+    "rootNamespace": "",
+    "references": [
+        "Zenject",
+        "Zenject-Signals",
+        "UniTask",
+        "GameFoundation.AssetLibrary",
+        "GameFoundation.BlueprintFlow",
+        "GameFoundation.Utilities",
+        "Features.Scripts"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -6,7 +6,7 @@
     using FeatureTemplate.Scripts.RewardHandle;
     using GameModule.Condition;
 
-    [BlueprintReader("Shop")]
+    [BlueprintReader("Shop",blueprintScope:BlueprintScope.Ignore)]
     public class ShopBlueprint : GenericBlueprintReaderByRow<string, ShopRecord>
     {
         public string GetIconPath(ITransactionRecord record)

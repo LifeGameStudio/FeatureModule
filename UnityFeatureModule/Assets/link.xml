@@ -1,0 +1,11 @@
+<linker>
+  <assembly fullname="Google.Apis.Auth">
+    <type fullname="Google.Apis.Auth.OAuth2.JsonCredentialParameters" preserve="all"/>
+    <type fullname="Google.Apis.Auth.OAuth2.ServiceAccountCredential" preserve="all"/>
+    <type fullname="Google.Apis.Auth.OAuth2.GoogleCredential" preserve="all"/>
+  </assembly>
+  <assembly fullname="Google.Apis.Core">
+    <type fullname="Google.Apis.Util.Store.FileDataStore" preserve="all"/>
+  </assembly>
+  <assembly fullname="System.Runtime.Serialization" preserve="all"/>
+</linker>
