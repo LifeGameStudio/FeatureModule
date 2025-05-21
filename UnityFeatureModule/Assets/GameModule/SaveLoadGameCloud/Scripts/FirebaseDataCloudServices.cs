@@ -66,7 +66,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
                     foreach (var item in dataDic)
                     {
-                        var key = item.Key.Replace("LD-", "");
+                        var key = item.Key;
                         result.Add(key, item.Value.ToString());
                     }
                 }

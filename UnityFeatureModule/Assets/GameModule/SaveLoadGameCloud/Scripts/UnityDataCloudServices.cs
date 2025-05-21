@@ -81,7 +81,7 @@ namespace GameModule.SaveLoadGameCloud.Scripts
 
             foreach (var item in gameDatas)
             {
-                var key = item.Key.Replace("LD-", "");
+                var key = item.Key;
 
                 if (item.Value?.Value == null)
                     continue;
