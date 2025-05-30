@@ -49,9 +49,9 @@
             }
         }
 
-        private async UniTask LoadToTalSheet(Dictionary<string, string> input)
+        protected virtual async UniTask LoadToTalSheet(Dictionary<string, string> input)
         {
-            this.builderConfig = new BuilderConfigBlueprint();            
+            this.builderConfig = new BuilderConfigBlueprint();
             var service = this.GetSheetsService();
 
             var listSheets = await this.GetAllSheetWithSpreadSheet(service);
@@ -94,7 +94,7 @@
             return base.CheckToLoadCsv(listRawBlueprints, bpAttribute, false, attributeMode);
         }
 
-        private string GetDataFromSheetName(string sheetName, Dictionary<string, ValueRange> allSheetDatas)
+        protected virtual string GetDataFromSheetName(string sheetName, Dictionary<string, CustomValueRange> allSheetDatas)
         {
             var csvOutput = "";
 
@@ -125,7 +125,7 @@
             return csvOutput;
         }
 
-        private string EscapeCsvValue(string value)
+        protected virtual string EscapeCsvValue(string value)
         {
             if (string.IsNullOrEmpty(value))
                 return string.Empty;
@@ -139,7 +139,7 @@
             return value;
         }
 
-        private async UniTask<Dictionary<string, ValueRange>> GetAllDataForAllSheet(List<Sheet> sheets, string spreadsheetId, SheetsService service)
+        protected virtual async UniTask<Dictionary<string, CustomValueRange>> GetAllDataForAllSheet(List<Sheet> sheets, string spreadsheetId, SheetsService service)
         {
             const int batchSize        = 50;
             var       valueRangeDict   = new Dictionary<string, ValueRange>();
@@ -195,10 +195,22 @@
                 await UniTask.Delay(100);
             }
 
-            return valueRangeDict;
+            var input = valueRangeDict.ToDictionary(kvp => kvp.Key, kvp => new CustomValueRange
+            {
+                Values         = kvp.Value.Values,
+                ETag           = kvp.Value.ETag,
+                Range          = kvp.Value.Range,
+                MajorDimension = kvp.Value.MajorDimension
+            });
+
+            this.GetCustomValueRange(input);
+
+            return input;
         }
 
-        private string GetColumnName(int columnIndex)
+        protected virtual void GetCustomValueRange(Dictionary<string, CustomValueRange> input) { }
+
+        protected virtual string GetColumnName(int columnIndex)
         {
             columnIndex--;
             var columnName = "";
@@ -213,7 +225,7 @@
             return columnName;
         }
 
-        private async UniTask<List<Sheet>> GetAllSheetWithSpreadSheet(SheetsService services, string spreadSheetId = null)
+        protected virtual async UniTask<List<Sheet>> GetAllSheetWithSpreadSheet(SheetsService services, string spreadSheetId = null)
         {
             spreadSheetId ??= this.csvLoaderData.SpreadSheetId;
             var request  = services.Spreadsheets.Get(spreadSheetId);
@@ -223,7 +235,7 @@
             return sheets.ToList();
         }
 
-        private SheetsService GetSheetsService()
+        protected virtual SheetsService GetSheetsService()
         {
             var json   = this.csvLoaderData.ServicesAccount;
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
