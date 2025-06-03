@@ -9,7 +9,7 @@
         "GameFoundation.BlueprintFlow",
         "GameFoundation.Utilities",
         "Features.Scripts",
-        "SyncCSVWithGoogle"
+        "SyncGoogleDrive"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
