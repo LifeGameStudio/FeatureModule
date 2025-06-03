@@ -12,7 +12,6 @@
         public override void InstallBindings()
         {
             this.Container.Rebind<BlueprintReaderManager>().To<RuntimeBlueprintReaderManager>().AsCached();
-            this.Container.Bind<CsvLoaderData>().FromScriptableObjectResource(nameof(CsvLoaderData)).WhenInjectedInto<RuntimeBlueprintReaderManager>();
         }
     }
 }

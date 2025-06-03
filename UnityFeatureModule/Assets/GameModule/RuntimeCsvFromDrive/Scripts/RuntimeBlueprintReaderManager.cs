@@ -16,23 +16,24 @@
     using Google.Apis.Services;
     using Google.Apis.Sheets.v4;
     using Google.Apis.Sheets.v4.Data;
+    using UnityEngine;
     using UnityEngine.Scripting;
     using Zenject;
 
     public class RuntimeBlueprintReaderManager : BlueprintReaderManager
     {
-        private readonly CsvLoaderData          csvLoaderData;
-        private readonly ILogService            logService;
-        private readonly BlueprintConfig        blueprintConfig;
-        private          BuilderConfigBlueprint builderConfig;
+        private readonly FeatureSyncCsvWithGoogleDriver csvLoaderData;
+        private readonly ILogService                    logService;
+        private readonly BlueprintConfig                blueprintConfig;
+        private          BuilderConfigBlueprint         builderConfig;
 
         [Preserve]
-        public RuntimeBlueprintReaderManager(ISignalBus signalBus, CsvLoaderData csvLoaderData, ILogService logService, DiContainer diContainer, IHandleUserDataServices handleUserDataServices,
+        public RuntimeBlueprintReaderManager(ISignalBus signalBus, ILogService logService, DiContainer diContainer, IHandleUserDataServices handleUserDataServices,
             BlueprintConfig blueprintConfig,
             FetchBlueprintInfo fetchBlueprintInfo, BlueprintDownloader blueprintDownloader) : base(signalBus, logService, diContainer, handleUserDataServices, blueprintConfig, fetchBlueprintInfo,
             blueprintDownloader)
         {
-            this.csvLoaderData   = csvLoaderData;
+            this.csvLoaderData   = Resources.Load<FeatureSyncCsvWithGoogleDriver>("SyncGoogleDriver");
             this.logService      = logService;
             this.blueprintConfig = blueprintConfig;
         }
@@ -56,9 +57,9 @@
 
             var listSheets = await this.GetAllSheetWithSpreadSheet(service);
 
-            var allData = await this.GetAllDataForAllSheet(listSheets, this.csvLoaderData.SpreadSheetId, service);
+            var allData = await this.GetAllDataForAllSheet(listSheets, this.csvLoaderData.syncDataInfo.SpreadSheetId, service);
 
-            var csvBuilder = this.GetDataFromSheetName(this.csvLoaderData.BuilderConfig,
+            var csvBuilder = this.GetDataFromSheetName(this.csvLoaderData.syncDataInfo.SheetBuilderConfig,
                 allData);
 
             await this.builderConfig.DeserializeFromCsv(csvBuilder);
@@ -227,7 +228,7 @@
 
         protected virtual async UniTask<List<Sheet>> GetAllSheetWithSpreadSheet(SheetsService services, string spreadSheetId = null)
         {
-            spreadSheetId ??= this.csvLoaderData.SpreadSheetId;
+            spreadSheetId ??= this.csvLoaderData.syncDataInfo.SpreadSheetId;
             var request  = services.Spreadsheets.Get(spreadSheetId);
             var response = await request.ExecuteAsync();
             var sheets   = response.Sheets;
@@ -237,7 +238,7 @@
 
         protected virtual SheetsService GetSheetsService()
         {
-            var json   = this.csvLoaderData.ServicesAccount;
+            var json   = this.csvLoaderData.syncDataInfo.ServicesAccountJson;
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 
             var credential = GoogleCredential.FromStream(stream)
