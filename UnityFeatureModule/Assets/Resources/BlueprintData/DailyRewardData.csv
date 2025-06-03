@@ -1,4 +1,4 @@
-﻿Id,DayIndex,Title,Description,ShowAdsNextDay,RId,RewardId,RewardType,IconPath,RewardValue
+Id,DayIndex,Title,Description,ShowAdsNextDay,RId,RewardId,RewardType,IconPath,RewardValue
 1,1,,,true,1,add_currency,coin,32x32 1,1
 ,,,,true,2,add_currency,gem,32x32 1,10
 2,2,,,true,3,add_currency,coin,32x32 1,2

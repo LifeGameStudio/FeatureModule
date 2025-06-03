@@ -1,15 +1,17 @@
 ﻿namespace GameModule.QuestModule.Signals
 {
+    using System.Collections.Generic;
+
     public class TrackingQuestSignal
     {
-        public string RequirementType  { get; }
-        public string RequirementId    { get; }
-        public int    RequirementValue { get; }
+        public string       RequirementType  { get; }
+        public List<string> RequirementIds   { get; }
+        public int          RequirementValue { get; }
 
-        public TrackingQuestSignal(string requirementType, string requirementId, int requirementValue)
+        public TrackingQuestSignal(string requirementType, List<string> requirementIds, int requirementValue)
         {
             this.RequirementType  = requirementType;
-            this.RequirementId    = requirementId;
+            this.RequirementIds   = requirementIds;
             this.RequirementValue = requirementValue;
         }
     }

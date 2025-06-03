@@ -1,5 +1,5 @@
-﻿Id,Title,Description,NextMissions,TimeLimit,RId,RewardId,IconPath,RewardType,RewardValue,ConditionId,ConditionType,ConditionParam
+Id,Title,Description,NextMissions,TimeLimit,RId,RewardId,IconPath,RewardType,RewardValue,ConditionId,ConditionType,ConditionParam
 0,Complete the mission,loa loa loa loa loa loa loa,"1,2,3",10000,0,add_currency,32x32 1,coin,10,Level,,10
 1,Kumplit da misson,ola ola ola ola ola,"2,3",10000,1,add_currency,32x32 1,coin,10,Level,,10
-2,Defeat the boss,Destroy the final boss to claim victory,"3",15000,2,add_currency,32x32 1,gold,50,"",,""
-3,Collect all treasures,Find and collect all hidden treasures within the level,,20000,3,add_currency,32x32 1,gem,25,"","",""
+2,Defeat the boss,Destroy the final boss to claim victory,3,15000,2,add_currency,32x32 1,gold,50
+3,Collect all treasures,Find and collect all hidden treasures within the level,,20000,3,add_currency,32x32 1,gem,25

@@ -1,6 +1,6 @@
 ﻿namespace GameModule.QuestModule.Signals
 {
-    using global::Blueprints;
+    using GameModule.QuestModule.Blueprints;
 
     public class ShowQuestInfoPopupSignal
     {

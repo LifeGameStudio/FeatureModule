@@ -6,6 +6,7 @@ namespace Game.Scripts.Installer.Project
     using Game.Scripts.Services;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameModule.QuestModule;
     using GameModule.RuntimeCsvFromDrive.Scripts;
     using GameModule.SaveLoadGameCloud.Scripts;
     using GameModule.SignInModule.Scripts;
@@ -25,7 +26,7 @@ namespace Game.Scripts.Installer.Project
             //EventSystem
             this.Container.Bind<EventSystem>().FromComponentInNewPrefabResource("EventSystem").AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<GameDataState>().AsCached().NonLazy();
-            // QuestInstaller.Install(this.Container);
+            QuestInstaller.Install(this.Container);
             // TimeMarkInstaller.Install(this.Container);
             // UnitTestInstaller<TimeMarkTest>.Install(this.Container);
             // LoginServicesInstaller.Install(this.Container);

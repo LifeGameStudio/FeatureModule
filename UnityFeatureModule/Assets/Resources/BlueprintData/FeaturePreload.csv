@@ -1,2 +1,2 @@
 Id,SourceScene,IsManuallyLoadOnly,IsStartLoad,TargetScene,ListGameObject,ListTextures,ListSprite,ListScriptableObject,ListTextAssets,ListAudioClips
-1,0.LoadingScene,false,true,1.MainScene,MainScreenView,,,,,
+1,0.LoadingScene,false,true,1.MainScene,MainScreenView

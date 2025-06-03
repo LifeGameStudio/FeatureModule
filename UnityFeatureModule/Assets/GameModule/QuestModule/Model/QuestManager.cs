@@ -1,44 +1,34 @@
-﻿namespace GameModule.QuestModule.Model
+﻿namespace UserData
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using ClaimReward;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
     using FeatureTemplate.Scripts.RewardHandle;
-    using FeatureTemplate.Scripts.Services;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameModule.QuestModule.Blueprints;
+    using GameModule.QuestModule.Model;
+    using GameModule.QuestModule.Provider;
     using GameModule.QuestModule.Signals;
-    using global::Blueprints;
-    using global::QuestModule.Provider;
     using Zenject;
-    using RewardRecord = FeatureTemplate.Scripts.RewardHandle.RewardRecord;
 
     public class QuestManager : IFeatureControllerData
     {
-        private readonly FeatureRewardHandler featureRewardHandler;
-        private readonly FeatureDataState     featureDataState;
-        private readonly QuestJournal         data;
-        private readonly ISignalBus            signalBus;
-        private readonly ScreenManager        screenManager;
-        public           QuestJournal         QuestJournal => this.data;
+        private readonly QuestJournal Data;
+        private readonly ISignalBus   signalBus;
+        public           QuestJournal QuestJournal => this.Data;
 
-        public Dictionary<string, Dictionary<string, int>> TrackingCached => this.data.TrackingCached;
-
-        public QuestManager(FeatureRewardHandler featureRewardHandler, FeatureDataState featureDataState, QuestJournal data, ISignalBus signalBus, ScreenManager screenManager)
+        public QuestManager(QuestJournal questJournal, ISignalBus signalBus)
         {
-            this.featureRewardHandler = featureRewardHandler;
-            this.featureDataState     = featureDataState;
-            this.data                 = data;
-            this.signalBus            = signalBus;
-            this.screenManager        = screenManager;
+            this.Data      = questJournal;
+            this.signalBus = signalBus;
         }
 
-        public async void LoadRecord(IQuestProvider questProvider)
+        public async UniTask LoadRecord(IQuestProvider questProvider)
         {
-            await UniTask.WaitUntil((() => this.featureDataState.IsBlueprintAndLocalDataLoaded));
+            await UniTask.WaitUntil((() => this.Data != null));
 
-            foreach (var q in this.data.Quests.Where(x => x.Value.QuestProviderType == questProvider.QuestProviderType))
+            foreach (var q in this.Data.Quests.Where(x => x.Value.QuestProviderType == questProvider.QuestProviderType))
             {
                 var questRecord = questProvider.GetQuestRecord(q.Value.QuestId, q.Value.ProviderId);
 
@@ -52,65 +42,51 @@
             }
         }
 
-        /// <summary>
-        /// Check Quest Accepted (for side quest)
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="providerId"></param>
-        /// <returns></returns>
-        public bool CheckQuestAccepted(string id, string providerId)
+        public void ClearSideQuest()
         {
-            return this.data.Quests.Where(x => x.Value.QuestId.Equals(id)
+            var keyToRemove = new List<string>();
+
+            foreach (var q in this.Data.Quests)
+            {
+                if (q.Value.QuestProviderType == QuestProviderType.Side)
+                {
+                    keyToRemove.Add(q.Key);
+                }
+            }
+
+            foreach (var key in keyToRemove)
+            {
+                this.Data.Quests.Remove(key);
+            }
+        }
+
+        public bool CheckQuestAccepted(string questId, string providerId)
+        {
+            return this.Data.Quests.Where(x => x.Value.QuestId.Equals(questId)
                                                && x.Value.ProviderId.Equals(providerId)).ToList().Count > 0;
         }
 
-        /// <summary>
-        /// Check Quest Completed but not receiving reward
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="providerId"></param>
-        /// <returns></returns>
-        public bool CheckCompleteNotReceivingRewardQuest(string id, string providerId)
+        public bool CheckCompleteNotReceivingRewardQuest(string questId, string providerId)
         {
-            return this.data.Quests.Where(x
-                => x.Value.QuestId.Equals(id)
+            return this.Data.Quests.Where(x
+                => x.Value.QuestId.Equals(questId)
                    && x.Value.ProviderId.Equals(providerId)
                    && x.Value.QuestStatus == QuestStatus.Completed).ToList().Count > 0;
         }
 
-        /// <summary>
-        /// Check Quest Done
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="providerId"></param>
-        /// <returns></returns>
-        public bool CheckQuestDone(string id, string providerId)
+        public bool CheckQuestDone(string questId, string providerId)
         {
-            return this.data.Quests.Where(x
-                => x.Value.QuestId.Equals(id)
+            return this.Data.Quests.Where(x
+                => x.Value.QuestId.Equals(questId)
                    && x.Value.ProviderId.Equals(providerId)
                    && x.Value.QuestStatus == QuestStatus.Rewarded).ToList().Count > 0;
         }
 
-        /// <summary>
-        /// Get Quest from quest journal
-        /// </summary>
-        /// <param name="questId"></param>
-        /// <param name="provideId"></param>
-        /// <returns></returns>
-        public QuestLog GetQuest(string questId, string provideId) { return this.data.Quests.FirstOrDefault(q => q.Key.Equals(questId) && q.Value.ProviderId.Equals(provideId)).Value; }
+        public QuestLog GetQuest(string questId, string provideId) { return this.Data.Quests.FirstOrDefault(q => q.Key.Equals(questId) && q.Value.ProviderId.Equals(provideId)).Value; }
 
-        /// <summary>
-        /// Check To Add new quest to quest journal, if quest is not exist, create new quest and get first task is in progress (ussualy for main quest)
-        /// </summary>
-        /// <param name="questId"></param>
-        /// <param name="provideId"></param>
-        /// <param name="questProviderType"></param>
-        /// <param name="questRecord"></param>
-        /// <returns></returns>
         public QuestLog CheckToAddNewQuest(string questId, string provideId, QuestProviderType questProviderType, QuestRecord questRecord)
         {
-            if (!this.data.Quests.TryGetValue(questId, out var questInfo))
+            if (!this.Data.Quests.TryGetValue(questId, out var questInfo))
             {
                 var listTaskProgress = new List<TaskLog>();
 
@@ -134,7 +110,7 @@
                     {
                         TaskRecord = taskRecord,
                         TaskStatus = QuestStatus.NotStarted,
-                        Progress   = requirementProgress,
+                        Progress   = requirementProgress
                     });
                 }
 
@@ -152,7 +128,7 @@
                 };
             }
 
-            this.data.Quests[questId] = questInfo;
+            this.Data.Quests[questId] = questInfo;
 
             return questInfo;
         }
@@ -172,63 +148,27 @@
             return questInfo.TaskProgress.FirstOrDefault(task => task.TaskRecord.TaskId.Equals(taskId));
         }
 
-        /// <summary>
-        /// Set Quest status
-        /// </summary>
-        /// <param name="provideId"></param>
-        /// <param name="questId"></param>
-        /// <param name="questStatus"></param>
         public void UpdateQuestStatus(string provideId, string questId, QuestStatus questStatus)
         {
             var questInfo = this.GetQuest(questId, provideId);
 
+            if (questInfo == null)
+            {
+                throw new Exception($"Quest {questId} not found");
+            }
+
             questInfo.QuestStatus = questStatus;
+
+            this.signalBus.Fire(new QuestChangeStatusSignal(questInfo));
         }
 
-        /// <summary>
-        /// Set task status
-        /// </summary>
-        /// <param name="questInfoProviderId"></param>
-        /// <param name="questInfoQuestId"></param>
-        /// <param name="taskRecordTaskId"></param>
-        /// <param name="questStatus"></param>
-        public void UpdateTaskStatus(string questInfoProviderId, string questInfoQuestId, string taskRecordTaskId, QuestStatus questStatus)
+        public void UpdateTaskStatus(string questId, string providerId, string taskRecordTaskId, QuestStatus questStatus)
         {
-            var taskLog = this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
+            var taskLog = this.GetQuest(questId, providerId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
             taskLog.TaskStatus = questStatus;
         }
 
-        /// <summary>
-        /// Give all task reward to quest and set task status to rewarded
-        /// </summary>
-        /// <param name="questInfoProviderId"></param>
-        /// <param name="questInfoQuestId"></param>
-        public void GiveAllTaskRewardToQuest(string questInfoProviderId, string questInfoQuestId, QuestStatus status = QuestStatus.Rewarded)
-        {
-            var quest    = this.GetQuest(questInfoQuestId, questInfoProviderId);
-            var taskLogs = quest.TaskProgress.Where(t => t.TaskStatus == QuestStatus.Completed).ToList();
-
-            foreach (var taskLog in taskLogs)
-            {
-                taskLog.TaskStatus = status;
-
-                var listAsset = taskLog.TaskRecord.RewardRecords.Select(x => new RewardRecord()
-                {
-                    RewardId    = x.TaskRewardId,
-                    RewardValue = x.TaskRewardValue,
-                    RewardType  = x.TaskRewardType
-                });
-
-                this.Payout(listAsset.ToList<IRewardRecord>(), quest.QuestProviderType == QuestProviderType.Side);
-            }
-        }
-
-        /// <summary>
-        /// Get first task complete of quest and payout reward
-        /// </summary>
-        /// <param name="questInfoProviderId"></param>
-        /// <param name="questInfoQuestId"></param>
-        public void TryToGetFirstTaskCompleteOfQuestAndPayoutReward(string questInfoProviderId, string questInfoQuestId)
+        public void GiveRewardToCurrentTaskQuest(string questInfoProviderId, string questInfoQuestId)
         {
             var quest   = this.GetQuest(questInfoQuestId, questInfoProviderId);
             var taskLog = quest.TaskProgress.FirstOrDefault(t => t.TaskStatus == QuestStatus.Completed);
@@ -244,8 +184,7 @@
             });
 
             if (quest.TaskProgress.IndexOf(taskLog) == quest.TaskProgress.Count - 1) quest.QuestStatus = QuestStatus.Completed;
-
-            this.Payout(listAsset.ToList<IRewardRecord>(), quest.QuestProviderType == QuestProviderType.Side);
+            this.Payout(listAsset.ToList(), quest.QuestProviderType == QuestProviderType.Side);
         }
 
         /// <summary>
@@ -254,16 +193,14 @@
         /// <param name="questLogProviderId"></param>
         /// <param name="questId"></param>
         /// <returns></returns>
-        public List<IRewardRecord> GetTaskReward(string questLogProviderId, string questId)
+        public List<RewardRecord> GetTaskReward(string questLogProviderId, string questId)
         {
             var quest     = this.GetQuest(questId, questLogProviderId);
             var taskLogs  = quest.TaskProgress.Where(t => t.TaskStatus == QuestStatus.Completed).ToList();
-            var listAsset = new List<IRewardRecord>();
+            var listAsset = new List<RewardRecord>();
 
             foreach (var taskLog in taskLogs)
             {
-                taskLog.TaskStatus = QuestStatus.Rewarded;
-
                 listAsset.AddRange(taskLog.TaskRecord.RewardRecords.Select(x => new RewardRecord()
                 {
                     RewardId    = x.TaskRewardId,
@@ -275,20 +212,13 @@
             return listAsset;
         }
 
-        /// <summary>
-        /// Get Current Task reward of quest and set task status to rewarded
-        /// </summary>
-        /// <param name="questLogProviderId"></param>
-        /// <param name="questId"></param>
-        /// <returns></returns>
-        public List<IRewardRecord> GetCurrentTaskReward(string questLogProviderId, string questId)
+        public List<RewardRecord> GetTaskRewardWithTaskId(string questId, string questLogProviderId, string taskId)
         {
             var quest     = this.GetQuest(questId, questLogProviderId);
-            var taskLog   = quest.TaskProgress.FirstOrDefault(t => t.TaskStatus == QuestStatus.Completed);
-            var listAsset = new List<IRewardRecord>();
+            var taskLog   = quest.TaskProgress.FirstOrDefault(t => t.TaskRecord.TaskId.Equals(taskId));
+            var listAsset = new List<RewardRecord>();
 
             if (taskLog == null) return listAsset;
-            taskLog.TaskStatus = QuestStatus.Rewarded;
 
             listAsset.AddRange(taskLog.TaskRecord.RewardRecords.Select(x => new RewardRecord()
             {
@@ -305,16 +235,14 @@
         /// </summary>
         /// <param name="questLogProviderId"></param>
         /// <param name="questLogQuestId"></param>
-        /// <param name="status"></param>
         /// <returns></returns>
-        public List<IRewardRecord> GetAllQuestRewardAndSetStatus(string questLogProviderId, string questLogQuestId, QuestStatus status = QuestStatus.Rewarded)
+        public List<RewardRecord> GetQuestReward(string questLogProviderId, string questLogQuestId)
         {
             var questInfo = this.GetQuest(questLogQuestId, questLogProviderId);
 
-            var result = new List<IRewardRecord>();
+            var result = new List<RewardRecord>();
 
             if (questInfo.QuestStatus != QuestStatus.Completed) return result;
-            questInfo.QuestStatus = status;
 
             result.AddRange(questInfo.QuestRecord.QuestRewardRecords.Select(x => new RewardRecord()
             {
@@ -326,16 +254,11 @@
             return result;
         }
 
-        private void Payout(List<IRewardRecord> assets, bool isSideQuest = false) { this.featureRewardHandler.AddRewards(assets, null); }
+        private async void Payout(List<RewardRecord> assets, bool isSideQuest = false) { }
 
-        /// <summary>
-        /// Use For sidequest only
-        /// </summary>
-        /// <param name="questInfoProviderId"></param>
-        /// <param name="questInfoQuestId"></param>
-        public void CheckToCompleteQuest(string questInfoProviderId, string questInfoQuestId)
+        public void CheckToCompleteQuest(string questId, string providerId)
         {
-            var questInfo = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var questInfo = this.GetQuest(questId, providerId);
 
             //if (questInfo.TaskProgress.Any(t => t.TaskStatus != QuestStatus.Completed)) return;
             if (questInfo.QuestStatus != QuestStatus.Completed) return;
@@ -348,32 +271,23 @@
                 RewardType  = x.QuestRewardType
             });
 
-            var listIRewardRecord = listAsset.ToList<IRewardRecord>();
-
-            this.Payout(listIRewardRecord, questInfo.QuestProviderType == QuestProviderType.Side);
+            this.Payout(listAsset.ToList(), questInfo.QuestProviderType == QuestProviderType.Side);
             this.signalBus.Fire<RefreshQuestViewSignal>();
 
             if (questInfo.QuestProviderType == QuestProviderType.Side)
             {
-                this.signalBus.Fire(new TrackingQuestSignal(StaticValue.RequirementStaticValue.CompleteASideQuest, questInfo.QuestId, 1));
+                this.signalBus.Fire(new TrackingQuestSignal("complete_side_quest", new List<string>()
+                {
+                    questInfo.QuestId
+                }, 1));
             }
         }
 
-        /// <summary>
-        /// Get All quest type of quest already received
-        /// </summary>
-        /// <param name="questProviderType"></param>
-        /// <returns></returns>
         public List<QuestLog> GetAllQuestsType(QuestProviderType questProviderType)
         {
-            return this.data.Quests.Where(x => x.Value.QuestProviderType == questProviderType).Select(x => x.Value).ToList();
+            return this.Data.Quests.Where(x => x.Value.QuestProviderType == questProviderType).Select(x => x.Value).ToList();
         }
 
-        /// <summary>
-        /// Get All quest category of a quest provider
-        /// </summary>
-        /// <param name="questProviderId"></param>
-        /// <returns></returns>
         public List<string> GetAllQuestsCategoryOfAQuestProvider(QuestProviderType questProviderId)
         {
             var quests = this.GetAllQuestsType(questProviderId);
@@ -381,12 +295,6 @@
             return quests.Select(q => q.QuestType).Distinct().ToList();
         }
 
-        /// <summary>
-        /// Get All Quest of a quest category
-        /// </summary>
-        /// <param name="questProviderType"></param>
-        /// <param name="questCategory"></param>
-        /// <returns></returns>
         public List<QuestLog> GetAllQuests(QuestProviderType questProviderType, string questCategory)
         {
             var quests = this.GetAllQuestsType(questProviderType);
@@ -394,58 +302,36 @@
             return quests.Where(q => q.QuestType.Equals(questCategory)).ToList();
         }
 
-        /// <summary>
-        /// Get Current Main Quest
-        /// </summary>
-        /// <returns></returns>
-        public QuestLog GetCurrentMainQuest()
+        public QuestLog GetCurrentMainQuestNotFinish()
         {
-            var mainQuestInprogress = this.data.Quests.FirstOrDefault(x => x.Value.QuestProviderType == QuestProviderType.Main && x.Value.QuestStatus == QuestStatus.InProgress).Value;
+            var totalMainQuests = this.GetAllQuestsType(QuestProviderType.Main).OrderBy(x => x.QuestRecord.QuestIndex).ToList();
 
-            if (mainQuestInprogress != null)
+            foreach (var item in totalMainQuests.Where(x => x.QuestProviderType == QuestProviderType.Main))
             {
-                return mainQuestInprogress;
+                foreach (var taskLog in item.TaskProgress)
+                {
+                    if (taskLog.TaskStatus is QuestStatus.InProgress or QuestStatus.NotStarted or QuestStatus.Completed)
+                    {
+                        return item;
+                    }
+                }
             }
 
-            var mainQuestCompleted = this.data.Quests.FirstOrDefault(x => x.Value.QuestProviderType == QuestProviderType.Main && x.Value.QuestStatus == QuestStatus.Completed).Value;
-
-            return mainQuestCompleted;
+            return null;
         }
 
-        public void SetQuestStatus(string questInfoProviderId, string questInfoQuestId, QuestStatus status)
+        public void SetQuestStatus(string questId, string questInfoProviderId, QuestStatus status)
         {
-            var questInfo = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var questInfo = this.GetQuest(questId, questInfoProviderId);
             questInfo.QuestStatus = status;
         }
 
-        public void RemoveQuest(string modelProviderId, string modelQuestId)
+        public void RemoveQuest(string questId, string providerId)
         {
-            var quest = this.GetQuest(modelQuestId, modelProviderId);
-            this.data.Quests.Remove(quest.QuestId);
-        }
+            var quest = this.GetQuest(questId, providerId);
 
-        public void ShowPopupClaimReward(QuestLog questLog, bool isMainOnly = false, bool isCurrentTaskOnly = false)
-        {
-            var listAsset = new List<IRewardRecord>();
-
-            if (isCurrentTaskOnly)
-            {
-                listAsset = this.GetCurrentTaskReward(questLog.ProviderId, questLog.QuestId);
-            }
-            else if (isMainOnly)
-            {
-                listAsset.AddRange(this.GetAllQuestRewardAndSetStatus(questLog.ProviderId, questLog.QuestId));
-            }
-            else
-            {
-                listAsset.AddRange(this.GetTaskReward(questLog.ProviderId, questLog.QuestId));
-                listAsset.AddRange(this.GetAllQuestRewardAndSetStatus(questLog.ProviderId, questLog.QuestId));
-            }
-
-            this.screenManager.OpenScreen<ClaimRewardPopupPresenter, ClaimRewardPopupModel>(new ClaimRewardPopupModel()
-            {
-                RewardResult = listAsset
-            }).Forget();
+            if (quest == null) return;
+            this.Data.Quests.Remove(quest.QuestId);
         }
 
         public void ResetQuest(string questId, string providerId)
@@ -456,15 +342,15 @@
             quest.QuestStatus = QuestStatus.NotStarted;
         }
 
-        public void UpdateCountRequirementOption(string questInfoProviderId, string questInfoQuestId, string taskRecordTaskId)
+        public void UpdateCountRequirementOption(string questId, string providerId, string taskRecordTaskId)
         {
-            var taskLog = this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
+            var taskLog = this.GetQuest(questId, providerId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
             taskLog.CountRequirementOption++;
         }
 
-        public void CheckTaskCompleted(string questInfoProviderId, string questInfoQuestId, string taskRecordTaskId)
+        public void CheckTaskCompleted(string questId, string providerId, string taskRecordTaskId)
         {
-            var questInfo = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var questInfo = this.GetQuest(questId, providerId);
             var taskLog   = questInfo.TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
 
             var allRequirementPremiseCompleted = taskLog.Progress.All(x => x.CurrentValue >= x.RequiredValue && !x.IsOptional);
@@ -475,14 +361,14 @@
             }
 
             if (taskLog.CountRequirementOption < taskLog.TaskRecord.CoutRequirementOption || !allRequirementPremiseCompleted) return;
-            this.UpdateTaskStatus(questInfoProviderId, questInfoQuestId, taskLog.TaskRecord.TaskId, QuestStatus.Completed);
-            this.CountingTaskOption(questInfoProviderId, questInfoQuestId, taskRecordTaskId);
+            this.UpdateTaskStatus(questId, providerId, taskLog.TaskRecord.TaskId, QuestStatus.Completed);
+            this.CountingTaskOption(questId, providerId, taskRecordTaskId);
         }
 
-        public void CountingTaskOption(string questInfoProviderId, string questInfoQuestId, string taskId)
+        public void CountingTaskOption(string questId, string providerId, string taskId)
         {
-            var quest   = this.GetQuest(questInfoQuestId, questInfoProviderId);
-            var taskLog = this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
+            var quest   = this.GetQuest(questId, providerId);
+            var taskLog = this.GetQuest(questId, providerId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
 
             if (taskLog.TaskRecord.TaskOption)
             {
@@ -490,24 +376,31 @@
             }
         }
 
-        public bool CheckAllTaskCompleted(string questInfoProviderId, string questInfoQuestId)
+        public bool CheckAllTaskCompleted(string questId, string providerId)
         {
-            var questInfo              = this.GetQuest(questInfoQuestId, questInfoProviderId);
+            var questInfo              = this.GetQuest(questId, providerId);
             var allPremiseTaskComplete = questInfo.TaskProgress.All(task => task.TaskStatus == QuestStatus.Completed && !task.TaskRecord.TaskOption);
 
-            if (!allPremiseTaskComplete && questInfo.TaskProgress.All(x => x.TaskRecord.TaskOption))
-            {
-                allPremiseTaskComplete = true;
-            }
-
             var checkCountTaskOption = questInfo.CountTaskOption >= questInfo.QuestRecord.CountTaskOption;
+
+            if (!allPremiseTaskComplete && questInfo.QuestRecord.Tasks.Count(x => !x.TaskOption) == 0)
+            {
+                questInfo.QuestStatus = QuestStatus.Completed;
+            }
 
             return allPremiseTaskComplete && checkCountTaskOption;
         }
 
-        public TaskLog GetTaskLogOfQuest(string questInfoProviderId, string questInfoQuestId, string taskId)
+        public TaskLog GetTaskLogOfQuest(string questId, string providerId, string taskId)
         {
-            return this.GetQuest(questInfoQuestId, questInfoProviderId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
+            return this.GetQuest(questId, providerId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
         }
+
+        public List<QuestLog> GetAllQuestCompleted() { return this.Data.Quests.Where(x => x.Value.QuestStatus == QuestStatus.Completed).Select(y => y.Value).ToList(); }
     }
+}
+
+public class CheckFTUEQuestSignal
+{
+    public string Id;
 }

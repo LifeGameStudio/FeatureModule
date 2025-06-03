@@ -1,4 +1,4 @@
 Id,Initial,Max,FlyingObject,Name,IconAddressable
-SoftCurrency,0,300,,,
-Coin,0,10000000,,,
-ChestRoomKey,0,3,,,
+SoftCurrency,0,300
+Coin,0,10000000
+ChestRoomKey,0,3

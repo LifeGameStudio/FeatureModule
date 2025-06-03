@@ -1,13 +1,14 @@
-﻿namespace QuestModule.Provider
+﻿namespace GameModule.QuestModule.Provider
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Blueprints;
     using Cysharp.Threading.Tasks;
+    using FeatureTemplate.Scripts.Handle;
     using FeatureTemplate.Scripts.Services;
     using GameModule.QuestModule.Blueprints;
     using GameModule.QuestModule.Model;
-    using QuestModule.Context;
+    using UserData;
     using Zenject;
 
     public interface IQuestProvider
@@ -16,21 +17,23 @@
         QuestRecord       GetQuestRecord(string questId, string providerId);
         void              GiveNewQuest(string questId, string providerId, QuestProviderType questProviderType);
         void              CheckToStartQuest(string questId, string providerId);
+        QuestRecord       GetNextQuest(string lastMainQuestId);
+        void              SetupTaskContext(TaskLog taskLog, QuestProviderType questProviderType);
+        void              CheckToStartAllTaskOfQuest(string questId, string providerId);
     }
 
-    public abstract class BaseQuestProvider : IQuestProvider, IInitializable
+    public abstract class BaseQuestProvider : IQuestProvider, IInitializable, IDisposable
     {
-        protected readonly  QuestManager                      QuestManager;
-        private readonly   QuestContextBlueprint             questContextBlueprint;
-        public abstract    QuestProviderType                 QuestProviderType { get; }
-        private            Dictionary<string, IQuestContext> questContexts;
-        [Inject] protected FeatureDataState                  FeatureDataState;
+        [Inject] private   FeatureDataState featureDataState;
+        protected readonly QuestManager     QuestManager;
 
-        protected BaseQuestProvider(QuestManager questManager, List<IQuestContext> questContexts, QuestContextBlueprint questContextBlueprint)
+        public abstract QuestProviderType                 QuestProviderType { get; }
+        private         Dictionary<string, IActionHandle> questContexts;
+
+        protected BaseQuestProvider(QuestManager questManager, List<IActionHandle> questContexts)
         {
-            this.QuestManager          = questManager;
-            this.questContextBlueprint = questContextBlueprint;
-            this.questContexts         = questContexts.ToDictionary(x => x.ContextType);
+            this.QuestManager  = questManager;
+            this.questContexts = questContexts.ToDictionary(x => x.Id);
         }
 
         public abstract QuestRecord GetQuestRecord(string questId, string providerId);
@@ -49,12 +52,29 @@
         {
             var questInfo = this.QuestManager.CheckToAddNewQuest(questId, providerId, this.QuestProviderType, this.GetQuestRecord(questId, providerId));
 
-            if (questInfo.QuestStatus == QuestStatus.NotStarted)
+            switch (questInfo.QuestStatus)
             {
-                this.QuestManager.UpdateQuestStatus(providerId, questId, QuestStatus.InProgress);
-                this.SetupContext(questInfo.TaskProgress.First());
+                case QuestStatus.Completed or QuestStatus.Rewarded or QuestStatus.InProgress:
+                    return;
+                case QuestStatus.NotStarted:
+                    this.QuestManager.UpdateQuestStatus(providerId, questId, QuestStatus.InProgress);
+                    this.SetupContext(questInfo.TaskProgress.FirstOrDefault(x => x.TaskStatus == QuestStatus.InProgress));
+
+                    break;
             }
         }
+
+        public abstract QuestRecord GetNextQuest(string lastMainQuestId);
+
+        public void SetupTaskContext(TaskLog taskLog, QuestProviderType questProviderType)
+        {
+            if (this.QuestProviderType != questProviderType)
+                return;
+
+            this.SetupContext(taskLog);
+        }
+
+        public virtual void CheckToStartAllTaskOfQuest(string questId, string providerId) { }
 
         /// <summary>
         /// Setup Context at Each Task
@@ -64,13 +84,11 @@
         {
             if (taskLog.TaskRecord.TaskSates.TryGetValue(taskLog.TaskStatus, out var questContext))
             {
-                foreach (var contextId in questContext.QuestContextIds)
+                foreach (var contextRecord in questContext.QuestContext)
                 {
-                    var contextBp = this.questContextBlueprint[contextId];
-
-                    if (this.questContexts.TryGetValue(contextBp.QuestContextType, out var context))
+                    if (this.questContexts.TryGetValue(contextRecord.QuestContextType, out var context))
                     {
-                        context.SetupContext(this.questContextBlueprint[contextId]);
+                        context.Execute(null, contextRecord.QuestContextData);
                     }
                 }
             }
@@ -78,10 +96,13 @@
 
         public async void Initialize()
         {
+            await UniTask.WaitUntil(() => this.featureDataState.IsBlueprintAndLocalDataLoaded);
+            await this.QuestManager.LoadRecord(this);
             await this.InitInternal();
-            this.QuestManager.LoadRecord(this);
         }
 
         protected virtual async UniTask InitInternal() { }
+
+        public virtual void Dispose() { }
     }
 }

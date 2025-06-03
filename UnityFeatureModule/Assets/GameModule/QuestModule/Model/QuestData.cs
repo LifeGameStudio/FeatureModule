@@ -4,8 +4,9 @@
     using System.Collections.Generic;
     using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
     using GameFoundation.Scripts.Interfaces;
-    using global::Blueprints;
+    using GameModule.QuestModule.Blueprints;
     using Newtonsoft.Json;
+    using UserData;
 
     public class QuestJournal : IFeatureLocalData, ILocalData
     {
@@ -33,7 +34,7 @@
     [Serializable]
     public class TaskLog
     {
-        public              int        CountRequirementOption;
+        public int                       CountRequirementOption;
         public List<RequirementProgress> Progress = new();
         public QuestStatus               TaskStatus;
 
@@ -53,6 +54,15 @@
     {
         Main,
         Side,
-        Achievement
+        Achievement,
+        Daily,
+        Weekly,
+        Monthly,
+        Seasonal,
+        Special,
+        BattlePass,
+        PlayerLevel,
+        Event,
+        Custom
     }
 }
