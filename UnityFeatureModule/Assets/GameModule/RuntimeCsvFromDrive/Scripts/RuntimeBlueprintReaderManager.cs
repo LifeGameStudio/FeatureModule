@@ -205,12 +205,12 @@
                 MajorDimension = kvp.Value.MajorDimension
             });
 
-            this.GetCustomValueRange(input);
+            await this.GetCustomValueRange(input);
 
             return input;
         }
 
-        protected virtual void GetCustomValueRange(Dictionary<string, CustomValueRange> input) { }
+        protected virtual async UniTask GetCustomValueRange(Dictionary<string, CustomValueRange> input) { }
 
         protected virtual string GetColumnName(int columnIndex)
         {
