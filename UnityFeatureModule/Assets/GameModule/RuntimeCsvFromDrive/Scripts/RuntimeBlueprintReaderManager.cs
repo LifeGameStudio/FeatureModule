@@ -28,15 +28,20 @@
         private readonly BlueprintConfig                blueprintConfig;
         private          BuilderConfigBlueprint         builderConfig;
 
+        protected string LocalizationSheetName;
+        protected string LocalizationBlueprintSheetName;
+
         [Preserve]
         public RuntimeBlueprintReaderManager(ISignalBus signalBus, ILogService logService, DiContainer diContainer, IHandleUserDataServices handleUserDataServices,
             BlueprintConfig blueprintConfig,
             FetchBlueprintInfo fetchBlueprintInfo, BlueprintDownloader blueprintDownloader) : base(signalBus, logService, diContainer, handleUserDataServices, blueprintConfig, fetchBlueprintInfo,
             blueprintDownloader)
         {
-            this.csvLoaderData   = Resources.Load<FeatureSyncCsvWithGoogleDriver>("SyncGoogleDriver");
-            this.logService      = logService;
-            this.blueprintConfig = blueprintConfig;
+            this.csvLoaderData         = Resources.Load<FeatureSyncCsvWithGoogleDriver>("SyncGoogleDriver");
+            this.logService            = logService;
+            this.blueprintConfig       = blueprintConfig;
+            this.LocalizationSheetName = this.csvLoaderData.syncDataInfo.LocalizationSheetName;
+            this.LocalizationBlueprintSheetName = this.csvLoaderData.syncDataInfo.LocalizationBlueprintSheetName;
         }
 
         protected override async UniTask LoadRawBlueprint(Dictionary<string, string> input)
