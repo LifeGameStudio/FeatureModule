@@ -1,3 +1,1 @@
-Id,Platforms,ProductType,ImageAddress,Name,Description,DefaultPrice,RewardType,RewardId,RewardValue,Repeat,RewardIcon,RewardContent,AddressableFlyingItem
-com.abc.pack1,Android,NonConsumable,,,,$0.99,remove_ads,remove_ads,1,-1,btnNoads
-com.abc.pack.remove_ads,IOS,NonConsumable,,,,$0.99,remove_ads,remove_ads,1,-1,btnNoads
+Id,AndroidProductId,IosProductId,ProductType,ImageAddress,Name,Description,DefaultPrice,RewardType,RewardId,RewardValue,Repeat,RewardIcon,RewardContent,AddressableFlyingItem

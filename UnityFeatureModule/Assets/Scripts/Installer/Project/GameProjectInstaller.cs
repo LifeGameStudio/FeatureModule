@@ -21,7 +21,7 @@ namespace Game.Scripts.Installer.Project
         {
             SignalDeclarationInstaller.Install(this.Container);
             GameFoundationInstaller.Install(this.Container);
-            FeaturesInstaller.Install(this.Container, this.featureToastController);
+            FeaturesInstaller.Install(this.Container, this.featureToastController,new Dictionary<string,string>());
             this.Container.Resolve<ScreenManager>().gameObject.SetActive(false);
             //EventSystem
             this.Container.Bind<EventSystem>().FromComponentInNewPrefabResource("EventSystem").AsCached().NonLazy();
@@ -31,7 +31,7 @@ namespace Game.Scripts.Installer.Project
             // UnitTestInstaller<TimeMarkTest>.Install(this.Container);
             // LoginServicesInstaller.Install(this.Container);
             // SaveLoadCloudInstaller.Install(this.Container, new List<string>() { "BlueprintInfoData" });
-            RuntimeLoadCsvInstaller.Install(this.Container);
+            // RuntimeLoadCsvInstaller.Install(this.Container);
         }
     }
 }
