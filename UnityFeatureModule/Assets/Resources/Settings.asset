@@ -19,8 +19,8 @@ MonoBehaviour:
   CustomUriSchemeWindows: simple.oauth
   ClientIdWebGL: 
   ClientSecretWebGL: 
-  ClientIdDesktop: 1029807570932-rpu4s5geqs3jloci9t4nmhhp2f6c04v1.apps.googleusercontent.com
-  ClientSecretDesktop: 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
+  ClientIdDesktop: 310201098790-t930ta9qago2j0pope7kvnriv4vjbmms.apps.googleusercontent.com
+  ClientSecretDesktop: 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
   AccessScopes:
   - openid
   - email

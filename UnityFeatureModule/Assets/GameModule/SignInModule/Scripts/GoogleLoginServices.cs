@@ -23,12 +23,13 @@
             {
                 if (token.IsCancellationRequested) return;
 
-                if (b)
+                if (!b)
                 {
-                    result = (arg3.IdToken, arg3.RefreshToken);
+                    isComplete = true;
                 }
 
-                isComplete = true;
+                result = (arg3.IdToken, arg3.RefreshToken);
+                GoogleAuth.RequestUserInfo(arg3.AccessToken, (x, y, u) => { isComplete = true; });
             });
 
             try
@@ -45,5 +46,11 @@
 
         public void ClearSession() { SavedAuth.Instance?.Delete(); }
         public bool IsSignedIn     => SavedAuth.Instance.UserInfo != null;
+
+        public (string, string) GetToken()
+        {
+            
+            return (SavedAuth.Instance.TokenResponse.IdToken, SavedAuth.Instance.TokenResponse.AccessToken);
+        }
     }
 }

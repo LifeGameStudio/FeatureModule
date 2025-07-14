@@ -24,7 +24,9 @@
         "UnitTest.Scripts",
         "SaveLoadCloud.Scripts",
         "Login.Scripts",
-        "RuntimeCsvFromDrive.Scripts"
+        "RuntimeCsvFromDrive.Scripts",
+        "3rd.RemoteConfig",
+        "LeaderBoard.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

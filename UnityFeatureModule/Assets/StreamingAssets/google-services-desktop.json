@@ -1,42 +1,35 @@
 {
   "project_info": {
-    "project_number": "1029807570932",
-    "firebase_url": "https://project-template-12f97-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "project-template-12f97",
-    "storage_bucket": "project-template-12f97.firebasestorage.app"
+    "project_number": "310201098790",
+    "firebase_url": "https://leaderboard-de6c9-default-rtdb.firebaseio.com",
+    "project_id": "leaderboard-de6c9",
+    "storage_bucket": "leaderboard-de6c9.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1029807570932:android:724af148d865e21d4903a1",
+        "mobilesdk_app_id": "1:310201098790:android:642687a75ee7687a14bce7",
         "android_client_info": {
-          "package_name": "com.project.template"
+          "package_name": "com.lhd.leaderboard"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1029807570932-fk419n1g8qe659br66lu23p2oj5fjo8o.apps.googleusercontent.com",
+          "client_id": "310201098790-48h1salmmfqn5jman9jgs3135raflu23.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBx5f92CQ3MJN1YkrRLQ_yIuc40np-UlBU"
+          "current_key": "AIzaSyCfpdRa0kLuIvhdMcsB-ogZkzZWXFcmVvM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1029807570932-fk419n1g8qe659br66lu23p2oj5fjo8o.apps.googleusercontent.com",
+              "client_id": "310201098790-48h1salmmfqn5jman9jgs3135raflu23.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "1029807570932-2e5uitjm1d5nekndbcdvcolnef18thi3.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.project.template"
-              }
             }
           ]
         }

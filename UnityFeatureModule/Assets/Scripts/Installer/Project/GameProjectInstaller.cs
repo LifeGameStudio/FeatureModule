@@ -6,6 +6,8 @@ namespace Game.Scripts.Installer.Project
     using Game.Scripts.Services;
     using GameFoundation.Scripts;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameModule.LeaderBoard;
+    using GameModule.LeaderBoard.Scripts;
     using GameModule.QuestModule;
     using GameModule.RuntimeCsvFromDrive.Scripts;
     using GameModule.SaveLoadGameCloud.Scripts;
@@ -32,6 +34,9 @@ namespace Game.Scripts.Installer.Project
             // LoginServicesInstaller.Install(this.Container);
             // SaveLoadCloudInstaller.Install(this.Container, new List<string>() { "BlueprintInfoData" });
             // RuntimeLoadCsvInstaller.Install(this.Container);
+            this.Container.BindInterfacesAndSelfTo<LeaderboardTesting>().AsSingle().NonLazy();
+            LoginServicesInstaller.Install(this.Container);
+            LeaderboardServicesInstaller.Install(this.Container);
         }
     }
 }

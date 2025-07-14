@@ -163,7 +163,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.project.template
+    Android: com.lhd.leaderboard
     Standalone: com.DefaultCompany.UnityProjectTemplate
     iPhone: com.project.template
   buildNumber:
@@ -850,7 +850,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: ADDRESSABLE;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;DOTWEEN;FIREBASE_REMOTE_CONFIG;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED;DUMMY_ANALYTIC;UNITASK_DOTWEEN;TextMeshPro;UITK_EXISTS;FCU_EXISTS;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3;GOOGLE_LOGIN;UNITY_CLOUD;JSONNET_EXISTS
+    Android: ADDRESSABLE;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;DOTWEEN;FIREBASE_REMOTE_CONFIG;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED;DUMMY_ANALYTIC;UNITASK_DOTWEEN;TextMeshPro;UITK_EXISTS;FCU_EXISTS;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3;GOOGLE_LOGIN;UNITY_CLOUD;JSONNET_EXISTS;FIREBASE_LEADERBOARD
     EmbeddedLinux: DOTWEEN;TextMeshPro
     GameCoreScarlett: DOTWEEN;TextMeshPro
     GameCoreXboxOne: DOTWEEN;TextMeshPro

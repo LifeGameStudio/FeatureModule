@@ -60,7 +60,7 @@
       "hash": "a0bb5566082ff88e5e6ebfb850dafe7fc63b0895"
     },
     "com.google.external-dependency-manager": {
-      "version": "1.2.183",
+      "version": "1.2.186",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -83,11 +83,11 @@
       }
     },
     "com.google.firebase.auth": {
-      "version": "file:GoogleDependency/com.google.firebase.auth-12.7.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.auth-12.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.firebase.app": "12.7.0"
+        "com.google.firebase.app": "12.5.0"
       }
     },
     "com.google.firebase.crashlytics": {
@@ -99,11 +99,11 @@
       }
     },
     "com.google.firebase.database": {
-      "version": "file:GoogleDependency/com.google.firebase.database-12.7.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.database-12.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.firebase.auth": "12.7.0"
+        "com.google.firebase.auth": "12.5.0"
       }
     },
     "com.google.firebase.messaging": {
@@ -244,7 +244,7 @@
     },
     "com.unity.services.authentication": {
       "version": "3.4.1",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
@@ -266,12 +266,22 @@
     },
     "com.unity.services.core": {
       "version": "1.14.0",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.androidjni": "1.0.0",
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.modules.unitywebrequest": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.services.leaderboards": {
+      "version": "2.2.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.services.core": "1.13.0",
+        "com.unity.services.authentication": "3.3.3"
       },
       "url": "https://packages.unity.com"
     },

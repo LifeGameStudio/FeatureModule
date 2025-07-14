@@ -8,5 +8,7 @@
         void                      ClearSession();
 
         bool IsSignedIn { get; }
+
+        (string, string) GetToken() { return (null, null); }
     }
 }
