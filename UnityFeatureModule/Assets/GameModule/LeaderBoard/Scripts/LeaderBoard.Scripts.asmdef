@@ -1,0 +1,28 @@
+{
+    "name": "LeaderBoard.Scripts",
+    "rootNamespace": "",
+    "references": [
+        "Zenject-Signals",
+        "3rd.RemoteConfig",
+        "Login.Scripts",
+        "UniTask",
+        "Zenject",
+        "FirebaseAuthAndroid",
+        "FirebaseAuth",
+        "Features.Scripts",
+        "Unity.Services.Authentication",
+        "Unity.Services.Core",
+        "Unity.Services.Leaderboards",
+        "Unity.Services.CloudSave",
+        "GoogleSignIn"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

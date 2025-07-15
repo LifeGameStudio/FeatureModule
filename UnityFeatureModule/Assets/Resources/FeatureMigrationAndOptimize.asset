@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2d26553a4b14406800070e6b216809d, type: 3}
   m_Name: FeatureMigrationAndOptimize
   m_EditorClassIdentifier: 
-  ExtenalDependency: 1.2.185
-  FirebaseVersion: 12.7.0
+  ExtenalDependency: 1.2.186
+  FirebaseVersion: 12.5.0
   FirebasePackages:
   - com.google.firebase.analytics
   - com.google.firebase.app
