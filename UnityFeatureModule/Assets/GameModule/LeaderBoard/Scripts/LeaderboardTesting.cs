@@ -37,26 +37,32 @@
 
             if (Input.GetKeyDown(KeyCode.G))
             {
-                foreach (var entry in this.leaderboardsService.LimitEntries())
-                {
-                    this.LogMessage($"Limit leaderboard has userName: {entry.userName}, score: {entry.score}", Color.hotPink);
-                }
-
-                foreach (var entry in this.leaderboardsService.AllEntries())
-                {
-                    this.LogMessage($"All leaderboard has userName: {entry.userName}, score: {entry.score}", Color.cyan);
-                }
+                // foreach (var entry in this.leaderboardsService.LimitEntries())
+                // {
+                //     this.LogMessage($"Limit leaderboard has userName: {entry.userName}, score: {entry.score}", Color.hotPink);
+                // }
+                //
+                // foreach (var entry in this.leaderboardsService.AllEntries())
+                // {
+                //     this.LogMessage($"All leaderboard has userName: {entry.userName}, score: {entry.score}", Color.cyan);
+                // }
+                this.LogMessage($"loaded {this.leaderboardsService.LimitEntries().Count} limit entries", Color.yellow);
+                this.LogMessage($"loaded {this.leaderboardsService.AllEntries().Count}/{LeaderboardSaver.TotalEntries} entries", Color.aquamarine);
             }
 
             if (Input.GetKeyDown(KeyCode.H))
             {
-                this.leaderboardsService.FetchLimitEntries();
                 this.leaderboardsService.FetchAllEntries();
             }
 
-            if (Input.GetKeyDown(KeyCode.N))
+            if (Input.GetKeyDown(KeyCode.J))
             {
-                this.leaderboardsService.UpdateUserName("DUT");
+                this.leaderboardsService.FetchLimitEntries();
+            }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                this.LogMessage($"Total entries: {LeaderboardSaver.TotalEntries}", Color.green);
             }
         }
     }

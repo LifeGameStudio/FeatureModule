@@ -43,7 +43,7 @@ namespace GameModule.LeaderBoard.Scripts
             }
         }
 
-        public async void FetchLimitEntries(int limit = 10)
+        public async UniTask FetchLimitEntries(int limit = 10)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace GameModule.LeaderBoard.Scripts
             }
         }
 
-        public async void FetchAllEntries()
+        public async UniTask FetchAllEntries()
         {
             this.allEntries.Clear();
             var pageSize      = 50;

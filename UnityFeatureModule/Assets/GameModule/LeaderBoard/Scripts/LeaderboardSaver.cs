@@ -15,5 +15,11 @@
             get => PlayerPrefs.GetInt("LeaderboardUserScore", 0);
             set => PlayerPrefs.SetInt("LeaderboardUserScore", value);
         }
+        
+        public static int TotalEntries
+        {
+            get => PlayerPrefs.GetInt("LeaderboardTotalEntries", 0);
+            set => PlayerPrefs.SetInt("LeaderboardTotalEntries", value);
+        }
     }
 }

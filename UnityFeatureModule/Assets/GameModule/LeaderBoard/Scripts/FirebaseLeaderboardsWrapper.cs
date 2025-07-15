@@ -3,8 +3,10 @@ namespace GameModule.LeaderBoard.Scripts
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.Services;
+    using Firebase;
     using Firebase.Auth;
     using Firebase.Database;
     using Firebase.Extensions;
@@ -37,102 +39,192 @@ namespace GameModule.LeaderBoard.Scripts
         public async void Init(string idToken, string accessToken, string leaderboardId = "leaderboard")
         {
             this.LogMessage("Initializing Firebase Leaderboards...", Color.chartreuse);
+            FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(false);
 
+            this.dbReference   = FirebaseDatabase.DefaultInstance.RootReference;
+            this.LeaderboardId = leaderboardId;
+
+            if (this.loginServices.IsSignedIn)
             {
-                this.dbReference   = FirebaseDatabase.DefaultInstance.RootReference;
-                this.LeaderboardId = leaderboardId;
+                var loginResult = await this.firebaseAuth.SignInWithGoogle(idToken, accessToken);
 
-                if (this.loginServices.IsSignedIn)
+                this.UserId = loginResult.uid;
+                this.ConfigUserName(loginResult.username);
+                this.LogMessage($"google login success! UserName: {this.UserName} - UserId: {this.UserId}", Color.chartreuse);
+            }
+            else
+            {
+                var auth = FirebaseAuth.DefaultInstance;
+
+                if (auth.CurrentUser == null)
                 {
-                    var loginResult = await this.firebaseAuth.SignInWithGoogle(idToken, accessToken);
+                    await auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(authTask =>
+                    {
+                        if (authTask.IsCompleted && !authTask.IsFaulted)
+                        {
+                            if (auth.CurrentUser != null)
+                            {
+                                this.UserId = auth.CurrentUser.UserId;
+                                this.ConfigUserName(auth.CurrentUser.DisplayName);
+                            }
 
-                    this.UserId   = loginResult.uid;
-                    this.ConfigUserName(loginResult.username);
-                    this.LogMessage($"google login success! UserName: {this.UserName} - UserId: {this.UserId}", Color.chartreuse);
+                            this.LogMessage($"Login anonymous success! UserName: {this.UserName} - UserId: {this.UserId}", Color.chartreuse);
+                        }
+                        else
+                        {
+                            this.LogMessage("Login failed: " + authTask.Exception, Color.red);
+                        }
+                    });
                 }
                 else
                 {
-                    var auth = FirebaseAuth.DefaultInstance;
-
-                    if (auth.CurrentUser == null)
-                    {
-                        await auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(authTask =>
-                        {
-                            if (authTask.IsCompleted && !authTask.IsFaulted)
-                            {
-                                if (auth.CurrentUser != null)
-                                {
-                                    this.UserId = auth.CurrentUser.UserId;
-                                    this.ConfigUserName(auth.CurrentUser.DisplayName);
-                                }
-
-                                this.LogMessage($"Login anonymous success! UserName: {this.UserName} - UserId: {this.UserId}", Color.chartreuse);
-                            }
-                            else
-                            {
-                                this.LogMessage("Login failed: " + authTask.Exception, Color.red);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        this.UserId = auth.CurrentUser.UserId;
-                        this.ConfigUserName(auth.CurrentUser.DisplayName);
-                        this.LogMessage($"Using existing UID: {auth.CurrentUser.UserId} - UserName: {this.UserName}", Color.chartreuse);
-                    }
+                    this.UserId = auth.CurrentUser.UserId;
+                    this.ConfigUserName(auth.CurrentUser.DisplayName);
+                    this.LogMessage($"Using existing UID: {auth.CurrentUser.UserId} - UserName: {this.UserName}", Color.chartreuse);
                 }
             }
         }
 
-        public void FetchLimitEntries(int limit = 10)
+        public async UniTask FetchLimitEntries(int limit = 10)
         {
+            this.LogMessage($"Starting to fetch limit entries for leaderboard: {this.LeaderboardId}", Color.cyan);
             this.limitEntries.Clear();
-
-            FirebaseDatabase.DefaultInstance
-                .GetReference(this.LeaderboardId)
-                .OrderByChild(nameof(LeaderBoardEntry.score))
-                .LimitToLast(limit)
-                .GetValueAsync().ContinueWithOnMainThread(task =>
+            var          dbRef = FirebaseDatabase.DefaultInstance.GetReference(this.LeaderboardId);
+            var          query = dbRef.OrderByChild(nameof(LeaderBoardEntry.score)).LimitToLast(limit);
+            DataSnapshot snapshot = null;
+                
+            bool fetched = false;
+            int  retry   = 0;
+            while (!fetched && retry < 3)
+            {
+                try
                 {
-                    if (task.IsFaulted)
-                    {
-                        this.LogMessage("Error fetching leaderboard: " + task.Exception, Color.red);
-                    }
-                    else if (task.IsCompleted)
-                    {
-                        var snapshot = task.Result;
-                        this.LogMessage($"Limit Leaderboard fetched successfully. Total entries: {snapshot.ChildrenCount}", Color.chartreuse);
+                    this.LogMessage($"⏳ Fetch attempt {retry + 1}...", Color.coral);
+                    snapshot = await query.GetValueAsync().AsUniTask().Timeout(System.TimeSpan.FromSeconds(10));
+                    this.LogMessage($"✅ Fetched {snapshot.ChildrenCount} entries.", Color.aquamarine);
+                    fetched = true;
+                }
+                catch (TimeoutException)
+                {
+                    this.LogMessage($"⚠️ Timeout, retrying ({retry + 1}/3)...", Color.yellow);
+                }
+                catch (System.Exception ex)
+                {
+                    this.LogMessage($"❌ Fetch error: {ex}", Color.red);
+                    break;
+                }
+                retry++;
+            }
 
-                        foreach (var child in snapshot.Children)
-                        {
-                            var json  = child.GetRawJsonValue();
-                            var entry = JsonUtility.FromJson<LeaderBoardEntry>(json);
-                            this.limitEntries.Add(entry);
-                        }
+            if (!fetched)
+            {
+                this.LogMessage("❌ Fetch failed after 3 retries.", Color.red);
 
-                        this.limitEntries.Sort((a, b) => b.score.CompareTo(a.score));
-                    }
-                });
-        }
-
-        public async void FetchAllEntries()
-        {
-            this.allEntries.Clear();
-            var dbRef = FirebaseDatabase.DefaultInstance.GetReference(this.LeaderboardId);
-
-            var snapshot = await dbRef.OrderByChild(nameof(LeaderBoardEntry.score)).GetValueAsync();
-            
-            this.LogMessage($"All Leaderboard fetched successfully. Total entries: {snapshot.ChildrenCount}", Color.chartreuse);
+                return;
+            }
 
             foreach (var child in snapshot.Children)
             {
                 var json  = child.GetRawJsonValue();
                 var entry = JsonUtility.FromJson<LeaderBoardEntry>(json);
-                this.allEntries.Add(entry);
+                this.limitEntries.Add(entry);
             }
 
-            // Sắp xếp descending vì Realtime Database trả ascending
-            this.allEntries.Sort((a, b) => b.score.CompareTo(a.score));
+            this.limitEntries.Sort((a, b) => b.score.CompareTo(a.score));
+            this.LogMessage($"Fetched {this.limitEntries.Count} limit entries from leaderboard.", Color.chartreuse);
+        }
+
+        public async UniTask FetchAllEntries()
+        {
+            this.LogMessage($"Starting to fetch all entries for leaderboard: {this.LeaderboardId}", Color.cyan);
+
+            this.allEntries.Clear();
+            var dbRef = FirebaseDatabase.DefaultInstance.GetReference(this.LeaderboardId);
+
+            await this.FetchRecursive(dbRef, 200, null);
+        }
+
+        private async UniTask FetchRecursive(DatabaseReference dbRef, int batchSize, string lastKey)
+        {
+            while (true)
+            {
+                if (this.allEntries.Count >= LeaderboardSaver.TotalEntries)
+                {
+                    this.LogMessage($"⚡️ Reached maxFetch: {LeaderboardSaver.TotalEntries}", Color.aquamarine);
+
+                    return;
+                }
+
+                var query = dbRef.OrderByKey().LimitToFirst(batchSize + 1);
+
+                if (!string.IsNullOrEmpty(lastKey))
+                    query = query.StartAt(lastKey);
+
+                DataSnapshot snapshot = null;
+                
+                bool fetched = false;
+                int  retry   = 0;
+                while (!fetched && retry < 3)
+                {
+                    try
+                    {
+                        this.LogMessage($"⏳ Fetch attempt {retry + 1}...", Color.coral);
+                        snapshot = await query.GetValueAsync().AsUniTask().Timeout(System.TimeSpan.FromSeconds(10));
+                        this.LogMessage($"✅ Fetched {snapshot.ChildrenCount} entries.", Color.aquamarine);
+                        fetched = true;
+                    }
+                    catch (TimeoutException)
+                    {
+                        this.LogMessage($"⚠️ Timeout, retrying ({retry + 1}/3)...", Color.yellow);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        this.LogMessage($"❌ Fetch error: {ex}", Color.red);
+                        break;
+                    }
+                    retry++;
+                }
+
+                if (!fetched)
+                {
+                    this.LogMessage("❌ Fetch failed after 3 retries.", Color.red);
+
+                    break;
+                }
+
+                var    countThisBatch = 0;
+                string newLastKey     = null;
+
+                foreach (var child in snapshot.Children)
+                {
+                    newLastKey = child.Key;
+
+                    if (child.Key == lastKey) continue; // skip duplicate
+
+                    var entry = JsonUtility.FromJson<LeaderBoardEntry>(child.GetRawJsonValue());
+                    this.allEntries.Add(entry);
+                    countThisBatch++;
+
+                    if (this.allEntries.Count >= LeaderboardSaver.TotalEntries)
+                    {
+                        this.LogMessage($"⚡️ Reached maxFetch: {LeaderboardSaver.TotalEntries}", Color.aquamarine);
+
+                        return;
+                    }
+                }
+
+                this.LogMessage($"✅ Batch fetched: {countThisBatch}, total: {this.allEntries.Count}", Color.chocolate);
+
+                if (countThisBatch < batchSize)
+                {
+                    this.LogMessage($"🎯 Completed fetch, total entries: {this.allEntries.Count}", Color.aquamarine);
+
+                    return;
+                }
+
+                await UniTask.Yield(); // tránh treo editor
+                lastKey = newLastKey;
+            }
         }
 
         private void ConfigUserName(string userName)
