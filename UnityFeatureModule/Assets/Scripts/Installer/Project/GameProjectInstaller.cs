@@ -33,10 +33,10 @@ namespace Game.Scripts.Installer.Project
             // UnitTestInstaller<TimeMarkTest>.Install(this.Container);
             // LoginServicesInstaller.Install(this.Container);
             // SaveLoadCloudInstaller.Install(this.Container, new List<string>() { "BlueprintInfoData" });
-            // RuntimeLoadCsvInstaller.Install(this.Container);
-            this.Container.BindInterfacesAndSelfTo<LeaderboardTesting>().AsSingle().NonLazy();
-            LoginServicesInstaller.Install(this.Container);
-            LeaderboardServicesInstaller.Install(this.Container);
+            RuntimeLoadCsvInstaller.Install(this.Container);
+            // this.Container.BindInterfacesAndSelfTo<LeaderboardTesting>().AsSingle().NonLazy();
+            // LoginServicesInstaller.Install(this.Container);
+            // LeaderboardServicesInstaller.Install(this.Container);
         }
     }
 }

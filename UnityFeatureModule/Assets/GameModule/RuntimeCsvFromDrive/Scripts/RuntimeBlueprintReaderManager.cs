@@ -10,7 +10,10 @@
     using BlueprintFlow.BlueprintReader;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate._3rdPlugins.SyncGoogleDriver.Scripts;
-    using FeatureTemplate.Scripts.Blueprints;
+    using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
+    using FeatureTemplate.Scripts.Localization.Interfaces;
+    using FeatureTemplate.Scripts.Localization.Services;
+    using FeatureTemplate.Scripts.Services.Common;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
     using Google.Apis.Auth.OAuth2;
@@ -21,9 +24,10 @@
     using UnityEngine.Scripting;
     using Zenject;
 
-    public class RuntimeBlueprintReaderManager : BlueprintReaderManager
+    public class RuntimeBlueprintReaderManager : BlueprintReaderManager, IStartable
     {
-        private readonly FeatureSyncCsvWithGoogleDriver csvLoaderData;
+        private          FeatureSyncCsvWithGoogleDriver csvLoaderData;
+        private readonly LocalizationDataOnline         localizationDataOnline;
         private readonly ILogService                    logService;
         private readonly BlueprintConfig                blueprintConfig;
         private          BuilderConfigBlueprint         builderConfig;
@@ -32,15 +36,22 @@
         protected string LocalizationBlueprintSheetName;
 
         [Preserve]
-        public RuntimeBlueprintReaderManager(ISignalBus signalBus, ILogService logService, DiContainer diContainer, IHandleUserDataServices handleUserDataServices,
+        public RuntimeBlueprintReaderManager(ISignalBus signalBus,FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline, ILogService logService, DiContainer diContainer,
+            IHandleUserDataServices handleUserDataServices,
             BlueprintConfig blueprintConfig,
             FetchBlueprintInfo fetchBlueprintInfo, BlueprintDownloader blueprintDownloader) : base(signalBus, logService, diContainer, handleUserDataServices, blueprintConfig, fetchBlueprintInfo,
             blueprintDownloader)
         {
-            this.csvLoaderData         = Resources.Load<FeatureSyncCsvWithGoogleDriver>("SyncGoogleDriver");
-            this.logService            = logService;
-            this.blueprintConfig       = blueprintConfig;
-            this.LocalizationSheetName = this.csvLoaderData.syncDataInfo.LocalizationSheetName;
+            this.localizationDataOnline = localizationDataOnline;
+            this.logService             = logService;
+            this.blueprintConfig        = blueprintConfig;
+            featureManuallyUnity.AddStart(this);
+        }
+
+        public void Initialize()
+        {
+            this.csvLoaderData                  = Resources.Load<FeatureSyncCsvWithGoogleDriver>("SyncGoogleDriver");
+            this.LocalizationSheetName          = this.csvLoaderData.syncDataInfo.LocalizationSheetName;
             this.LocalizationBlueprintSheetName = this.csvLoaderData.syncDataInfo.LocalizationBlueprintSheetName;
         }
 
@@ -215,7 +226,50 @@
             return input;
         }
 
-        protected virtual async UniTask GetCustomValueRange(Dictionary<string, CustomValueRange> input) { }
+        protected virtual async UniTask GetCustomValueRange(Dictionary<string, CustomValueRange> input)
+        {
+#if UNITY_LOCALIZATION
+            var localizationTable = input.First(x => x.Key.Equals(this.LocalizationSheetName));
+            var localizationLanguage = input.FirstOrDefault(x => x.Key.Equals(this.LocalizationBlueprintSheetName));
+
+            var instance = new FeatureTemplate.Scripts.Localization.Blueprint.LocalizationLanguageBlueprint();
+            var csvOfSheet = this.GetDataFromSheetName(localizationLanguage.Key, input);
+            await instance.DeserializeFromCsv(csvOfSheet);
+
+            var tmp = new Dictionary<string, string>();
+
+            foreach (var item in instance)
+            {
+                this.localizationDataOnline.LocalizationDatas.Add(item.Key, new LocalizationDataModel());
+            }
+
+            for (var i = 0; i < localizationTable.Value.Values.Count; i++)
+            {
+                var listData = localizationTable.Value.Values[i];
+                var current = listData.Select(x => x.ToString()).ToList();
+
+                if (i == 0)
+                {
+                    for (var index = 0; index < current.Count; index++)
+                    {
+                        if (index == 0) continue;
+                        var realKey = current[index];
+                        var findItem = instance.FirstOrDefault(x => x.Value.FullName.Equals(realKey));
+                        tmp.Add(findItem.Value.FullName, findItem.Key);
+                    }
+
+                    continue;
+                }
+
+                for (var index = 0; index < current.Count; index++)
+                {
+                    if (index == 0) continue;
+                    var findKey = tmp.ElementAt(index - 1).Value;
+                    this.localizationDataOnline.LocalizationDatas[findKey].LocalizedTexts.Add(current[0], current[index]);
+                }
+            }
+#endif
+        }
 
         protected virtual string GetColumnName(int columnIndex)
         {
