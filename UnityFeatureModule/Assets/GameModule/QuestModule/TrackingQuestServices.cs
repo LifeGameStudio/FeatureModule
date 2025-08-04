@@ -3,27 +3,40 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using FeatureTemplate.Scripts.Services;
-    using GameModule.QuestModule.Blueprints;
+    using GameModule.QuestModule.Blueprints.Base;
+    using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Model;
     using GameModule.QuestModule.Provider;
+    using GameModule.QuestModule.QuestMatcher;
     using GameModule.QuestModule.Signals;
     using UnityEngine;
     using UserData;
     using Zenject;
+    using ListPool = UnityEngine.Pool;
 
-    public class TrackingQuestServices : IInitializable, IDisposable
+    public class TrackingQuestServices : IInitializable, IDisposable, ITickable
     {
         private readonly QuestManager          questManager;
         private readonly ISignalBus            signalBus;
         private readonly QuestProviderServices questProviderServices;
 
-        public TrackingQuestServices(QuestManager questManager,
+        private readonly Dictionary<string, ITrackingQuestRequirementMatcher> cachedRequirementMatchers = new();
+
+        private          SignalBatchQueue<TrackingQuestSignal> signalBatchQueue;
+        private          float                                 lastFlushTime;
+        private readonly float                                 flushInterval = 0.1f;
+
+        public TrackingQuestServices(List<ITrackingQuestRequirementMatcher> questRequirementMatchers, QuestManager questManager,
             ISignalBus signalBus, QuestProviderServices questProviderServices)
         {
             this.questManager          = questManager;
             this.signalBus             = signalBus;
             this.questProviderServices = questProviderServices;
+
+            foreach (var matcher in questRequirementMatchers)
+            {
+                this.cachedRequirementMatchers.Add(matcher.Id, matcher);
+            }
         }
 
         private void CheckToAddTrackingCached(List<string> requirementIds, string requirementType, int addedValue)
@@ -81,162 +94,251 @@
             }
         }
 
-        private void UpdateTaskProgress(List<string> requirementList, string requirementType, int addedValue)
+        private void UpdateTaskProgress(TrackingQuestSignal signal)
         {
-            this.CheckToAddTrackingCached(requirementList, requirementType, addedValue);
+            var requirementType = signal.RequirementType;
+            var requirementIds  = signal.RequirementIds;
+            var addedValue      = signal.RequirementValue;
 
-            var questCompleted = new List<QuestLog>();
+            this.CheckToAddTrackingCached(requirementIds, requirementType, addedValue);
 
-            foreach (var (id, questInfo) in this.questManager.QuestJournal.Quests)
+            var questCompleted = ListPool.ListPool<QuestLog>.Get();
+            var relatedTasks   = ListPool.ListPool<(QuestLog quest, TaskLog task)>.Get();
+
+            // Step 1: Collect all tasks that match requirementType
+            foreach (var (_, quest) in this.questManager.QuestJournal.Quests)
             {
-                if (questInfo.QuestStatus != QuestStatus.InProgress) continue;
+                if (quest.QuestStatus != QuestStatus.InProgress) continue;
 
-                foreach (var taskLog in questInfo.TaskProgress)
+                for (var i = 0; i < quest.TaskProgress.Count; i++)
                 {
-                    if (taskLog.TaskStatus != QuestStatus.InProgress) continue;
+                    var task = quest.TaskProgress[i];
 
-                    var requirementsRecords =
-                        taskLog.TaskRecord.RequirementRecords.FindAll(r => r.RequirementType.Equals(requirementType));
+                    if (task.TaskStatus != QuestStatus.InProgress) continue;
 
-                    if (!string.IsNullOrEmpty(requirementType))
+                    var requirements = task.TaskRecord.RequirementRecords();
+
+                    for (var j = 0; j < requirements.Count; j++)
                     {
-                        requirementsRecords =
-                            requirementsRecords.FindAll(r => r.RequirementType.Equals(requirementType));
-                    }
+                        var req = requirements[j];
 
-                    if (requirementsRecords.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    foreach (var r in requirementsRecords)
-                    {
-                        var listRequirementProgress = new List<RequirementProgress>();
-
-                        var requirementProgress = taskLog.Progress.FirstOrDefault(x =>
-                            x.RequirementType.Equals(requirementType) && string.IsNullOrEmpty(x.RequirementId));
-
-                        if (requirementProgress == null)
+                        if (req.GetRequirementType() == requirementType && this.IsRequirementMatch(req, signal))
                         {
-                            requirementProgress = new RequirementProgress()
-                            {
-                                RequirementType = requirementType,
-                                RequirementId   = "",
-                                CurrentValue    = addedValue,
-                                RequiredValue   = r.RequirementValue,
-                                IsOptional      = r.RequirementOption
-                            };
-
-                            listRequirementProgress.Add(requirementProgress);
-                            taskLog.Progress.Add(requirementProgress);
+                            relatedTasks.Add((quest, task));
                         }
-                        else listRequirementProgress.Add(requirementProgress);
-
-                        if (!string.IsNullOrEmpty(r.RequirementId))
-                        {
-                            requirementProgress = taskLog.Progress.FirstOrDefault(x =>
-                                x.RequirementType.Equals(requirementType) && !string.IsNullOrEmpty(x.RequirementId));
-
-                            if (requirementProgress == null)
-                            {
-                                listRequirementProgress.Add(new RequirementProgress()
-                                {
-                                    RequirementType = requirementType,
-                                    RequirementId   = r.RequirementId,
-                                    CurrentValue    = addedValue,
-                                    RequiredValue   = r.RequirementValue,
-                                    IsOptional      = r.RequirementOption
-                                });
-
-                                taskLog.Progress.Add(requirementProgress);
-                            }
-                            else listRequirementProgress.Add(requirementProgress);
-                        }
-
-                        foreach (var item in listRequirementProgress)
-                        {
-                            if (string.IsNullOrEmpty(item.RequirementId) || requirementList.Contains(item.RequirementId))
-                            {
-                                item.CurrentValue += addedValue;
-                            }
-                        }
-
-                        requirementProgress = listRequirementProgress.FirstOrDefault(x =>
-                            x.RequirementType.Equals(requirementType) && x.RequirementId.Equals(r.RequirementId));
-
-                        if (requirementProgress == null) continue;
-
-                        var isCompleted = requirementProgress.CurrentValue >= requirementProgress.RequiredValue;
-                        var isFailed    = requirementProgress.CurrentValue < 0;
-
-                        if (r.TrackingType == nameof(TrackingType.Total))
-                        {
-                            if (!this.questManager.QuestJournal.TrackingCached.ContainsKey(requirementType))
-                            {
-                                this.questManager.QuestJournal.TrackingCached.Add(requirementType, new Dictionary<string, int>());
-                                this.questManager.QuestJournal.TrackingCached[requirementType].Add(r.RequirementId, requirementProgress.CurrentValue);
-                            }
-                            else if (!this.questManager.QuestJournal.TrackingCached[requirementType].ContainsKey(r.RequirementId))
-                            {
-                                this.questManager.QuestJournal.TrackingCached[requirementType].Add(r.RequirementId, requirementProgress.CurrentValue);
-                            }
-
-                            var valueInTotal = this.questManager.QuestJournal.TrackingCached[requirementType][r.RequirementId];
-
-                            isCompleted = valueInTotal >= requirementProgress.RequiredValue;
-                        }
-
-                        if (isFailed)
-                        {
-                            this.questManager.UpdateTaskStatus(questInfo.QuestId, questInfo.ProviderId,
-                                taskLog.TaskRecord.TaskId, QuestStatus.Failed);
-
-                            continue;
-                        }
-
-                        if (!isCompleted) continue;
-
-                        if (r.RequirementOption)
-                        {
-                            this.questManager.UpdateCountRequirementOption(questInfo.QuestId, questInfo.ProviderId,
-                                taskLog.TaskRecord.TaskId);
-                        }
-
-                        this.questManager.CheckTaskCompleted(questInfo.QuestId, questInfo.ProviderId,
-                            taskLog.TaskRecord.TaskId);
                     }
                 }
-
-                //find NextTask notStarted
-                var nextTask = questInfo.TaskProgress.FirstOrDefault(task => task.TaskStatus != QuestStatus.Completed && task.TaskStatus != QuestStatus.Rewarded);
-
-                if (nextTask is { TaskStatus: QuestStatus.NotStarted })
-                {
-                    this.questManager.UpdateTaskStatus(questInfo.QuestId, questInfo.ProviderId,
-                        nextTask.TaskRecord.TaskId, QuestStatus.InProgress);
-
-                    this.questProviderServices.SetupTaskContext(nextTask, questInfo.QuestProviderType);
-                }
-
-                // Check if all tasks are completed
-                var allTasksCompleted = this.questManager.CheckAllTaskCompleted(questInfo.QuestId, questInfo.ProviderId);
-
-                if (!allTasksCompleted) continue;
-                // Set the quest status to Completed
-                this.questManager.SetQuestStatus(questInfo.QuestId, questInfo.ProviderId, QuestStatus.Completed);
-                questCompleted.Add(questInfo);
-                this.LogMessage("Done Quest " + questInfo.QuestId, Color.red);
             }
 
-            foreach (var questInfo in questCompleted)
+            for (var i = 0; i < relatedTasks.Count; i++)
             {
-                this.signalBus.Fire(new QuestChangeStatusSignal(questInfo));
+                var (quest, task) = relatedTasks[i];
+
+                this.ProcessSingleTask(signal, quest, task);
+
+                if (this.questManager.CheckAllTaskCompleted(quest.QuestId, quest.ProviderId))
+                {
+                    this.questManager.SetQuestStatus(quest.QuestId, quest.ProviderId, QuestStatus.Completed);
+                    questCompleted.Add(quest);
+                    Debug.Log($"Done Quest {quest.QuestId}");
+                }
+            }
+
+            for (var i = 0; i < questCompleted.Count; i++)
+            {
+                this.signalBus.Fire(new QuestChangeStatusSignal(questCompleted[i]));
+            }
+
+            this.signalBus.Fire(new RefreshQuestViewSignal());
+            ListPool.ListPool<(QuestLog, TaskLog)>.Release(relatedTasks);
+            ListPool.ListPool<QuestLog>.Release(questCompleted);
+        }
+
+        private void ProcessSingleTask(TrackingQuestSignal signal, QuestLog quest, TaskLog taskLog)
+        {
+            var requirementType = signal.RequirementType;
+            var requirementIds  = signal.RequirementIds;
+            var addedValue      = signal.RequirementValue;
+
+            var requirements = taskLog.TaskRecord.RequirementRecords();
+
+            for (var i = 0; i < requirements.Count; i++)
+            {
+                var req = requirements[i];
+
+                if (req.GetRequirementType() != requirementType || !this.IsRequirementMatch(req, signal)) continue;
+
+                var progressList = ListPool.ListPool<RequirementProgress>.Get();
+                this.CollectOrCreateProgress(taskLog, req, requirementType, addedValue, progressList);
+
+                for (var j = 0; j < progressList.Count; j++)
+                {
+                    var prog = progressList[j];
+
+                    if (string.IsNullOrEmpty(prog.RequirementId))
+                    {
+                        prog.CurrentValue += addedValue;
+                    }
+                    else if (!string.IsNullOrEmpty(prog.RequirementId))
+                    {
+                        if (requirementIds.Contains(prog.RequirementId))
+                        {
+                            prog.CurrentValue += addedValue;
+                        }
+                    }
+                }
+
+                var matchedProgress = this.FindProgress(progressList, requirementType, req.GetRequirementId());
+
+                if (matchedProgress == null)
+                {
+                    ListPool.ListPool<RequirementProgress>.Release(progressList);
+
+                    continue;
+                }
+
+                var isCompleted = matchedProgress.CurrentValue >= matchedProgress.RequiredValue;
+                var isFailed    = matchedProgress.CurrentValue < 0;
+
+                if (req.TrackingType == nameof(TrackingType.Total))
+                {
+                    var total = this.UpdateTrackingTotal(requirementType, req.GetRequirementId(), matchedProgress.CurrentValue);
+                    isCompleted = total >= matchedProgress.RequiredValue;
+                }
+
+                if (isFailed)
+                {
+                    this.questManager.UpdateTaskStatus(quest.QuestId, quest.ProviderId, taskLog.TaskRecord.TaskId, QuestStatus.Failed);
+                    ListPool.ListPool<RequirementProgress>.Release(progressList);
+
+                    return;
+                }
+
+                if (isCompleted)
+                {
+                    if (req.RequirementOption)
+                    {
+                        this.questManager.UpdateCountRequirementOption(quest.QuestId, quest.ProviderId, taskLog.TaskRecord.TaskId);
+                    }
+
+                    this.questManager.CheckTaskCompleted(quest.QuestId, quest.ProviderId, taskLog.TaskRecord.TaskId);
+                }
+
+                ListPool.ListPool<RequirementProgress>.Release(progressList);
+            }
+
+            var nextTask = quest.TaskProgress.FirstOrDefault(task => task.TaskStatus != QuestStatus.Completed && task.TaskStatus != QuestStatus.Rewarded);
+
+            if (nextTask is { TaskStatus: QuestStatus.NotStarted })
+            {
+                this.questManager.UpdateTaskStatus(quest.QuestId, quest.ProviderId,
+                    nextTask.TaskRecord.TaskId, QuestStatus.InProgress);
+
+                this.questProviderServices.SetupTaskContext(nextTask, quest.QuestProviderType);
             }
         }
 
-        public void Initialize() { this.signalBus.Subscribe<TrackingQuestSignal>(this.OnTrackingQuest); }
+        private void CollectOrCreateProgress(TaskLog taskLog, IQuestRequirement requirement, string type, int addedValue, List<RequirementProgress> outList)
+        {
+            var reqId = requirement.GetRequirementId();
 
-        private void OnTrackingQuest(TrackingQuestSignal obj) { this.UpdateTaskProgress(obj.RequirementIds, obj.RequirementType, obj.RequirementValue); }
+            var baseProgress = this.FindProgress(taskLog.Progress, type, "");
+
+            if (baseProgress == null)
+            {
+                baseProgress = new RequirementProgress
+                {
+                    RequirementType = type,
+                    RequirementId   = "",
+                    CurrentValue    = 0,
+                    RequiredValue   = requirement.GetRequirementValue(),
+                    IsOptional      = requirement.RequirementOption
+                };
+
+                taskLog.Progress.Add(baseProgress);
+            }
+
+            outList.Add(baseProgress);
+
+            if (!string.IsNullOrEmpty(reqId))
+            {
+                var specificProgress = this.FindProgress(taskLog.Progress, type, reqId);
+
+                if (specificProgress == null)
+                {
+                    specificProgress = new RequirementProgress
+                    {
+                        RequirementType = type,
+                        RequirementId   = reqId,
+                        CurrentValue    = 0,
+                        RequiredValue   = requirement.GetRequirementValue(),
+                        IsOptional      = requirement.RequirementOption
+                    };
+
+                    taskLog.Progress.Add(specificProgress);
+                }
+
+                outList.Add(specificProgress);
+            }
+        }
+
+        private RequirementProgress FindProgress(List<RequirementProgress> list, string type, string id)
+        {
+            for (var i = 0; i < list.Count; i++)
+            {
+                var progress = list[i];
+
+                if (progress.RequirementType == type && progress.RequirementId == id)
+                {
+                    return progress;
+                }
+            }
+
+            return null;
+        }
+
+        private int UpdateTrackingTotal(string type, string id, int value)
+        {
+            if (!this.questManager.QuestJournal.TrackingCached.TryGetValue(type, out var dict))
+            {
+                dict                                                = new Dictionary<string, int>();
+                this.questManager.QuestJournal.TrackingCached[type] = dict;
+            }
+
+            if (!dict.TryAdd(id, value))
+            {
+                dict[id] += value;
+            }
+
+            return dict[id];
+        }
+
+        private bool IsRequirementMatch(IQuestRequirement questRequirement, TrackingQuestSignal obj)
+        {
+            if (questRequirement is IQuestRequirementWithCondition questRequirementWithCondition)
+            {
+                return this.cachedRequirementMatchers.TryGetValue(questRequirementWithCondition.RequirementConditionId, out var matcher) &&
+                       matcher.IsMatch(questRequirementWithCondition, obj);
+            }
+
+            return true;
+        }
+
+        public void Initialize()
+        {
+            this.signalBatchQueue = new SignalBatchQueue<TrackingQuestSignal>(this.UpdateTaskProgress, 20);
+
+            this.signalBus.Subscribe<TrackingQuestSignal>(this.OnTrackingQuest);
+        }
+
+        private void OnTrackingQuest(TrackingQuestSignal obj) { this.signalBatchQueue.Enqueue(obj); }
+
+        public void Tick()
+        {
+            if (!(Time.realtimeSinceStartup - this.lastFlushTime >= this.flushInterval)) return;
+            this.signalBatchQueue.Flush();
+            this.lastFlushTime = Time.realtimeSinceStartup;
+        }
 
         public void Dispose() { this.signalBus.Unsubscribe<TrackingQuestSignal>(this.OnTrackingQuest); }
     }

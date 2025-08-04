@@ -5,6 +5,8 @@
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.Handle;
     using GameModule.QuestModule.Blueprints;
+    using GameModule.QuestModule.Blueprints.Base;
+    using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Model;
     using UnityEngine;
     using UserData;
@@ -21,12 +23,16 @@
 
         public override QuestProviderType QuestProviderType => QuestProviderType.Main;
 
-        public override QuestRecord GetQuestRecord(string questId, string providerId) { return this.mainQuestBlueprint[questId]; }
+        public override IBaseQuestRecord GetQuestRecord(string questId, string providerId) { return this.mainQuestBlueprint[questId]; }
 
         protected override UniTask InitInternal()
         {
             foreach (var item in this.mainQuestBlueprint)
             {
+                if (this.IsQuestRewarded(item.Key, this.QuestProviderType.ToString()))
+                {
+                    continue;
+                }
                 var questLog = this.QuestManager.GetQuest(item.Key, "");
 
                 if (questLog == null)
@@ -57,7 +63,7 @@
                     continue;
                 }
 
-                if (taskLog.TaskRecord.RequirementRecords.First().TrackingType.Equals(nameof(TrackingType.InQuest)) && questLog.TaskProgress.IndexOf(taskLog) > 0)
+                if (taskLog.TaskRecord.RequirementRecords().First().TrackingType.Equals(nameof(TrackingType.InQuest)) && questLog.TaskProgress.IndexOf(taskLog) > 0)
                 {
                     continue;
                 }
@@ -66,7 +72,7 @@
             }
         }
 
-        public override QuestRecord GetNextQuest(string lastMainQuestId)
+        public override IBaseQuestRecord GetNextQuest(string lastMainQuestId)
         {
             var lastQuestRecord = this.mainQuestBlueprint[lastMainQuestId];
             var nextQuestOrder  = lastQuestRecord.QuestIndex + 1;

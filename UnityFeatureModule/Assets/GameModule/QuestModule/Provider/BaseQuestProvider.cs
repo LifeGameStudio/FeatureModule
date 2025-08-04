@@ -5,8 +5,8 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.Handle;
-    using FeatureTemplate.Scripts.Services;
-    using GameModule.QuestModule.Blueprints;
+    using GameModule.QuestModule.Blueprints.Base;
+    using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Model;
     using UserData;
     using Zenject;
@@ -14,29 +14,30 @@
     public interface IQuestProvider
     {
         QuestProviderType QuestProviderType { get; }
-        QuestRecord       GetQuestRecord(string questId, string providerId);
+        IBaseQuestRecord  GetQuestRecord(string questId, string providerId);
         void              GiveNewQuest(string questId, string providerId, QuestProviderType questProviderType);
         void              CheckToStartQuest(string questId, string providerId);
-        QuestRecord       GetNextQuest(string lastMainQuestId);
+        IBaseQuestRecord  GetNextQuest(string lastMainQuestId);
         void              SetupTaskContext(TaskLog taskLog, QuestProviderType questProviderType);
         void              CheckToStartAllTaskOfQuest(string questId, string providerId);
     }
 
     public abstract class BaseQuestProvider : IQuestProvider, IInitializable, IDisposable
     {
-        [Inject] private   FeatureDataState featureDataState;
-        protected readonly QuestManager     QuestManager;
+        internal readonly QuestManager QuestManager;
 
+        // private readonly QuestContextBlueprint questContextBlueprint;
         public abstract QuestProviderType                 QuestProviderType { get; }
         private         Dictionary<string, IActionHandle> questContexts;
 
         protected BaseQuestProvider(QuestManager questManager, List<IActionHandle> questContexts)
         {
-            this.QuestManager  = questManager;
+            this.QuestManager = questManager;
+            //this.questContextBlueprint = questContextBlueprint;
             this.questContexts = questContexts.ToDictionary(x => x.Id);
         }
 
-        public abstract QuestRecord GetQuestRecord(string questId, string providerId);
+        public abstract IBaseQuestRecord GetQuestRecord(string questId, string providerId);
 
         public void GiveNewQuest(string questId, string providerId, QuestProviderType questProviderType)
         {
@@ -45,7 +46,7 @@
 
             var questRecord = this.GetQuestRecord(questId, providerId);
             this.QuestManager.CheckToAddNewQuest(questId, providerId, questProviderType, questRecord);
-            this.QuestManager.UpdateQuestStatus(providerId, questId, QuestStatus.NotStarted);
+            this.QuestManager.SetQuestStatus(questId, providerId, QuestStatus.NotStarted);
         }
 
         public virtual void CheckToStartQuest(string questId, string providerId)
@@ -57,14 +58,14 @@
                 case QuestStatus.Completed or QuestStatus.Rewarded or QuestStatus.InProgress:
                     return;
                 case QuestStatus.NotStarted:
-                    this.QuestManager.UpdateQuestStatus(providerId, questId, QuestStatus.InProgress);
+                    this.QuestManager.SetQuestStatus(questId, providerId, QuestStatus.InProgress);
                     this.SetupContext(questInfo.TaskProgress.FirstOrDefault(x => x.TaskStatus == QuestStatus.InProgress));
 
                     break;
             }
         }
 
-        public abstract QuestRecord GetNextQuest(string lastMainQuestId);
+        public virtual IBaseQuestRecord GetNextQuest(string lastMainQuestId) { return default; }
 
         public void SetupTaskContext(TaskLog taskLog, QuestProviderType questProviderType)
         {
@@ -82,24 +83,26 @@
         /// <param name="taskLog"></param>
         public virtual void SetupContext(TaskLog taskLog)
         {
-            if (taskLog.TaskRecord.TaskSates.TryGetValue(taskLog.TaskStatus, out var questContext))
+            if (taskLog.TaskRecord is not ITaskRecordWithContext taskRecordWithContext) return;
+
+            if (!taskRecordWithContext.TaskSates.TryGetValue(taskLog.TaskStatus, out var questContext)) return;
+
+            foreach (var contextRecord in questContext.QuestContext)
             {
-                foreach (var contextRecord in questContext.QuestContext)
+                if (this.questContexts.TryGetValue(contextRecord.QuestContextType, out var context))
                 {
-                    if (this.questContexts.TryGetValue(contextRecord.QuestContextType, out var context))
-                    {
-                        context.Execute(null, contextRecord.QuestContextData);
-                    }
+                    context.Execute(null,contextRecord.QuestContextData);
                 }
             }
         }
 
         public async void Initialize()
         {
-            await UniTask.WaitUntil(() => this.featureDataState.IsBlueprintAndLocalDataLoaded);
             await this.QuestManager.LoadRecord(this);
             await this.InitInternal();
         }
+
+        protected bool IsQuestRewarded(string questId, string providerId) { return this.QuestManager.IsQuestRewarded(questId, providerId, this.QuestProviderType); }
 
         protected virtual async UniTask InitInternal() { }
 

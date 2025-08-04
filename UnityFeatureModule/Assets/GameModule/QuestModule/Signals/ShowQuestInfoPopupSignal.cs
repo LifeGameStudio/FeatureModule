@@ -1,10 +1,10 @@
 ﻿namespace GameModule.QuestModule.Signals
 {
-    using GameModule.QuestModule.Blueprints;
+    using GameModule.QuestModule.Blueprints.Base.Interfaces;
 
     public class ShowQuestInfoPopupSignal
     {
-        public QuestRecord QuestRecord;
-        public string      NpcId;
+        public IBaseQuestRecord QuestRecord;
+        public string           NpcId;
     }
 }

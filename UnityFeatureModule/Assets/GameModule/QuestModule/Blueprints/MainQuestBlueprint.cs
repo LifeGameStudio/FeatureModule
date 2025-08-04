@@ -1,96 +1,37 @@
 ﻿namespace GameModule.QuestModule.Blueprints
 {
-    using System;
     using BlueprintFlow.BlueprintReader;
+    using GameModule.QuestModule.Blueprints.Base;
+    using GameModule.QuestModule.Blueprints.Base.Interfaces;
 
     [BlueprintReader("MainQuest")]
-    public class MainQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
+    public class MainQuestBlueprint : GenericBlueprintReaderByRow<string, MainQuestRecord>
     {
     }
 
-    [CsvHeaderKey("Id")]
-    [Serializable]
-    public class QuestRecord
+    public class MainQuestRecord : BaseQuestRecord
     {
-        public string Id;
-        public int    QuestIndex;
+        public BlueprintByRow<MainQuestTaskRecord> TaskRecords { get; set; }
 
-        public string                            QuestType;
-        public string                            QuestIcon;
-        public string                            QuestDescription;
-        public int                               CountTaskOption;
-        public BlueprintByRow<QuestRewardRecord> QuestRewardRecords;
-        public BlueprintByRow<TaskRecord>        Tasks;
-        public string                            GotoQuestDeepLink { get; set; }
+        public override BlueprintByRow<ITaskRecord> Tasks()
+        {
+            var result = new BlueprintByRow<ITaskRecord>();
+            result.AddRange(this.TaskRecords);
+
+            return result;
+        }
     }
 
-    [CsvHeaderKey("TaskId")]
-    [Serializable]
-    public class TaskRecord
+    public class MainQuestTaskRecord : BaseTaskRecord
     {
-        public string                                 TaskId;
-        public bool                                   TaskOption;
-        public int                                    CoutRequirementOption;
-        public string                                 TaskIcon;
-        public string                                 GoToTaskDeepLink;
-        public BlueprintByRow<QuestStatus, TaskSate>  TaskSates;
-        public string                                 Description;
-        public string                                 TaskName;
-        public BlueprintByRow<QuestRequirementRecord> RequirementRecords;
-        public BlueprintByRow<TaskRewardRecord>       RewardRecords;
-    }
+        public BlueprintByRow<QuestRequirementWithCondition> Requirements { get; set; }
 
-    public class QuestRequirementRecord : RequirementsRecord
-    {
-        public string TrackingType;
-        public bool   RequirementOption;
-    }
+        public override BlueprintByRow<IQuestRequirement> RequirementRecords()
+        {
+            var result = new BlueprintByRow<IQuestRequirement>();
+            result.AddRange(this.Requirements);
 
-    [CsvHeaderKey("TaskState")]
-    [Serializable]
-    public class TaskSate
-    {
-        public QuestStatus                        TaskState;
-        public BlueprintByRow<QuestContextRecord> QuestContext;
-    }
-
-    [CsvHeaderKey("QuestContextType")]
-    public class QuestContextRecord
-    {
-        public string QuestContextType;
-        public string QuestContextData;
-    }
-
-    [CsvHeaderKey("TaskRewardId")]
-    [Serializable]
-    public class TaskRewardRecord
-    {
-        public string TaskRewardId;
-        public string TaskRewardType;
-        public int    TaskRewardValue;
-    }
-
-    [CsvHeaderKey("QuestRewardId")]
-    [Serializable]
-    public class QuestRewardRecord
-    {
-        public string QuestRewardId;
-        public string QuestRewardType;
-        public int    QuestRewardValue;
-    }
-
-    public enum TrackingType
-    {
-        Total,
-        InQuest
-    }
-
-    public enum QuestStatus
-    {
-        NotStarted,
-        InProgress,
-        Completed,
-        Failed,
-        Rewarded
+            return result;
+        }
     }
 }

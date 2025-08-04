@@ -1,9 +1,1 @@
 Id,Name,Description,UnlockType,CurrencyID,Price,ImageAddress,Category,IsDefaultItem
-item1,Item1,Good,Ads,,0,Character_Sample01_l,Character,TRUE
-item2,Item2,Good,SoftCurrency,Coin,200,Character_Sample01_l,Character,FALSE
-item3,Item3,Good,SoftCurrency,Coin,300,Character_Sample01_l,Character,FALSE
-item4,Item4,Good,IAP,com.abc.pack1,0,Character_Sample01_l,Character,FALSE
-item5,Item5,Good,IAP,com.abc.pack1,0,Character_Sample01_l,Character,FALSE
-item6,Item6,Good,Ads,,0,Character_Sample01_l,Item,FALSE
-item7,Item7,Good,SoftCurrency,Coin,400,Character_Sample01_l,Item,FALSE
-item8,Item8,Good,IAP,com.abc.pack1,0,Character_Sample01_l,Character_Sample01_l,FALSE

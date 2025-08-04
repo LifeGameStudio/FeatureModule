@@ -1,1 +1,1 @@
-Id,AndroidProductId,IosProductId,ProductType,ImageAddress,Name,Description,DefaultPrice,RewardType,RewardId,RewardValue,Repeat,RewardIcon,RewardContent,AddressableFlyingItem
+Id,AndroidBundleId,IosBundleId,ProductType,ImageAddress,Name,Description,DefaultPrice,RewardType,RewardId,RewardValue,CanRestore,Repeat,RewardIcon,RewardContent,AddressableFlyingItem

@@ -2,20 +2,34 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
     using GameFoundation.Scripts.Interfaces;
-    using GameModule.QuestModule.Blueprints;
+    using GameModule.QuestModule.Blueprints.Base;
+    using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using Newtonsoft.Json;
     using UserData;
 
     public class QuestJournal : IFeatureLocalData, ILocalData
     {
-        public Dictionary<string, QuestLog>                Quests         = new();
+        public Dictionary<string, QuestLog> Quests        = new();
+        public Dictionary<string, QuestLog> QuestRewarded = new();
+
         public Dictionary<string, Dictionary<string, int>> TrackingCached = new();
 
-        public Type ControllerType => typeof(QuestManager);
+        public bool IsQuestRewarded(string questId, string provideId, QuestProviderType questProviderType)
+        {
+            if (questProviderType is QuestProviderType.Daily or QuestProviderType.BattlePass)
+            {
+                this.QuestRewarded.Remove(questId);
 
-        public void Init() { }
+                return false;
+            }
+
+            return this.QuestRewarded.FirstOrDefault(x => x.Key == questId && x.Value.ProviderId == provideId).Value != null;
+        }
+        
+        public Type ControllerType => typeof(QuestManager);
     }
 
     [Serializable]
@@ -28,7 +42,7 @@
         public              string            QuestType;
         public              int               CountTaskOption;
         public              List<TaskLog>     TaskProgress = new();
-        [JsonIgnore] public QuestRecord       QuestRecord;
+        [JsonIgnore] public IBaseQuestRecord  BaseQuestRecord;
     }
 
     [Serializable]
@@ -38,7 +52,7 @@
         public List<RequirementProgress> Progress = new();
         public QuestStatus               TaskStatus;
 
-        [JsonIgnore] public TaskRecord TaskRecord;
+        [JsonIgnore] public ITaskRecord TaskRecord;
     }
 
     public class RequirementProgress

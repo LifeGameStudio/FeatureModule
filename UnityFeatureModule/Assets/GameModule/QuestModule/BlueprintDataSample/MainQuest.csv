@@ -1,2 +1,2 @@
-Id,QuestIndex,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,GotoQuestDeepLink,QuestDescription,CountTaskOption,TaskId,TaskIcon,GoToTaskDeepLink,TaskState,QuestContextType,QuestContextData,Description,TaskName,TaskOption,CoutRequirementOption,TrackingType,RequirementType,RequirementId,RequirementValue,RequirementOption,TaskRewardId,TaskRewardType,TaskRewardValue
-1,Main,,,,,,,,,,,0
+Id,QuestIndex,QuestType,QuestRewardId,QuestRewardType,QuestRewardValue,QuestIcon,GotoQuestDeepLink,QuestDescription,CountTaskOption,TaskId,TaskIcon,GoToTaskDeepLink,TaskState,QuestContextType,QuestContextData,Description,TaskName,TaskOption,CoutRequirementOption,TrackingType,RequirementType,RequirementId,RequirementValue,RequirementOption,RequirementConditionId,RequirementConditionData,TaskRewardId,TaskRewardType,TaskRewardValue
+1,1,Main,,,,,,,0,1,icon_1,0,,,,Des1,Task 1,FALSE,0,InQuest,daily_login,,1,FALSE,,,gem,Currency,10
