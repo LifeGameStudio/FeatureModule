@@ -10,6 +10,7 @@
         public override void InstallBindings()
         {
             this.Container.DeclareSignal<TrackingQuestSignal>();
+            this.Container.DeclareSignal<TaskChangeStatusSignal>();
             this.Container.DeclareSignal<QuestChangeStatusSignal>();
             this.Container.DeclareSignal<RefreshQuestViewSignal>();
             this.Container.DeclareSignal<ShowQuestInfoPopupSignal>();

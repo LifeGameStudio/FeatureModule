@@ -5,6 +5,7 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using FeatureTemplate.Scripts.Handle;
+    using FeatureTemplate.Scripts.Services;
     using GameModule.QuestModule.Blueprints.Base;
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Model;
@@ -24,7 +25,8 @@
 
     public abstract class BaseQuestProvider : IQuestProvider, IInitializable, IDisposable
     {
-        internal readonly QuestManager QuestManager;
+        [Inject] protected FeatureDataState FeatureDataState;
+        protected readonly QuestManager     QuestManager;
 
         // private readonly QuestContextBlueprint questContextBlueprint;
         public abstract QuestProviderType                 QuestProviderType { get; }
@@ -91,18 +93,20 @@
             {
                 if (this.questContexts.TryGetValue(contextRecord.QuestContextType, out var context))
                 {
-                    context.Execute(null,contextRecord.QuestContextData);
+                    context.Execute(null, contextRecord.QuestContextData);
                 }
             }
         }
 
         public async void Initialize()
         {
+            await this.WaitLoadBlueprint();
             await this.QuestManager.LoadRecord(this);
             await this.InitInternal();
         }
 
-        protected bool IsQuestRewarded(string questId, string providerId) { return this.QuestManager.IsQuestRewarded(questId, providerId, this.QuestProviderType); }
+        protected virtual async UniTask WaitLoadBlueprint()                                { await UniTask.WaitUntil(() => this.FeatureDataState.IsBlueprintLoaded); }
+        protected               bool    IsQuestRewarded(string questId, string providerId) { return this.QuestManager.IsQuestRewarded(questId, providerId, this.QuestProviderType); }
 
         protected virtual async UniTask InitInternal() { }
 
