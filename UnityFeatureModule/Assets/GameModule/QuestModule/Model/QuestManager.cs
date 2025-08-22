@@ -32,18 +32,18 @@
         public async UniTask LoadRecord(IQuestProvider questProvider)
         {
             await UniTask.WaitUntil(() => this.Data != null);
-
-            foreach (var q in this.Data.Quests.Where(x => x.Value.QuestProviderType == questProvider.QuestProviderType))
+            var quests = this.GetAllQuestsType(questProvider.QuestProviderType, true);
+            foreach (var q in quests)
             {
-                var questRecord = questProvider.GetQuestRecord(q.Value.QuestId, q.Value.ProviderId);
+                var questRecord = questProvider.GetQuestRecord(q.QuestId, q.ProviderId);
 
-                for (var index = 0; index < q.Value.TaskProgress.Count; index++)
+                for (var index = 0; index < q.TaskProgress.Count; index++)
                 {
-                    var taskLog = q.Value.TaskProgress[index];
+                    var taskLog = q.TaskProgress[index];
                     taskLog.TaskRecord = questRecord.Tasks()[index];
                 }
 
-                q.Value.BaseQuestRecord = questRecord;
+                q.BaseQuestRecord = questRecord;
             }
         }
 
@@ -237,21 +237,34 @@
             }
         }
 
-        public List<QuestLog> GetAllQuestsType(QuestProviderType questProviderType)
+        public List<QuestLog> GetAllQuestsType(QuestProviderType questProviderType, bool containQuestReward = false)
         {
-            return this.Data.Quests.Where(x => x.Value.QuestProviderType == questProviderType).Select(x => x.Value).ToList();
+            var result = new List<QuestLog>();
+            result.AddRange(this.Data.Quests.Where(x => x.Value.QuestProviderType == questProviderType).Select(x => x.Value));
+
+            if (containQuestReward)
+            {
+                result.AddRange(this.GetAllQuestRewarded(questProviderType));
+            }
+
+            return result;
         }
 
-        public List<string> GetAllQuestsCategoryOfAQuestProvider(QuestProviderType questProviderId)
+        public List<string> GetAllQuestsCategoryOfAQuestProvider(QuestProviderType questProviderId, bool containQuestReward = false)
         {
-            var quests = this.GetAllQuestsType(questProviderId);
+            var quests = this.GetAllQuestsType(questProviderId, containQuestReward);
 
             return quests.Select(q => q.QuestType).Distinct().ToList();
         }
 
-        public List<QuestLog> GetAllQuests(QuestProviderType questProviderType, string questCategory)
+        public List<QuestLog> GetAllQuests(QuestProviderType questProviderType, string questCategory, bool containQuestReward = false)
         {
             var quests = this.GetAllQuestsType(questProviderType);
+
+            if (containQuestReward)
+            {
+                quests.AddRange(this.GetAllQuestRewarded(questProviderType));
+            }
 
             return quests.Where(q => q.QuestType.Equals(questCategory)).ToList();
         }
@@ -449,7 +462,11 @@
             return this.GetQuest(questId, providerId).TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskId));
         }
 
-        public List<QuestLog> GetAllQuestRewarded()  => this.Data.QuestRewarded.Select(x => x.Value).ToList();
+        public List<QuestLog> GetAllQuestRewarded() => this.Data.QuestRewarded.Select(x => x.Value).ToList();
+
+        public List<QuestLog> GetAllQuestRewarded(QuestProviderType providerType) => this.Data.QuestRewarded.Select(x => x.Value)
+            .Where(x => x.QuestProviderType == providerType).ToList();
+
         public List<QuestLog> GetAllQuestCompleted() { return this.Data.Quests.Where(x => x.Value.QuestStatus == QuestStatus.Completed).Select(y => y.Value).ToList(); }
 
         public bool IsQuestRewarded(string questId, string provideId, QuestProviderType questProviderType) => this.Data.IsQuestRewarded(questId, provideId, questProviderType);

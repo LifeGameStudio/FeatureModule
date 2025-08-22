@@ -9,7 +9,7 @@
     {
     }
 
-    public class MainQuestRecord : BaseQuestRecord
+    public class MainQuestRecord : BaseQuestRecord, IQuestRecord
     {
         public BlueprintByRow<MainQuestTaskRecord> TaskRecords { get; set; }
 
@@ -20,6 +20,9 @@
 
             return result;
         }
+
+        public string QuestDescription  { get; set; }
+        public string GotoQuestDeepLink { get; set; }
     }
 
     public class MainQuestTaskRecord : BaseTaskRecord

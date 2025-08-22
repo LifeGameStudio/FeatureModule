@@ -19,13 +19,12 @@
 
         public bool IsQuestRewarded(string questId, string provideId, QuestProviderType questProviderType)
         {
-            if (questProviderType is QuestProviderType.Daily or QuestProviderType.BattlePass)
-            {
-                this.QuestRewarded.Remove(questId);
-
-                return false;
-            }
-
+            // if (questProviderType is QuestProviderType.Daily or QuestProviderType.BattlePass)
+            // {
+            //     this.QuestRewarded.Remove(questId);
+            //
+            //     return false;
+            // }
             return this.QuestRewarded.FirstOrDefault(x => x.Key == questId && x.Value.ProviderId == provideId).Value != null;
         }
         
@@ -77,6 +76,26 @@
         BattlePass,
         PlayerLevel,
         Event,
-        Custom
+        Custom,
+        Custom1,
+        Custom2,
+        Custom3,
+        Custom4,
+        Custom5,
+        Custom6,
+        Custom7,
+        Custom8,
+        Custom9,
+        Custom10,
+        Custom11,
+        Custom12,
+        Custom13,
+        Custom14,
+        Custom15,
+        Custom16,
+        Custom17,
+        Custom18,
+        Custom19,
+        Custom20,
     }
 }
