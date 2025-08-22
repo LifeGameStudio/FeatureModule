@@ -12,6 +12,7 @@
     using GameModule.QuestModule.Provider;
     using GameModule.QuestModule.Signals;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Zenject;
     using RewardRecord = FeatureTemplate.Scripts.RewardHandle.RewardRecord;
 
@@ -20,6 +21,7 @@
         private readonly FeatureRewardHandler featureRewardHandler;
         private readonly ISignalBus           signalBus;
 
+        [Preserve]
         public QuestManager(QuestJournal data, FeatureRewardHandler featureRewardHandler, ISignalBus signalBus) : base(data)
         {
             this.Data                 = data;

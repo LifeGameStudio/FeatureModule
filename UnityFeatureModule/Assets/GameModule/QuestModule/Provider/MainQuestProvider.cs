@@ -10,11 +10,13 @@
     using GameModule.QuestModule.Model;
     using UnityEngine;
     using UserData;
+ 	using UnityEngine.Scripting;
 
     public class MainQuestProvider : BaseQuestProvider
     {
         private readonly MainQuestBlueprint mainQuestBlueprint;
 
+        [Preserve]
         public MainQuestProvider(QuestManager questManager, MainQuestBlueprint mainQuestBlueprint, List<IActionHandle> questContexts) : base(questManager,
             questContexts)
         {

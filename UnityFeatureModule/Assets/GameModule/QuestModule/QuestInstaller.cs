@@ -4,9 +4,13 @@
     using GameModule.QuestModule.Provider;
     using GameModule.QuestModule.Signals;
     using Zenject;
+    using Zenject.Internal;
 
     public class QuestInstaller : Installer<QuestInstaller>
     {
+        [Preserve]
+        public QuestInstaller() { }
+
         public override void InstallBindings()
         {
             this.Container.DeclareSignal<TrackingQuestSignal>();

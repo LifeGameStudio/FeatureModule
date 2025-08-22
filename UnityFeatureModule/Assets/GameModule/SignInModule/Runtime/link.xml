@@ -1,0 +1,4 @@
+<linker>
+  <assembly fullname="Google.ApisLogin.Scripts" preserve="all" />
+
+</linker>

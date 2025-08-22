@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using UnityEngine.Scripting;
 
     public class SignalBatchQueue<T>
     {
@@ -9,6 +10,7 @@
         private readonly Action<T> handler;
         private readonly int       maxPerFrame;
 
+        [Preserve]
         public SignalBatchQueue(Action<T> handler, int maxPerFrame = int.MaxValue)
         {
             this.handler     = handler ?? throw new ArgumentNullException(nameof(handler));

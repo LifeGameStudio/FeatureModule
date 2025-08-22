@@ -8,6 +8,7 @@
     using GameModule.QuestModule.Blueprints.Base;
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using Newtonsoft.Json;
+    using UnityEngine.Scripting;
     using UserData;
 
     public class QuestJournal : IFeatureLocalData, ILocalData
@@ -27,7 +28,11 @@
             // }
             return this.QuestRewarded.FirstOrDefault(x => x.Key == questId && x.Value.ProviderId == provideId).Value != null;
         }
-        
+
+        [Preserve]
+        public QuestJournal() {
+        }
+
         public Type ControllerType => typeof(QuestManager);
     }
 

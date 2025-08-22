@@ -10,6 +10,7 @@
     using GameModule.QuestModule.QuestMatcher;
     using GameModule.QuestModule.Signals;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UserData;
     using Zenject;
     using ListPool = UnityEngine.Pool;
@@ -26,6 +27,7 @@
         private          float                                 lastFlushTime;
         private readonly float                                 flushInterval = 0.1f;
 
+        [Preserve]
         public TrackingQuestServices(List<ITrackingQuestRequirementMatcher> questRequirementMatchers, QuestManager questManager,
             ISignalBus signalBus, QuestProviderServices questProviderServices)
         {

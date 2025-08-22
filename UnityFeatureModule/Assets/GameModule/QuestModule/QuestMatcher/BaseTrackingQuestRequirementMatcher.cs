@@ -5,16 +5,23 @@
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Signals;
     using Newtonsoft.Json;
+    using UnityEngine.Scripting;
 
     public abstract class BaseTrackingQuestRequirementMatcher : ITrackingQuestRequirementMatcher
     {
         public abstract string Id { get; }
 
         public abstract bool IsMatch(IQuestRequirementWithCondition record, TrackingQuestSignal obj);
+
+        [Preserve]
+        protected BaseTrackingQuestRequirementMatcher() { }
     }
 
     public abstract class BaseTrackingQuestRequirementMatcher<T> : BaseTrackingQuestRequirementMatcher
     {
+        [Preserve]
+        protected BaseTrackingQuestRequirementMatcher() { }
+
         public override bool IsMatch(IQuestRequirementWithCondition record, TrackingQuestSignal obj) { return this.IsMatch(this.DeserializeData(record.RequirementConditionData), obj); }
 
         private T DeserializeData(string data)

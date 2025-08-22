@@ -4,6 +4,7 @@
     using System.Linq;
     using GameModule.QuestModule.Model;
     using GameModule.QuestModule.Signals;
+    using UnityEngine.Scripting;
     using UserData;
     using Zenject;
 
@@ -13,6 +14,7 @@
         private readonly QuestManager                                  questManager;
         private          Dictionary<QuestProviderType, IQuestProvider> questProviders;
 
+        [Preserve]
         public QuestProviderServices(List<IQuestProvider> questProviders, ISignalBus signalBus, QuestManager questManager)
         {
             this.signalBus      = signalBus;
