@@ -151,7 +151,7 @@
 
         public void UpdateTaskStatus(string questId, string providerId, string taskRecordTaskId, QuestStatus questStatus)
         {
-            var questLog = this.GetQuest(questId, providerId);
+            var questLog = this.GetQuest(questId, providerId) ?? this.GetQuestRewarded(questId, providerId);
             var taskLog  = questLog.TaskProgress.First(task => task.TaskRecord.TaskId.Equals(taskRecordTaskId));
             taskLog.TaskStatus = questStatus;
             this.signalBus.Fire(new TaskChangeStatusSignal(questLog, taskLog));
@@ -447,7 +447,7 @@
         public bool CheckAllTaskCompleted(string questId, string providerId)
         {
             var questInfo              = this.GetQuest(questId, providerId);
-            var allPremiseTaskComplete = questInfo.TaskProgress.All(task => task.TaskStatus == QuestStatus.Completed && !task.TaskRecord.TaskOption);
+            var allPremiseTaskComplete = questInfo.TaskProgress.All(task => task.TaskStatus is QuestStatus.Completed or QuestStatus.Rewarded && !task.TaskRecord.TaskOption);
 
             var checkCountTaskOption = questInfo.CountTaskOption >= questInfo.BaseQuestRecord.CountTaskOption;
 
