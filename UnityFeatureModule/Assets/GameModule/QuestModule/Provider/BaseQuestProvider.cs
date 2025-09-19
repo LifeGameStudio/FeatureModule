@@ -10,7 +10,6 @@
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Model;
     using UnityEngine.Scripting;
-    using UserData;
     using Zenject;
 
     public interface IQuestProvider
@@ -29,7 +28,6 @@
         [Inject] protected FeatureDataState FeatureDataState;
         protected readonly QuestManager     QuestManager;
 
-        // private readonly QuestContextBlueprint questContextBlueprint;
         public abstract QuestProviderType                 QuestProviderType { get; }
         private         Dictionary<string, IActionHandle> questContexts;
 
@@ -38,7 +36,6 @@
         protected BaseQuestProvider(QuestManager questManager, List<IActionHandle> questContexts)
         {
             this.QuestManager = questManager;
-            //this.questContextBlueprint = questContextBlueprint;
             this.questContexts = questContexts.ToDictionary(x => x.Id);
         }
 

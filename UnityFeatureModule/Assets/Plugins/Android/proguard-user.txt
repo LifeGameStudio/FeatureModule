@@ -1,2 +1,42 @@
 -keep class com.bytebrew.** {*; }
 -keep class com.google.unity.ads.**{ *; }
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
+-keep class com.google.android.gms.ads.identifier.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+-keep class com.google.android.gms.measurement.** { *; }
+-dontwarn com.google.android.gms.measurement.**
+-keep class com.google.firebase.messaging.** { *; }
+-dontwarn com.google.firebase.messaging.**
+-keepattributes SourceFile,LineNumberTable
+-keep class com.google.firebase.crashlytics.** { *; }
+-dontwarn com.google.firebase.crashlytics.**
+-keep class com.google.firebase.remoteconfig.** { *; }
+-dontwarn com.google.firebase.remoteconfig.**
+-keep class com.facebook.** { *; }
+-dontwarn com.facebook.**
+-keep class com.applovin.** { *; }
+-dontwarn com.applovin.**
+-keep class com.appsflyer.** { *; }
+-dontwarn com.appsflyer.**
+-keep class com.bytebrew.** { *; }
+-dontwarn com.bytebrew.**
+-keep class com.unity3d.ads.** { *; }
+-dontwarn com.unity3d.ads.**
+-keep class com.unity.** { *; }
+-keep class com.unity.androidnotifications.** { *; }
+-keep class kotlin.** { *; }
+-keep class kotlin.jvm.internal.** { *; }
+-dontwarn kotlin.**
+-keep public class com.gadsme.nativeplugin.** { public *; }
+-dontwarn com.gadsme.**
+-keep class com.ironsource.** { *; }
+-dontwarn com.ironsource.**
+-keep class com.adjust.sdk.** { *; }
+-dontwarn com.adjust.sdk.**
+-keep class com.onesignal.** { *; }
+-dontwarn com.onesignal.**

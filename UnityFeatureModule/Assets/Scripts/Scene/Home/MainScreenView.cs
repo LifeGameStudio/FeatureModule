@@ -7,8 +7,8 @@ namespace Game.Scripts.Scene.Home
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameModule.QuestModule.Model;
     using GameModule.QuestModule.Signals;
-    using UserData;
     using Zenject;
 
     public class MainScreenView : BaseScreenViewTemplate

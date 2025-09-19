@@ -1,4 +1,4 @@
-﻿namespace UserData
+﻿namespace GameModule.QuestModule.Model
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,7 +8,6 @@
     using FeatureTemplate.Scripts.Services;
     using GameModule.QuestModule.Blueprints.Base;
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
-    using GameModule.QuestModule.Model;
     using GameModule.QuestModule.Provider;
     using GameModule.QuestModule.Signals;
     using UnityEngine;
@@ -35,6 +34,7 @@
         {
             await UniTask.WaitUntil(() => this.Data != null);
             var quests = this.GetAllQuestsType(questProvider.QuestProviderType, true);
+
             foreach (var q in quests)
             {
                 var questRecord = questProvider.GetQuestRecord(q.QuestId, q.ProviderId);
@@ -199,12 +199,7 @@
             return result;
         }
 
-        private void Payout(List<RewardRecord> assets, bool isSideQuest = false)
-        {
-            var result = assets.Select(asset => new RewardRecord() { RewardId = asset.RewardId, RewardValue = asset.RewardValue, RewardType = asset.RewardType }).Cast<IRewardRecord>().ToList();
-
-            this.featureRewardHandler.AddRewards(result, null);
-        }
+        private void Payout(IEnumerable<RewardRecord> assets, bool isSideQuest = false) { this.featureRewardHandler.AddRewards(assets, null); }
 
         /// <summary>
         /// Will change finish quest status to rewarded and payout all reward of quest
@@ -227,7 +222,7 @@
                 RewardType  = x.QuestRewardType
             });
 
-            this.Payout(listAsset.ToList(), questInfo.QuestProviderType == QuestProviderType.Side);
+            this.Payout(listAsset, questInfo.QuestProviderType == QuestProviderType.Side);
             this.signalBus.Fire<RefreshQuestViewSignal>();
 
             if (questInfo.QuestProviderType == QuestProviderType.Side)
@@ -320,71 +315,6 @@
             this.Data.Quests.Remove(quest.QuestId);
         }
 
-        // public void CheckShowPopupCallAllRewardOfTaskAndQuest(QuestLog questLog)
-        // {
-        //     List<Asset> listAsset            = new();
-        //     var         canChangeQuestStatus = false;
-        //     var         listTaskLog          = new List<TaskLog>();
-        //
-        //     foreach (var taskLog in questLog.TaskProgress)
-        //     {
-        //         if (taskLog.TaskStatus != QuestStatus.Completed) continue;
-        //         listAsset.AddRange(this.GetTaskRewardWithTaskId(questLog.QuestId, questLog.ProviderId, taskLog.TaskRecord.TaskId));
-        //         listTaskLog.Add(taskLog);
-        //     }
-        //
-        //     if (questLog.TaskProgress.All(x => x.TaskStatus is QuestStatus.Rewarded or QuestStatus.Completed))
-        //     {
-        //         listAsset.AddRange(this.GetQuestReward(questLog.ProviderId, questLog.QuestId));
-        //         canChangeQuestStatus = true;
-        //     }
-        //
-        //     this.screenManager.OpenScreen<ClaimRewardPopupPresenter, ClaimRewardPopupModel>(new ClaimRewardPopupModel()
-        //     {
-        //         RewardResult = new TransactionResult()
-        //         {
-        //             Assets = listAsset
-        //         },
-        //         OnClaimComplete = () =>
-        //         {
-        //             foreach (var taskLog in listTaskLog)
-        //             {
-        //                 this.UpdateTaskStatus(questLog.QuestId, questLog.ProviderId, taskLog.TaskRecord.TaskId, QuestStatus.Rewarded);
-        //             }
-        //
-        //             if (canChangeQuestStatus)
-        //             {
-        //                 this.SetQuestStatus(questLog.QuestId, questLog.ProviderId, QuestStatus.Rewarded);
-        //             }
-        //         }
-        //     }).Forget();
-        // }
-
-        // public List<Asset> ClaimRewardWithoutPopup(string questId, string providerId, string taskId)
-        // {
-        //     var quest   = this.GetQuest(questId, providerId);
-        //     var taskLog = quest.TaskProgress.FirstOrDefault(x => x.TaskRecord.TaskId.Equals(taskId));
-        //
-        //     if (taskLog == null) return new List<Asset>();
-        //     var allTaskCompleted = quest.TaskProgress.All(x => x.TaskStatus is QuestStatus.Rewarded or QuestStatus.Completed);
-        //
-        //     var listAsset = this.GetTaskRewardWithTaskId(quest.QuestId, quest.ProviderId, taskLog.TaskRecord.TaskId);
-        //
-        //     if (allTaskCompleted)
-        //     {
-        //         listAsset.AddRange(this.GetQuestReward(quest.ProviderId, quest.QuestId));
-        //     }
-        //
-        //     this.UpdateTaskStatus(quest.QuestId, quest.ProviderId, taskLog.TaskRecord.TaskId, QuestStatus.Rewarded);
-        //
-        //     if (allTaskCompleted && quest.QuestStatus != QuestStatus.Rewarded)
-        //     {
-        //         this.SetQuestStatus(quest.ProviderId, quest.QuestId, QuestStatus.Rewarded);
-        //     }
-        //
-        //     return listAsset;
-        // }
-
         public void ResetQuest(string questId, string providerId)
         {
             var quest = this.GetQuest(questId, providerId);
@@ -473,9 +403,4 @@
 
         public bool IsQuestRewarded(string questId, string provideId, QuestProviderType questProviderType) => this.Data.IsQuestRewarded(questId, provideId, questProviderType);
     }
-}
-
-public class CheckFTUEQuestSignal
-{
-    public string Id;
 }

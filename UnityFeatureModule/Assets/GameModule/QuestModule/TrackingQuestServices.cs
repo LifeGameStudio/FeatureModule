@@ -11,7 +11,6 @@
     using GameModule.QuestModule.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
-    using UserData;
     using Zenject;
     using ListPool = UnityEngine.Pool;
 

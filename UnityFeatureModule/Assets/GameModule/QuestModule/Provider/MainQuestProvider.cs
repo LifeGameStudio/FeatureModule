@@ -9,8 +9,7 @@
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
     using GameModule.QuestModule.Model;
     using UnityEngine;
-    using UserData;
- 	using UnityEngine.Scripting;
+    using UnityEngine.Scripting;
 
     public class MainQuestProvider : BaseQuestProvider
     {
