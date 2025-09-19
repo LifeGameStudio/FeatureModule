@@ -32,10 +32,10 @@ namespace Game.Scripts.Scene.Home
         {
             // this.SignalBus.Subscribe<QuestDoneSignal>(OnQuestDone);
 
-            this.SignalBus.Fire<TrackingQuestSignal>(new TrackingQuestSignal("daily_login", new List<string>()
-            {
-                ""
-            }, 1));
+            // this.SignalBus.Fire<TrackingQuestSignal>(new TrackingQuestSignal("daily_login", new List<string>()
+            // {
+            //     ""
+            // }, 1));
 
             // this._questManager.GetAllQuestRewardAndSetStatus("", "1");
 

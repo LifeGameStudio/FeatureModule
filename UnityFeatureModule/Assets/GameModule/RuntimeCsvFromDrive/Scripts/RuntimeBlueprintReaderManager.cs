@@ -13,6 +13,7 @@
     using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
     using FeatureTemplate.Scripts.Localization.Interfaces;
     using FeatureTemplate.Scripts.Localization.Services;
+    using FeatureTemplate.Scripts.Services;
     using FeatureTemplate.Scripts.Services.Common;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
@@ -36,7 +37,8 @@
         protected string LocalizationBlueprintSheetName;
 
         [Preserve]
-        public RuntimeBlueprintReaderManager(ISignalBus signalBus,FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline, ILogService logService, DiContainer diContainer,
+        public RuntimeBlueprintReaderManager(ISignalBus signalBus, FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline, ILogService logService,
+            DiContainer diContainer,
             IHandleUserDataServices handleUserDataServices,
             BlueprintConfig blueprintConfig,
             FetchBlueprintInfo fetchBlueprintInfo, BlueprintDownloader blueprintDownloader) : base(signalBus, logService, diContainer, handleUserDataServices, blueprintConfig, fetchBlueprintInfo,
@@ -74,7 +76,15 @@
 
             var listSheets = await this.GetAllSheetWithSpreadSheet(service);
 
-            var allData = await this.GetAllDataForAllSheet(listSheets, this.csvLoaderData.syncDataInfo.SpreadSheetId, service);
+            var allData     = await this.GetAllDataForAllSheet(listSheets, this.csvLoaderData.syncDataInfo.SpreadSheetId, service);
+            var checkOnline = await this.CheckReadOnline(allData);
+
+            if (!checkOnline)
+            {
+                this.logService.Log("Version not support to read online data");
+
+                return;
+            }
 
             var csvBuilder = this.GetDataFromSheetName(this.csvLoaderData.syncDataInfo.SheetBuilderConfig,
                 allData);
@@ -88,6 +98,55 @@
                 if (string.IsNullOrEmpty(csvOfSheet)) continue;
                 input.Add($"{s}{this.blueprintConfig.BlueprintFileType}", csvOfSheet);
             }
+        }
+
+        private async UniTask<bool> CheckReadOnline(Dictionary<string, CustomValueRange> allData)
+        {
+            #if UNITY_EDITOR
+            return true;
+            #endif
+            var currentVersion = Application.version;
+            this.LogMessage($"{currentVersion}");
+
+            var element = allData.FirstOrDefault(x => x.Key.Equals("VersionConfig"));
+
+            if (!element.Key.IsNullOrEmpty())
+            {
+                var blueprintVersion = new VersionConfigBlueprint();
+
+                await blueprintVersion.DeserializeFromCsv(this.GetDataFromSheetName(element.Key, allData));
+
+                if (blueprintVersion.Count > 0)
+                {
+                    var value = blueprintVersion.ElementAt(0).Value;
+
+                    if (value.AllowAllVersion)
+                    {
+                        return true;
+                    }
+
+                    var listVersionContain    = new List<string>();
+                    var listVersionNotContain = new List<string>();
+
+                    foreach (var config in value.PlatformVersionConfigs)
+                    {
+                        var finalVersion = Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor ? config.AndroidVersion : config.IOSVersion;
+
+                        if (config.Include)
+                        {
+                            listVersionContain.AddRange(finalVersion);
+                        }
+                        else
+                        {
+                            listVersionNotContain.AddRange(finalVersion);
+                        }
+                    }
+
+                    return value.UseInclude ? listVersionContain.Contains(currentVersion) : !listVersionNotContain.Contains(currentVersion);
+                }
+            }
+
+            return true;
         }
 
         protected override UniTask<string> CheckToLoadCsv(Dictionary<string, string> listRawBlueprints, BlueprintReaderAttribute bpAttribute, bool resourceMode, bool attributeMode)
