@@ -70,6 +70,7 @@ PlayerSettings:
   androidStartInFullscreen: 1
   androidRenderOutsideSafeArea: 1
   androidUseSwappy: 1
+  androidDisplayOptions: 1
   androidBlitType: 0
   androidResizeableActivity: 0
   androidDefaultWindowWidth: 1920
@@ -86,6 +87,7 @@ PlayerSettings:
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
   Force IOS Speakers When Recording: 0
+  audioSpatialExperience: 0
   deferSystemGesturesMode: 0
   hideHomeButton: 0
   submitAnalytics: 1
@@ -854,7 +856,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: ADDRESSABLE;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;DOTWEEN;FIREBASE_REMOTE_CONFIG;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED;DUMMY_ANALYTIC;UNITASK_DOTWEEN;TextMeshPro;UITK_EXISTS;FCU_EXISTS;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3;GOOGLE_LOGIN;UNITY_CLOUD;JSONNET_EXISTS;FIREBASE_LEADERBOARD
+    Android: ADDRESSABLE;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;DOTWEEN;FIREBASE_REMOTE_CONFIG;MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED;DUMMY_ANALYTIC;UNITASK_DOTWEEN;TextMeshPro;UITK_EXISTS;FCU_EXISTS;ODIN_INSPECTOR_3_2;ODIN_INSPECTOR_3_3;GOOGLE_LOGIN;UNITY_CLOUD;JSONNET_EXISTS;FIREBASE_LEADERBOARD;DAG_EXISTS;DACR_EXISTS
     EmbeddedLinux: DOTWEEN;TextMeshPro
     GameCoreScarlett: DOTWEEN;TextMeshPro
     GameCoreXboxOne: DOTWEEN;TextMeshPro
@@ -1011,3 +1013,4 @@ PlayerSettings:
   androidVulkanDenyFilterList: []
   androidVulkanAllowFilterList: []
   androidVulkanDeviceFilterListAsset: {fileID: 0}
+  d3d12DeviceFilterListAsset: {fileID: 0}

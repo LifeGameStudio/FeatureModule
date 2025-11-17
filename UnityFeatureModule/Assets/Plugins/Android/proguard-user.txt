@@ -40,3 +40,11 @@
 -dontwarn com.adjust.sdk.**
 -keep class com.onesignal.** { *; }
 -dontwarn com.onesignal.**
+-keep class com.facebook.unity.** { *; }
+-keep class com.facebook.gamingservices.** { *; }
+-keep class com.facebook.gamingservices.internal.** { *; }
+-keep class com.facebook.appevents.** { *; }
+-keep class com.facebook.internal.** { *; }
+-keep class com.facebook.login.** { *; }
+-keep class com.facebook.share.** { *; }
+-keep class com.facebook.gamingservices.cloudgaming.** { *; }
