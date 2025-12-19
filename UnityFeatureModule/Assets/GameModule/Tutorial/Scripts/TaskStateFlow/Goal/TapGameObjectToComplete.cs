@@ -62,12 +62,26 @@
 
                 if (iClickable != null)
                 {
-                    iClickable.Clicked += () =>
+                    Action onClicked = null;
+
+                    onClicked = () =>
                     {
+                        iClickable.Clicked -= onClicked;
+
+                        if (taskDataState.TaskState == TutorialState.Completed)
+                        {
+                            return;
+                        }
+
                         this.CompleteCurrentTask(taskDataState);
 
-                        Object.Destroy((Component)iClickable);
+                        if (iClickable is Component component)
+                        {
+                            Object.Destroy(component, 0.1f);
+                        }
                     };
+
+                    iClickable.Clicked += onClicked;
                 }
 
                 this.dis.Dispose();
