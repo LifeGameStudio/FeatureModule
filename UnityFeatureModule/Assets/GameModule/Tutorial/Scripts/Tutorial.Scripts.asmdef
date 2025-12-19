@@ -1,0 +1,26 @@
+{
+    "name": "Tutorial.Scripts",
+    "rootNamespace": "",
+    "references": [
+        "Zenject",
+        "Zenject-Signals",
+        "GameFoundation.AssetLibrary",
+        "GameFoundation.BlueprintFlow",
+        "GameFoundation.Script",
+        "GameFoundation.Utilities",
+        "GameFoundation.Models",
+        "Features.Scripts",
+        "UniTask",
+        "UniTask.Addressables",
+        "GameFoundation.UIModule"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
