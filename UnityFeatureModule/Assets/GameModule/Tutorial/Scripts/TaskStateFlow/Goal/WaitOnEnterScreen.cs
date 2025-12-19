@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameModule.Tutorial.Scripts.DataState;
+    using GameModule.Tutorial.Scripts.Services;
     using R3;
     using Zenject;
 
@@ -21,7 +22,7 @@
 
         public WaitOnEnterScreen(ISignalBus signalBus, ScreenManager screenManager) : base(signalBus) { this.screenManager = screenManager; }
 
-        public override string Id => "wait_on_enter_screen";
+        public override string Id => TutorialStaticValue.TaskFlow.WaitEnterScreen;
 
         public override void Initialize()
         {

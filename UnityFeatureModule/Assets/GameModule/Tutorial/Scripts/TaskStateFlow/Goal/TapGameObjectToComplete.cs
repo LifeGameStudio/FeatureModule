@@ -6,6 +6,7 @@
     using FeatureTemplate.Scripts.Services;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameModule.Tutorial.Scripts.DataState;
+    using GameModule.Tutorial.Scripts.Services;
     using GameModule.Tutorial.Scripts.TaskStateFlow.MonoUltilities;
     using R3;
     using UnityEngine;
@@ -30,7 +31,7 @@
         private IDisposable dis;
         public TapGameObjectToComplete(ISignalBus signalBus) : base(signalBus) { }
 
-        public override string Id => "tap_game_object_to_complete";
+        public override string Id => TutorialStaticValue.TaskFlow.TapToGameObject;
 
         protected override UniTask ProcessInternal(TutorialTaskDataState taskDataState, TapGameObjectToCompleteData model)
         {

@@ -4,6 +4,7 @@
     using DG.Tweening;
     using FeatureTemplate.Scripts.Handle;
     using GameModule.Tutorial.Scripts.DataState;
+    using GameModule.Tutorial.Scripts.Services;
     using Zenject;
 
     public class WaitTimeTaskGoalData : IActionData
@@ -15,7 +16,7 @@
     {
         public WaitTime(ISignalBus signalBus) : base(signalBus) { }
 
-        public override string Id => "wait_time";
+        public override string Id => TutorialStaticValue.TaskFlow.WaitTime;
 
         protected override UniTask ProcessInternal(TutorialTaskDataState taskDataState, WaitTimeTaskGoalData model)
         {
@@ -23,7 +24,5 @@
 
             return UniTask.CompletedTask;
         }
-
-      
     }
 }

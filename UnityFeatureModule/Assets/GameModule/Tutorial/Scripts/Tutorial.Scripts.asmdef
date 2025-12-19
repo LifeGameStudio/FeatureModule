@@ -12,7 +12,15 @@
         "Features.Scripts",
         "UniTask",
         "UniTask.Addressables",
-        "GameFoundation.UIModule"
+        "GameFoundation.UIModule",
+        "Coffee.SoftMaskForUGUI",
+        "DOTween.Modules",
+        "DOTweenPro.Scripts",
+        "Coffee.UIEffect",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "Unity.ResourceManager",
+        "Unity.Addressables"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

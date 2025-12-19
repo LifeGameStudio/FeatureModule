@@ -1,10 +1,10 @@
-﻿#if TUTORIAL_ENABLE
+﻿
 
 namespace GameModule.Tutorial.Scripts.Blueprints
 {
     using System;
     using BlueprintFlow.BlueprintReader;
-
+#if TUTORIAL_ENABLE
     [BlueprintReader("Tutorial")]
     public class TutorialBlueprint : GenericBlueprintReaderByRow<int, TutorialRecord>
     {

@@ -3,6 +3,7 @@
     using System;
     using Cysharp.Threading.Tasks;
     using GameModule.Tutorial.Scripts.DataState;
+    using GameModule.Tutorial.Scripts.Services;
     using R3;
     using UnityEngine;
     using Zenject;
@@ -12,7 +13,7 @@
         private IDisposable dis;
         public TapAnyWhereToComplete(ISignalBus signalBus) : base(signalBus) { }
 
-        public override string Id => "tap_any_where_to_complete";
+        public override string Id => TutorialStaticValue.TaskFlow.TapAnywhere;
 
         protected override UniTask ProcessInternal(TutorialTaskDataState taskDataState, string model)
         {

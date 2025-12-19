@@ -1,6 +1,4 @@
-﻿#if TUTORIAL_ENABLE
-
-namespace GameModule.Tutorial.Scripts.DataState
+﻿namespace GameModule.Tutorial.Scripts.DataState
 {
     public enum TutorialState
     {
@@ -10,4 +8,3 @@ namespace GameModule.Tutorial.Scripts.DataState
         Failed
     }
 }
-#endif
