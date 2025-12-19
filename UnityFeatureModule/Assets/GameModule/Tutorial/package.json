@@ -1,0 +1,9 @@
+{
+  "name": "com.gamemodule.tutorial",
+  "version": "1.0.0",
+  "displayName": "GameModule.Tutorial",
+  "dependencies": {
+    "com.coffee.softmask-for-ugui": "https://github.com/mob-sakai/SoftMaskForUGUI.git?path=Packages/src",
+    "com.coffee.ui-effect": "https://github.com/mob-sakai/UIEffect.git?path=Packages/src"
+  }
+}

@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Common
   m_EditorClassIdentifier: 
   m_GroupName: Common
-  m_Data:
-    m_SerializedData: []
   m_GUID: 233bdb97ab17b6f41a62e55b08e637fa
   m_SerializeEntries:
   - m_GUID: 1cf8b64a743bbb64e994ceacc4872a95
     m_Address: AudioSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91210fa917f9d3445bad127f5040a3d1
+    m_Address: TutorialSoftMask
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
