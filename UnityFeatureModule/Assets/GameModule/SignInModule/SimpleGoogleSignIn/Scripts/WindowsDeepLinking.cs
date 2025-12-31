@@ -1,4 +1,4 @@
-﻿#if UNITY_STANDALONE_WIN
+﻿#if UNITY_STANDALONE_WIN && SIMPLE_GOOGLE_SIGN_IN
 
 using System;
 using System.Collections.Generic;
