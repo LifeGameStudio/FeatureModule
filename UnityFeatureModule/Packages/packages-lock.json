@@ -18,6 +18,13 @@
       },
       "hash": "815162eab9760a7567423deb47fd9d3437eb26d8"
     },
+    "com.custom.extenject": {
+      "version": "https://github.com/LifeGameStudio/ZenjectCustom.git?path=UnityProject/Assets/Plugins/Zenject/Source",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c4ad5895a6f4dfa46ebbe78989435f493552318d"
+    },
     "com.cysharp.messagepipe": {
       "version": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe",
       "depth": 0,
@@ -61,7 +68,6 @@
       "dependencies": {
         "com.unity.addressables": "1.21.21",
         "com.unity.nuget.newtonsoft-json": "3.2.1",
-        "com.svermeulen.extenject": "10.0.0",
         "com.cysharp.r3": "1.1.12",
         "com.cysharp.unitask": "2.5.4",
         "com.cysharp.messagepipe": "1.8.1",
@@ -140,13 +146,6 @@
         "com.google.firebase.app": "12.5.0"
       }
     },
-    "com.svermeulen.extenject": {
-      "version": "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "742d849576b1e0ac5a432cf60a0706f7e845a697"
-    },
     "com.unity.addressables": {
       "version": "2.7.4",
       "depth": 1,
@@ -164,14 +163,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.10.0",
+      "version": "2.10.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.editorcoroutines": {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
@@ -190,10 +189,10 @@
       "dependencies": {
         "com.unity.ide.visualstudio": "2.0.25",
         "com.unity.ide.rider": "3.0.38",
-        "com.unity.editorcoroutines": "1.0.0",
-        "com.unity.performance.profile-analyzer": "1.2.3",
+        "com.unity.editorcoroutines": "1.0.1",
+        "com.unity.performance.profile-analyzer": "1.2.4",
         "com.unity.test-framework": "1.6.0",
-        "com.unity.testtools.codecoverage": "1.2.6"
+        "com.unity.testtools.codecoverage": "1.2.7"
       }
     },
     "com.unity.ide.rider": {
@@ -232,7 +231,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.multiplayer.center": {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
@@ -240,21 +239,21 @@
       }
     },
     "com.unity.nuget.newtonsoft-json": {
-      "version": "3.2.1",
+      "version": "3.2.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.performance.profile-analyzer": {
-      "version": "1.2.3",
+      "version": "1.2.4",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.profiling.core": {
-      "version": "1.0.2",
+      "version": "1.0.3",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
@@ -271,19 +270,19 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.authentication": {
-      "version": "3.4.1",
+      "version": "3.5.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
-        "com.unity.services.core": "1.14.0",
+        "com.unity.services.core": "1.15.1",
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.services.cloudsave": {
-      "version": "3.2.2",
+      "version": "3.4.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -293,7 +292,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {
-      "version": "1.14.0",
+      "version": "1.16.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -304,36 +303,20 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.leaderboards": {
-      "version": "2.2.1",
+      "version": "2.3.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.services.core": "1.13.0",
+        "com.unity.services.core": "1.15.1",
         "com.unity.services.authentication": "3.3.3"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.settings-manager": {
-      "version": "2.1.0",
+      "version": "2.1.1",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.sysroot": {
-      "version": "2.0.10",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.sysroot.linux-x86_64": {
-      "version": "2.0.9",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.sysroot": "2.0.10"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
@@ -347,7 +330,7 @@
       }
     },
     "com.unity.testtools.codecoverage": {
-      "version": "1.2.6",
+      "version": "1.2.7",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -368,16 +351,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.toolchain.win-x86_64-linux-x86_64": {
-      "version": "2.0.10",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.sysroot": "2.0.10",
-        "com.unity.sysroot.linux-x86_64": "2.0.9"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.ugui": {
       "version": "2.0.0",
       "depth": 0,
@@ -388,7 +361,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.9.8",
+      "version": "1.9.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -498,6 +471,14 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {}
+    },
+    "com.unity.modules.adaptiveperformance": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.subsystems": "1.0.0"
+      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
@@ -704,6 +685,16 @@
         "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.assetbundle": "1.0.0",
         "com.unity.modules.imageconversion": "1.0.0"
+      }
+    },
+    "com.unity.modules.vectorgraphics": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0"
       }
     },
     "com.unity.modules.vehicles": {
