@@ -9,7 +9,8 @@
         "GameFoundation.BlueprintFlow",
         "GameFoundation.Utilities",
         "Features.Scripts",
-        "SyncGoogleDrive"
+        "SyncGoogleDrive",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

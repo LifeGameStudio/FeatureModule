@@ -48,3 +48,4 @@
 -keep class com.facebook.login.** { *; }
 -keep class com.facebook.share.** { *; }
 -keep class com.facebook.gamingservices.cloudgaming.** { *; }
+-keepclassmembers class * extends java.lang.Enum { *; }

@@ -12,37 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f96609e2d44cd99cbf44348e1f8118, type: 3}
   m_Name: GDKConfig
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 7cd8a8e061a78e34ab44c8be5b319e89, type: 2}
-    - {fileID: 11400000, guid: 47fb7a5f3b82e1f47aa21585bd4cc22a, type: 2}
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: gameConfigs
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[Models.IGameConfig, GameFoundation.Models]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 10
-      Data: 1
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
   configVersion: 
   apiKey: HGDHSGDHSSFDDS
   gameName: 
   gameId: 8a5ddf62-4c95-44b0-9db0-be5f8f9ef819
+  gameConfigs:
+  - {fileID: 11400000, guid: 47fb7a5f3b82e1f47aa21585bd4cc22a, type: 2}
+  - {fileID: 11400000, guid: 7cd8a8e061a78e34ab44c8be5b319e89, type: 2}

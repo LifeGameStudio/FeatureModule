@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Text.RegularExpressions;
     using BlueprintFlow.APIHandler;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.BlueprintReader;
@@ -13,32 +14,38 @@
     using FeatureTemplate.Scripts.InterfacesAndEnumCommon;
     using FeatureTemplate.Scripts.Localization.Interfaces;
     using FeatureTemplate.Scripts.Localization.Services;
+    using FeatureTemplate.Scripts.Services;
     using FeatureTemplate.Scripts.Services.Common;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
+    using GameModule.RuntimeCsvFromDrive.Scripts.Blueprints;
     using Google.Apis.Auth.OAuth2;
     using Google.Apis.Services;
     using Google.Apis.Sheets.v4;
     using Google.Apis.Sheets.v4.Data;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.Scripting;
     using Zenject;
+    using Color = UnityEngine.Color;
+    using Object = UnityEngine.Object;
 
     public class RuntimeBlueprintReaderManager : BlueprintReaderManager, IStartable
     {
-        private          FeatureSyncCsvWithGoogleDriver csvLoaderData;
-        private readonly LocalizationDataOnline         localizationDataOnline;
-        private readonly ILogService                    logService;
-        private readonly BlueprintConfig                blueprintConfig;
-        private          BuilderConfigBlueprint         builderConfig;
+        private          FeatureSyncCsvWithGoogleDriver                     csvLoaderData;
+        private readonly LocalizationDataOnline                             localizationDataOnline;
+        private readonly ILogService                                        logService;
+        private readonly BlueprintFlow.BlueprintControlFlow.BlueprintConfig blueprintConfig;
+        private          BuilderConfigBlueprint                             builderConfig;
 
         protected string LocalizationSheetName;
         protected string LocalizationBlueprintSheetName;
 
         [Preserve]
-        public RuntimeBlueprintReaderManager(ISignalBus signalBus,FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline, ILogService logService, DiContainer diContainer,
+        public RuntimeBlueprintReaderManager(ISignalBus signalBus, FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline, ILogService logService,
+            DiContainer diContainer,
             IHandleUserDataServices handleUserDataServices,
-            BlueprintConfig blueprintConfig,
+            BlueprintFlow.BlueprintControlFlow.BlueprintConfig blueprintConfig,
             FetchBlueprintInfo fetchBlueprintInfo, BlueprintDownloader blueprintDownloader) : base(signalBus, logService, diContainer, handleUserDataServices, blueprintConfig, fetchBlueprintInfo,
             blueprintDownloader)
         {
@@ -79,6 +86,22 @@
             var csvBuilder = this.GetDataFromSheetName(this.csvLoaderData.syncDataInfo.SheetBuilderConfig,
                 allData);
 
+            if (allData.ContainsKey(this.csvLoaderData.syncDataInfo.SheetConfigVersion))
+            {
+                var configVersion    = new BlueprintConfigOnline();
+                var configVersionCsv = this.GetDataFromSheetName(this.csvLoaderData.syncDataInfo.SheetConfigVersion, allData);
+
+                if (!configVersionCsv.IsNullOrEmpty())
+                {
+                    await configVersion.DeserializeFromCsv(configVersionCsv);
+
+                    if (!this.AllowLoadOnline(configVersion))
+                    {
+                        return;
+                    }
+                }
+            }
+
             await this.builderConfig.DeserializeFromCsv(csvBuilder);
 
             foreach (var s in this.builderConfig.First().Value.Blueprints)
@@ -88,6 +111,42 @@
                 if (string.IsNullOrEmpty(csvOfSheet)) continue;
                 input.Add($"{s}{this.blueprintConfig.BlueprintFileType}", csvOfSheet);
             }
+        }
+
+        private bool AllowLoadOnline(BlueprintConfigOnline blueprintConfigOnlineVersion)
+        {
+            var bundleVersion = Object.FindFirstObjectByType<FeatureGameVersion>(FindObjectsInactive.Include);
+            var value         = "";
+            var text          = bundleVersion.GetComponentInChildren<TextMeshProUGUI>(true);
+
+            if (text != null)
+            {
+                value = text.text;
+                var start = value.IndexOf("Build:", StringComparison.Ordinal);
+
+                var sub = value.Substring(start);
+
+                var lastDash = sub.LastIndexOf('-');
+                value = sub.Substring(0, lastDash).Trim();
+                value = Regex.Replace(value, @"\s+", "");
+            }
+
+            if (value.IsNullOrEmpty())
+            {
+                return true;
+            }
+
+            foreach (var c in blueprintConfigOnlineVersion.Values)
+            {
+                if (c.BundleVersion.ToLower().Equals(value.ToLower()))
+                {
+                    this.LogMessage($"Block load online with {c.BundleVersion}", Color.red);
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         protected override UniTask<string> CheckToLoadCsv(Dictionary<string, string> listRawBlueprints, BlueprintReaderAttribute bpAttribute, bool resourceMode, bool attributeMode)
