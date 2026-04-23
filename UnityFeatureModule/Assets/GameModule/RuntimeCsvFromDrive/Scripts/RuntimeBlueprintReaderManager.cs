@@ -32,23 +32,26 @@
 
     public class RuntimeBlueprintReaderManager : BlueprintReaderManager, IStartable
     {
-        private          FeatureSyncCsvWithGoogleDriver                     csvLoaderData;
-        private readonly LocalizationDataOnline                             localizationDataOnline;
-        private readonly ILogService                                        logService;
-        private readonly BlueprintFlow.BlueprintControlFlow.BlueprintConfig blueprintConfig;
-        private          BuilderConfigBlueprint                             builderConfig;
+        private          FeatureSyncCsvWithGoogleDriver csvLoaderData;
+        private readonly FeatureDataState               featureDataState;
+        private readonly LocalizationDataOnline         localizationDataOnline;
+        private readonly ILogService                    logService;
+        private readonly BlueprintConfig                blueprintConfig;
+        private          BuilderConfigBlueprint         builderConfig;
 
         protected string LocalizationSheetName;
         protected string LocalizationBlueprintSheetName;
 
         [Preserve]
-        public RuntimeBlueprintReaderManager(ISignalBus signalBus, FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline, ILogService logService,
+        public RuntimeBlueprintReaderManager(ISignalBus signalBus, FeatureDataState featureDataState, FeatureManuallyUnityEvent featureManuallyUnity, LocalizationDataOnline localizationDataOnline,
+            ILogService logService,
             DiContainer diContainer,
             IHandleUserDataServices handleUserDataServices,
-            BlueprintFlow.BlueprintControlFlow.BlueprintConfig blueprintConfig,
+            BlueprintConfig blueprintConfig,
             FetchBlueprintInfo fetchBlueprintInfo, BlueprintDownloader blueprintDownloader) : base(signalBus, logService, diContainer, handleUserDataServices, blueprintConfig, fetchBlueprintInfo,
             blueprintDownloader)
         {
+            this.featureDataState       = featureDataState;
             this.localizationDataOnline = localizationDataOnline;
             this.logService             = logService;
             this.blueprintConfig        = blueprintConfig;
@@ -97,6 +100,8 @@
 
                     if (!this.AllowLoadOnline(configVersion))
                     {
+                        this.featureDataState.AllowLoadBlueprintOnline = false;
+
                         return;
                     }
                 }
