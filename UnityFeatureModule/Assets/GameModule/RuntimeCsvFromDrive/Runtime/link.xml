@@ -1,11 +1,29 @@
 <linker>
-  <assembly fullname="Google.Apis" preserve="all" />
-  <assembly fullname="Google.Apis.Core" preserve="all" />
-  <assembly fullname="Google.Apis.Drive.v3" preserve="all" />
-  <assembly fullname="Google.Apis.Sheets.v4" preserve="all" />
-  <assembly fullname="Newtonsoft.Json" preserve="all" />
+  <assembly fullname="Google.Apis">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <assembly fullname="Google.Apis.Core">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
   <assembly fullname="Google.Apis.Auth">
-    <type fullname="Google.Apis.Auth.OAuth2.GoogleCredential" preserve="all"/>
-    <type fullname="Google.Apis.Auth.OAuth2.ServiceAccountCredential" preserve="all"/>
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <assembly fullname="Google.Apis.Sheets.v4">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <assembly fullname="Newtonsoft.Json">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <assembly fullname="System.Runtime.Serialization">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <assembly fullname="System.Net.Http">
+    <type fullname="*" preserve="all"/>
   </assembly>
 </linker>
