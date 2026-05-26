@@ -70,6 +70,7 @@
             try
             {
                 await this.LoadToTalSheet(input);
+                this.LogMessage($"Finish loading input online",Color.cyan);
             }
             catch (Exception e)
             {
@@ -124,7 +125,7 @@
 
             if (bundleVersion == null)
             {
-               this.LogMessage("FeatureGameVersion not found");
+                this.LogMessage("FeatureGameVersion not found");
 
                 return true;
             }
@@ -401,8 +402,8 @@
             var json = this.csvLoaderData.syncDataInfo.ServicesAccountJson;
 
             var credential = GoogleCredential.FromJson(json).CreateScoped(
-                    SheetsService.Scope.Spreadsheets,
-                    SheetsService.Scope.Drive);
+                SheetsService.Scope.Spreadsheets,
+                SheetsService.Scope.Drive);
 
             return new SheetsService(new BaseClientService.Initializer
             {
