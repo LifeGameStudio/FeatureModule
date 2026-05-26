@@ -398,20 +398,17 @@
 
         protected virtual SheetsService GetSheetsService()
         {
-            var json   = this.csvLoaderData.syncDataInfo.ServicesAccountJson;
-            var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+            var json = this.csvLoaderData.syncDataInfo.ServicesAccountJson;
 
-            var credential = GoogleCredential.FromStream(stream)
-                .CreateScoped(SheetsService.Scope.Spreadsheets, SheetsService.Scope.Drive);
+            var credential = GoogleCredential.FromJson(json).CreateScoped(
+                    SheetsService.Scope.Spreadsheets,
+                    SheetsService.Scope.Drive);
 
-            // Create Google Sheets API service.
-            var getSheetsService = new SheetsService(new BaseClientService.Initializer()
+            return new SheetsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
                 ApplicationName       = "UnityGoogleSheet",
             });
-
-            return getSheetsService;
         }
     }
 }
