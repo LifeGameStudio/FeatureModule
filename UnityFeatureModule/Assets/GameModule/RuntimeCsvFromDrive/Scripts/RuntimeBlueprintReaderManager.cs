@@ -121,29 +121,65 @@
         private bool AllowLoadOnline(BlueprintConfigOnline blueprintConfigOnlineVersion)
         {
             var bundleVersion = Object.FindFirstObjectByType<FeatureGameVersion>(FindObjectsInactive.Include);
-            var value         = "";
-            var text          = bundleVersion.GetComponentInChildren<TextMeshProUGUI>(true);
 
-            if (text != null)
+            if (bundleVersion == null)
             {
-                value = text.text;
-                var start = value.IndexOf("Build:", StringComparison.Ordinal);
+               this.LogMessage("FeatureGameVersion not found");
 
-                var sub = value.Substring(start);
-
-                var lastDash = sub.LastIndexOf('-');
-                value = sub.Substring(0, lastDash).Trim();
-                value = Regex.Replace(value, @"\s+", "");
-            }
-
-            if (value.IsNullOrEmpty())
-            {
                 return true;
             }
 
+            var text = bundleVersion.GetComponentInChildren<TextMeshProUGUI>(true);
+
+            if (text == null)
+            {
+                this.LogMessage("TextMeshProUGUI not found");
+
+                return true;
+            }
+
+            var value = text.text;
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                this.LogMessage("Version text is null or empty");
+
+                return true;
+            }
+
+            this.LogMessage($"Raw Version Text: {value}");
+
+            var start = value.IndexOf("Build:", StringComparison.OrdinalIgnoreCase);
+
+            if (start < 0)
+            {
+                this.LogMessage($"'Build:' not found in version text: {value}");
+
+                return true;
+            }
+
+            var sub = value.Substring(start);
+
+            var lastDash = sub.LastIndexOf('-');
+
+            if (lastDash < 0)
+            {
+                this.LogMessage($"'-' not found in version text: {sub}");
+
+                return true;
+            }
+
+            value = sub.Substring(0, lastDash).Trim();
+            value = Regex.Replace(value, @"\s+", "");
+
+            this.LogMessage($"Parsed Build Version: {value}");
+
             foreach (var c in blueprintConfigOnlineVersion.Values)
             {
-                if (c.BundleVersion.ToLower().Equals(value.ToLower()))
+                if (string.IsNullOrWhiteSpace(c.BundleVersion))
+                    continue;
+
+                if (c.BundleVersion.Equals(value, StringComparison.OrdinalIgnoreCase))
                 {
                     this.LogMessage($"Block load online with {c.BundleVersion}", Color.red);
 

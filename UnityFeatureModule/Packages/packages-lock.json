@@ -91,19 +91,19 @@
       "url": "https://package.openupm.com"
     },
     "com.google.firebase.analytics": {
-      "version": "file:GoogleDependency/com.google.firebase.analytics-12.5.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.analytics-13.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.firebase.app": "12.5.0"
+        "com.google.firebase.app": "13.5.0"
       }
     },
     "com.google.firebase.app": {
-      "version": "file:GoogleDependency/com.google.firebase.app-12.5.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.app-13.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.external-dependency-manager": "1.2.183"
+        "com.google.external-dependency-manager": "1.2.186"
       }
     },
     "com.google.firebase.auth": {
@@ -115,11 +115,11 @@
       }
     },
     "com.google.firebase.crashlytics": {
-      "version": "file:GoogleDependency/com.google.firebase.crashlytics-12.5.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.crashlytics-13.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.firebase.app": "12.5.0"
+        "com.google.firebase.app": "13.5.0"
       }
     },
     "com.google.firebase.database": {
@@ -131,19 +131,19 @@
       }
     },
     "com.google.firebase.messaging": {
-      "version": "file:GoogleDependency/com.google.firebase.messaging-12.5.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.messaging-13.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.firebase.app": "12.5.0"
+        "com.google.firebase.app": "13.5.0"
       }
     },
     "com.google.firebase.remote-config": {
-      "version": "file:GoogleDependency/com.google.firebase.remote-config-12.5.0.tgz",
+      "version": "file:GoogleDependency/com.google.firebase.remote-config-13.5.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
-        "com.google.firebase.app": "12.5.0"
+        "com.google.firebase.app": "13.5.0"
       }
     },
     "com.unity.addressables": {

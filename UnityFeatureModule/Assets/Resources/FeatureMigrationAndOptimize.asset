@@ -11,17 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2d26553a4b14406800070e6b216809d, type: 3}
   m_Name: FeatureMigrationAndOptimize
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Feature.Editor::FeatureMigrationAndOptimize
   ExtenalDependency: 1.2.186
-  FirebaseVersion: 12.5.0
+  FirebaseVersion: 13.5.0
   FirebasePackages:
   - com.google.firebase.analytics
   - com.google.firebase.app
   - com.google.firebase.crashlytics
   - com.google.firebase.messaging
   - com.google.firebase.remote-config
-  - com.google.firebase.auth
-  - com.google.firebase.database
-  GoogleMobileAds: 9.2.1
-  UnityPurchasing: 4.12.0
+  GoogleMobileAds: 11.0.0
+  UnityPurchasing: 4.14.2
   TinyPngApiKey: 
