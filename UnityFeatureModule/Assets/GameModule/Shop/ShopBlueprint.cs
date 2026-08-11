@@ -78,5 +78,6 @@
         public string RewardId    { get; set; }
         public string RewardType  { get; set; }
         public int    RewardValue { get; set; }
+        public string Unit        { get; set; }
     }
 }

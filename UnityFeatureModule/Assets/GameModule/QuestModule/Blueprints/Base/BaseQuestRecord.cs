@@ -1,6 +1,7 @@
 ﻿namespace GameModule.QuestModule.Blueprints.Base
 {
     using System;
+    using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
     using GameModule.QuestModule.Blueprints;
     using GameModule.QuestModule.Blueprints.Base.Interfaces;
@@ -16,7 +17,7 @@
         public int    CountTaskOption { get; set; }
 
         public          BlueprintByRow<QuestRewardRecord> QuestRewardRecords { get; set; }
-        public abstract BlueprintByRow<ITaskRecord>       Tasks();
+        public abstract List<ITaskRecord>          Tasks();
 
     }
 
@@ -34,7 +35,7 @@
 
         public BlueprintByRow<RewardRecord>     RewardRecords         { get; set; }
 
-        public abstract BlueprintByRow<IQuestRequirement> RequirementRecords();
+        public abstract List<IQuestRequirement> RequirementRecords();
     }
 
 
@@ -42,9 +43,9 @@
     {
         public BlueprintByRow<QuestRequirement>      Requirements { get; set; }
 
-        public override BlueprintByRow<IQuestRequirement> RequirementRecords()
+        public override List<IQuestRequirement> RequirementRecords()
         {
-            var reult = new BlueprintByRow<IQuestRequirement>();
+            var reult = new List<IQuestRequirement>();
             reult.AddRange(this.Requirements);
 
             return reult;

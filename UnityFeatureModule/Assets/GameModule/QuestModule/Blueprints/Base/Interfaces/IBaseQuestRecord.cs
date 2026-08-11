@@ -1,5 +1,6 @@
 ﻿namespace GameModule.QuestModule.Blueprints.Base.Interfaces
 {
+    using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
 
     public interface IBaseQuestRecord
@@ -11,7 +12,7 @@
         int    CountTaskOption { get; set; }
 
         public BlueprintByRow<QuestRewardRecord> QuestRewardRecords { get; set; }
-        public BlueprintByRow<ITaskRecord>       Tasks();
+        public List<ITaskRecord>          Tasks();
     }
 
     public interface IQuestRecord : IBaseQuestRecord
@@ -36,7 +37,7 @@
         public string                            GoToTaskDeepLink      { get; set; }
         public string                            Description           { get; set; }
         public string                            TaskName              { get; set; }
-        public BlueprintByRow<IQuestRequirement> RequirementRecords();
+        public List<IQuestRequirement> RequirementRecords();
         public BlueprintByRow<RewardRecord>      RewardRecords { get; set; }
     }
 
