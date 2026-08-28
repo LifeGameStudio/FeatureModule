@@ -32,7 +32,7 @@
 
     public class RuntimeBlueprintReaderManager : BlueprintReaderManager, IStartable
     {
-        private          FeatureSyncCsvWithGoogleDriver csvLoaderData;
+        protected        FeatureSyncCsvWithGoogleDriver csvLoaderData;
         private readonly FeatureDataState               featureDataState;
         private readonly LocalizationDataOnline         localizationDataOnline;
         private readonly ILogService                    logService;
@@ -70,7 +70,7 @@
             try
             {
                 await this.LoadToTalSheet(input);
-                this.LogMessage($"Finish loading input online",Color.cyan);
+                this.LogMessage($"Finish loading input online", Color.cyan);
             }
             catch (Exception e)
             {
